@@ -1,2 +1,2 @@
-# Intro_Robotics_Final_Project
-Contains all materials for CSCI 3302 final project.
+#Multi-Agent Drone Mapping and Target Acquisition
+This is the folder for all final project materials.
