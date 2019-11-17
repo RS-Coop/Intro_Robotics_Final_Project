@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import rospy
-import Drone_Control as dc
+import nodes.Drone_Control as dc
 
 #This is the main script that will execute our project
 def main():
