@@ -10,8 +10,8 @@ class DroneController:
 
     #Initializes object with pubs and subs for speciic namespace
     def __init__(self, namespace):
+        self.ID = namespace
         #Initiate pubs and subs for single drone
-
         self.takeoff = rospy.Publisher(namespace + '/takeoff', Empty, queue_size=1)
         self.land = rospy.Publisher(namespace + '/land', Empty, queue_size=1)
         #NOTE: Flat trim might have problems
@@ -19,9 +19,10 @@ class DroneController:
 
         self.pilot_pub = rospy.Publisher(namespace + '/cmd_vel', Twist, queue_size=1)
         self.camera_joint_pub = rospy.Publisher(namespace + '/camera_control', Twist, queue_size=1)
-        #TODO: Edit camera pub for correcto message type
-        self.camera_image_pub = rospy.Publisher('multi_agent/tagged_image', Empty, queue_size=1)
+        self.camera_image_pub = rospy.Publisher('multi_agent/tagged_image', Tagged_Image, queue_size=1)
 
+        #NOTE:Need to figure out flow of commands from SwarmController
+        'self.pilot_sub = rospy.Subscriber(namespace + )'
         self.odom_sub = rospy.Subscriber(namespace + '/odom', Odometry, sef.odom_callback)
         self.camera_joint_sub = rospy.Subscriber(namespace + '/joint_states', JointState, self.camera_joint_callback)
         self.camera_image_sub = rospy.Subscriber(namespace + '/image_raw', Image, self.image_callback)
@@ -44,12 +45,16 @@ class DroneController:
         self.curr_cam_joint = data
 
     #Callback to update image data
-    #TODO: Gather image data, tag it and then publish it
+    #DONE: Gather image data, tag it and then publish it
+    #NOTE: Still need to create custom image, and make sure this works
     def image_callback(self, data):
-        pass
+        img_tag = Tagged_Image(self.ID, self.curr_odom, data)
+
+        self.camera_image_pub.publish(img_tag)
 
     #TODO: Calculate IK to move to location specified by odometry
     def move_drone(self, goal_loc):
+        #goal_loc is place you want to be.
         pass
 
     #Tells drone to takeoff
@@ -67,8 +72,10 @@ class DroneController:
         self.land.publish(Empty())
 
     #Set the new camera joint states based on joint_data
+    #DONE
+    #NOTE: API is unstable as per documentation, joint_data is Twist
     def move_camera(self, joint_data):
-        pass
+        self.camera_joint_pub.publish(joint_data)
 
     #Stop moving the drone and land
     #TODO
