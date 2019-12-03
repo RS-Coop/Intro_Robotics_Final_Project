@@ -19,7 +19,7 @@ class DroneController:
 
         self.pilot_pub = rospy.Publisher(namespace + '/cmd_vel', Twist, queue_size=1)
         self.camera_joint_pub = rospy.Publisher(namespace + '/camera_control', Twist, queue_size=1)
-        self.camera_image_pub = rospy.Publisher('multi_agent/tagged_image', Tagged_Image, queue_size=1)
+        self.camera_image_pub = rospy.Publisher(namespace + '/drone_image', Image, queue_size=1)
 
         #NOTE:Need to figure out flow of commands from SwarmController
         'self.pilot_sub = rospy.Subscriber(namespace + )'
@@ -48,9 +48,7 @@ class DroneController:
     #DONE: Gather image data, tag it and then publish it
     #NOTE: Still need to create custom image, and make sure this works
     def image_callback(self, data):
-        img_tag = Tagged_Image(self.ID, self.curr_odom, data)
-
-        self.camera_image_pub.publish(img_tag)
+        self.camera_image_pub.publish(data)
 
     #TODO: Calculate IK to move to location specified by odometry
     def move_drone(self, goal_loc):
