@@ -12,5 +12,10 @@ class TestImageProcessing(unittest.TestCase):
     def test_test2(self):
         self.assertTrue(self.imageProcessor.test_method())
 
+    # Identify a landmark in an image
+    def test_identify_landmark(self):
+        fileName = "has_landmark.jpeg"
+        self.assertTrue(self.imageProcessor.image_evaluate_features_from_file(fileName))
+
 if __name__ == '__main__':
     unittest.main()
