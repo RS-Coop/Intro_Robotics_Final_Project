@@ -31,4 +31,9 @@ class ImageProcessor:
     # This method returns an image where a mask is applied only to pixels in the image that are determined to constitute the path
     def mask_path(self, img):
         return True
+
+    def mask_lines(self, img):
+        img = cv.imread(img,0)
+        edges = cv.Canny(img,700,750)
+        return edges
         
