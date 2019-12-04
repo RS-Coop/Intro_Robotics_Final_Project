@@ -1,4 +1,5 @@
 import rospy
+import intera_interface
 #This class deals with controlling the Sawyer arm
 class ArmController:
 

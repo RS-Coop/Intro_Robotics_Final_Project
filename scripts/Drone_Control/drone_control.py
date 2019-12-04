@@ -19,13 +19,13 @@ class DroneController:
 
         self.pilot_pub = rospy.Publisher(namespace + '/cmd_vel', Twist, queue_size=1)
         self.camera_joint_pub = rospy.Publisher(namespace + '/camera_control', Twist, queue_size=1)
-        self.camera_image_pub = rospy.Publisher(namespace + '/drone_image', Image, queue_size=1)
+        # self.camera_image_pub = rospy.Publisher(namespace + '/drone_image', Image, queue_size=1)
 
         #NOTE:Need to figure out flow of commands from SwarmController
-        'self.pilot_sub = rospy.Subscriber(namespace + )'
-        self.odom_sub = rospy.Subscriber(namespace + '/odom', Odometry, sef.odom_callback)
+        self.pilot_sub = rospy.Subscriber(namespace + '/drone_command', DroneCommand, self.move_drone_callback)
+        # self.odom_sub = rospy.Subscriber(namespace + '/odom', Odometry, self.odom_callback)
         self.camera_joint_sub = rospy.Subscriber(namespace + '/joint_states', JointState, self.camera_joint_callback)
-        self.camera_image_sub = rospy.Subscriber(namespace + '/image_raw', Image, self.image_callback)
+        # self.camera_image_sub = rospy.Subscriber(namespace + '/image_raw', Image, self.image_callback)
 
         sleep(1.0)
 
@@ -34,26 +34,44 @@ class DroneController:
     def run_node(self):
         pass
 
-    #Callback to update odometry
-    #DONE
-    def odom_callback(self, data):
-        self.curr_odom = data
+    # #Callback to update odometry
+    # #DONE
+    # def odom_callback(self, data):
+    #     self.curr_odom = data
 
     #Callback to update camera data
     #DONE
     def camera_joint_callback(self, data):
         self.curr_cam_joint = data
 
-    #Callback to update image data
-    #DONE: Gather image data, tag it and then publish it
-    #NOTE: Still need to create custom image, and make sure this works
-    def image_callback(self, data):
-        self.camera_image_pub.publish(data)
+    # #Callback to update image data
+    # #DONE: Gather image data, tag it and then publish it
+    # #NOTE: Still need to create custom image, and make sure this works
+    # def image_callback(self, data):
+    #     self.camera_image_pub.publish(data)
 
-    #TODO: Calculate IK to move to location specified by odometry
-    def move_drone(self, goal_loc):
-        #goal_loc is place you want to be.
-        pass
+    #DONE: Move according to command
+    def move_drone_callback(self, command):
+        #Command is movement type
+        movement = Twist()
+        intensity = 0.2
+
+        if command.intensity != 0:
+            default_intensity = command.intensity
+
+        if command.cmd_type == 'x':
+            movement.linear.x = intensity * command.direction
+
+        elif command.cmd_type == 'y':
+            movement.linear.y = intensity * command.direction
+
+        elif command.cmd_type == 'z':
+            movement.linear.z = intensity * command.direction
+
+        elif command.cmd_type == 'angular':
+            movement.angular.z = intensity * command.direction
+
+        self.pilot_pub.publish(movement)
 
     #Tells drone to takeoff
     #DONE
