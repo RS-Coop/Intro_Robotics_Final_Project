@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 import rospy
-import Drone_Control as dc
+from Drone_control import DroneController
 
-#Initializes a node for a drone
-#rospy.init()
+Initializes a node for a drone
+rospy.init('Drone1')
 
-drone = dc.DroneController()
+drone = DroneController()
 
 drone.run_node()

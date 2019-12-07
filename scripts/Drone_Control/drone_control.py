@@ -9,49 +9,50 @@ class DroneController:
     self.curr_cam_joint = None
 
     #Initializes object with pubs and subs for speciic namespace
-    def __init__(self, namespace):
+    def __init__(self, namespace='/bebop'):
         self.ID = namespace
         #Initiate pubs and subs for single drone
         self.takeoff = rospy.Publisher(namespace + '/takeoff', Empty, queue_size=1)
         self.land = rospy.Publisher(namespace + '/land', Empty, queue_size=1)
-        #NOTE: Flat trim might have problems
-        self.calibrate = rospy.Publisher(namespace + '/flattrim', Empty, queue_size=1)
+        self.calibrate = rospy.Publisher(namespace + '/flattrim', Empty, queue_size=1)#NOTE: Flat trim might have problems
+        self.emergency = rospy.Publisher(namespace + '/reset', Empty, queue_size=1)
 
         self.pilot_pub = rospy.Publisher(namespace + '/cmd_vel', Twist, queue_size=1)
         self.camera_joint_pub = rospy.Publisher(namespace + '/camera_control', Twist, queue_size=1)
-        # self.camera_image_pub = rospy.Publisher(namespace + '/drone_image', Image, queue_size=1)
+        self.camera_image_pub = rospy.Publisher('swarm/drone_image', TaggedImage, queue_size=1)
 
         #NOTE:Need to figure out flow of commands from SwarmController
         self.pilot_sub = rospy.Subscriber(namespace + '/drone_command', DroneCommand, self.move_drone_callback)
-        # self.odom_sub = rospy.Subscriber(namespace + '/odom', Odometry, self.odom_callback)
         self.camera_joint_sub = rospy.Subscriber(namespace + '/joint_states', JointState, self.camera_joint_callback)
-        # self.camera_image_sub = rospy.Subscriber(namespace + '/image_raw', Image, self.image_callback)
+        self.camera_image_sub = rospy.Subscriber(namespace + '/image_raw', Image, self.image_callback)
 
         sleep(1.0)
 
     #Loop to be run inside node script
     #TODO
+    #NOTE: Just testing right now, real version will be different
     def run_node(self):
-        pass
+        self.test_takeoffandland
 
-    # #Callback to update odometry
-    # #DONE
-    # def odom_callback(self, data):
-    #     self.curr_odom = data
-
-    #Callback to update camera data
+    #Callback to update camera joint data
     #DONE
     def camera_joint_callback(self, data):
         self.curr_cam_joint = data
 
-    # #Callback to update image data
-    # #DONE: Gather image data, tag it and then publish it
-    # #NOTE: Still need to create custom image, and make sure this works
-    # def image_callback(self, data):
-    #     self.camera_image_pub.publish(data)
+    #Callback to publish image data
+    #DONE: Gather image data, tag it and then publish it
+    def image_callback(self, data):
+        drone_image = TaggedImage()
+        drone_image.image = data
+        drone_image.drone_id = self.ID
+
+        self.camera_image_pub.publish(drone_image)
 
     #DONE: Move according to command
     def move_drone_callback(self, command):
+        self.move_drone(command)
+
+    def move_drone(self, command):
         #Command is movement type
         movement = Twist()
         intensity = 0.2
@@ -94,7 +95,24 @@ class DroneController:
         self.camera_joint_pub.publish(joint_data)
 
     #Stop moving the drone and land
-    #TODO
+    #DONE
+    #NOTE: Not exactly sure what this does
     def failsafe(self):
-        #Stop moving drone and land
-        pass
+        self.emergency.publish(Empty())
+        self.land.publish(Empty())
+
+    #Test Methods
+    def test_takeoffandland(self):
+        self.takeoff
+        sleep(5.0)
+        self.land
+
+    def test_moveforward(self):
+        self.takeoff
+        sleep(2.0)
+        command = DroneCommand()
+        command.cmd_type = 'x'
+        command.intensity = 0
+        commmand.direction = 1
+
+        self.move_drone(command)

@@ -1,2 +1,2 @@
 Image image
-Odometry odometry
+String drone_id
