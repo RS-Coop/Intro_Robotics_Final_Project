@@ -1,2 +1,2 @@
 Image image
-String drone_id
+string drone_id

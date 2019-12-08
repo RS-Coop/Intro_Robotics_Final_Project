@@ -1,3 +1,4 @@
 string cmd_type
-int8 direction 
+string drone_id
+int8 direction
 int8 intensity

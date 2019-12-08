@@ -1,5 +1,7 @@
+#!/usr/bin/env python
+import rospy
 import unittest
-# import Drone_Control as dc
+import Drone_Control as dc
 import Image_Processing as ip
 
 class TestImageProcessing(unittest.TestCase):
@@ -18,8 +20,20 @@ class TestImageProcessing(unittest.TestCase):
         self.assertTrue(self.imageProcessor.image_evaluate_features_from_file(fileName))
 
 class TestDroneController():
-    def test_test1:
+    def __init__():
+        self.drone = dc.DroneController()
+
+    def test_test1(self):
+        self.drone.test_takeoffandland()
+
+class TestSwarmController():
+    def __init__():
+        self.swarm = dc.SwarmController()
+
+    def test_test1(self):
         pass
 
 if __name__ == '__main__':
+    rospy.init_node('Test_Node')
+
     unittest.main()

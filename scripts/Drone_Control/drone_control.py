@@ -5,8 +5,8 @@ from nav_msgs.msg import Odometry
 from sensor_msgs.msg import JointState, Image
 #This class deals with interactions between a single drone
 class DroneController:
-    self.curr_odom = None
-    self.curr_cam_joint = None
+    curr_odom = None
+    curr_cam_joint = None
 
     #Initializes object with pubs and subs for speciic namespace
     def __init__(self, namespace='/bebop'):
@@ -19,39 +19,33 @@ class DroneController:
 
         self.pilot_pub = rospy.Publisher(namespace + '/cmd_vel', Twist, queue_size=1)
         self.camera_joint_pub = rospy.Publisher(namespace + '/camera_control', Twist, queue_size=1)
-        self.camera_image_pub = rospy.Publisher('swarm/drone_image', TaggedImage, queue_size=1)
+        self.camera_image_pub = rospy.Publisher('/swarm/drone_image', TaggedImage, queue_size=1)
 
         #NOTE:Need to figure out flow of commands from SwarmController
-        self.pilot_sub = rospy.Subscriber(namespace + '/drone_command', DroneCommand, self.move_drone_callback)
+        self.pilot_sub = rospy.Subscriber('/swarm/drone_command', DroneCommand, self.move_drone_callback)
         self.camera_joint_sub = rospy.Subscriber(namespace + '/joint_states', JointState, self.camera_joint_callback)
         self.camera_image_sub = rospy.Subscriber(namespace + '/image_raw', Image, self.image_callback)
 
         sleep(1.0)
 
+################################################################################
+#Main methods and publisher methods
+
     #Loop to be run inside node script
-    #TODO
-    #NOTE: Just testing right now, real version will be different
-    def run_node(self):
-        self.test_takeoffandland
-
-    #Callback to update camera joint data
     #DONE
-    def camera_joint_callback(self, data):
-        self.curr_cam_joint = data
+    #NOTE: Not sure if this is exactly what we need
+    def run_node(self):
+        while not rospy.is_shutdown():
+            continue
 
-    #Callback to publish image data
-    #DONE: Gather image data, tag it and then publish it
-    def image_callback(self, data):
-        drone_image = TaggedImage()
-        drone_image.image = data
-        drone_image.drone_id = self.ID
-
-        self.camera_image_pub.publish(drone_image)
-
-    #DONE: Move according to command
+    #If command is for this drone then move
+    #DONE
     def move_drone_callback(self, command):
-        self.move_drone(command)
+        if command.drone_id == self.ID:
+            self.move_drone(command)
 
+    #Move drone
+    #DONE
     def move_drone(self, command):
         #Command is movement type
         movement = Twist()
@@ -79,7 +73,7 @@ class DroneController:
     def takeoff(self):
         self.calibrate.publish(Empty())
 
-        sleep(1.0)
+        sleep(2.0)
 
         self.takeoff.publish(Empty())
 
@@ -100,6 +94,26 @@ class DroneController:
     def failsafe(self):
         self.emergency.publish(Empty())
         self.land.publish(Empty())
+
+################################################################################
+#Callbacks
+
+    #Callback to update camera joint data
+    #DONE
+    def camera_joint_callback(self, data):
+        self.curr_cam_joint = data
+
+    #Callback to publish image data
+    #DONE: Gather image data, tag it and then publish it
+    def image_callback(self, data):
+        drone_image = TaggedImage()
+        drone_image.image = data
+        drone_image.drone_id = self.ID
+
+        self.camera_image_pub.publish(drone_image)
+
+################################################################################
+#Tests
 
     #Test Methods
     def test_takeoffandland(self):

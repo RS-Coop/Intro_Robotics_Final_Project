@@ -1,2 +1,10 @@
 <Add any important notes here>
 Apparently we want to run the ROS bebop driver as a nodelet?
+
+Image Processor Capabilities:
+  -Recognize color
+  -Recognize line
+  -Determine where a line is in the picture
+  -Recognize node
+    --QR code or colored shape
+    
