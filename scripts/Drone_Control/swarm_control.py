@@ -28,9 +28,14 @@ class SwarmController:
         while not rospy.is_shutdown():
             continue
 
-    #Dispatches drone, maybe the line following part here
-    #TODO: Not exactly sure what this will do
+    #Dispatches drone from a vertex to a edge
+    #TODO: Select an edge leaving the vertex and go there
     def dispatch_drone(self):
+        pass
+
+    #Drone follows line untill it reaches vertex
+    #TODO: Follow line
+    def follow_line(self):
         pass
 
     #Launches all drones in swarm

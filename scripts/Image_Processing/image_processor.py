@@ -20,6 +20,15 @@ class ImageProcessor:
         while not rospy.is_shutdown():
             continue
 
+    #Takes a QR code image and proccess it.
+    #DONE: Returns string of QR code data
+    def process_QR_code(self,image):
+        qr = cv.QRCodeDetector()
+
+        data = qr.detectAndDecode(image)
+
+        return data
+
     #Takes in a
     #TODO: What does this do
     def image_evaluate_features_from_file(self, img_loc):
