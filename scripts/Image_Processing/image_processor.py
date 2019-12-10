@@ -1,6 +1,7 @@
 import rospy
 import numpy as np
 import cv2 as cv
+import pyzbar.pyzbar as pyz
 #This class deals with processing images from the Bebop drones
 class ImageProcessor:
     def __init__(self):
@@ -23,11 +24,16 @@ class ImageProcessor:
     #Takes a QR code image and proccess it.
     #DONE: Returns string of QR code data
     def process_QR_code(self,image):
-        qr = cv.QRCodeDetector()
+        code = pyz.decode(img)
 
-        data = qr.detectAndDecode(image)
+        return code[0].data.decode('utf-8')
 
-        return data
+    #Takes an line image, or maybe a sub feature extracted
+    #from an image and determines its direction
+    #i.e. left, right, straight, horizontal
+    #TODO: Figure out how to do this
+    def line_direction(self,image):
+        
 
     #Takes in a
     #TODO: What does this do
