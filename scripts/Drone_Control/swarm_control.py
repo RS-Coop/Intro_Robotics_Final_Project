@@ -6,16 +6,11 @@ class SwarmController:
 
     def __init__(self):
         #Initialize pubs and subs
-        #Issues drone commands
+        #Publishers
         drone_command_pub = rospy.Publisher('/swarm/drone_command', DroneCommand, queue_size=1)
-
-        #NOTE: Not sure of the flow of info here
-        #will need to obtain information to follow line
-        #will also need to get info from map
-        '''
-        drone_loc_sub = rospy.Subscriber('multi_agent/current_locations', Odom_Tag, queue_size=1)
-        location_req_sub = rospy.Subscriber('multi_agent/location_requests', Odometry, queue_size=1)
-        '''
+        #Subscribers
+        qr_sub = rospy.Subscriber('/swarm/qr_code', QR, qr_callback())
+        edges_sub = rospy.Subscriber('/swarm/edges', EdgeList, edge_callback())
 
         sleep(1.0)
 
@@ -58,10 +53,10 @@ class SwarmController:
 ################################################################################
 #Callbacks
 
-    def image_processor_callback(self):
+    def qr_callback(self):
         pass
 
-    def map_callback(self):
+    def edge_callback(self):
         pass
 
 ################################################################################
