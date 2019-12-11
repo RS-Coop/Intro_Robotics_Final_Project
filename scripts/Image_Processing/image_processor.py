@@ -5,12 +5,14 @@ import pyzbar.pyzbar as pyz
 #This class deals with processing images from the Bebop drones
 class ImageProcessor:
     #List of line color ranges
-    self.line_colors = {'orange', [[5,100,150], [15,255,255]]} #Oragne right now
+    self.line_colors = {'orange', [[5,100,150], [15,255,255]]
+                        'purple', [[]]} #Oragne right now
 
     def __init__(self):
         #Initialize pubs and subs
         #Publishers
-
+        self.qr_pub = rospy.Publisher('/swarm/qr_code', QR, queue_size=1)
+        self.edges_pub = rospy.Publisher('/swarm/edges', EdgeList, queue_size=1)
         #Subscribers
         self.image_sub = rospy.Subscriber('/swarm/drone_image', TaggedImage, self.image_callback())
 
@@ -57,7 +59,8 @@ class ImageProcessor:
     #Takes an image and color filters for all
     #potential line colors to get line blobs
     #DONE: Creates mask for specfied color or all colors if non-specific
-    def line_color_filter(self, image, color=None):
+    #TODO: Add more colors to line_colors
+    def color_filter(self, image, color=None):
         hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)
         #Right now this is just orange, I think it will need to be a loop
         if color == None:
@@ -95,10 +98,24 @@ class ImageProcessor:
 
         return np.degrees(angle)
 
+    #Detect a QR code and determine centroid
+    #DONE: Detect and calculate centroid if it exists
+    def detect_QR_code(self, image):
+        code = pyz.decode(image)
+
+        if code != None:
+            bb = code.rect
+            x = (bb[0] + bb[2])/2
+            y = (bb[1] + bb[3])/2
+
+            return (x,y)
+
+        return None
+
     #Takes a QR code image and proccess it.
     #DONE: Returns string of QR code data
-    def process_QR_code(self,image):
-        code = pyz.decode(img)
+    def process_QR_code(self, image):
+        code = pyz.decode(image)
 
         return code[0].data.decode('utf-8')
 
