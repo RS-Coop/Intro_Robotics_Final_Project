@@ -41,28 +41,40 @@ class CVProcessor:
     }
     '''
     def process_image(self, img):
-        # output_data = {"qr" : { "hasQR" : None, "centroid" : (None, None)}, "edges" : []}
-        pass
-
-
         # Call process image
         # Publish results to topics
-    
+        output_data = {"qr" : { "hasQR" : None, "centroid" : None}, "edges" : []}
+        qrResult = self.detect_QR_code(img)
+
+        if(qrResult != None):
+             output_data["qr"]["centroid"] = qrResult
+             output_data["qr"]["hasQR"] = True
+        else:
+            output_data["qr"]["hasQR"] = False
+      
+        lineResult = []
+
     #Takes an image and color filters for all
     #potential line colors to get line blobs
-    #DONE: Creates mask for specfied color or all colors if non-specific
+    #DONE: Creates mask for specfied color or a mask for each color if non-specific
     #TODO: Add more colors to line_colors
     def color_filter(self, image, color=None):
+        masks = []
         hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)
         #Right now this is just orange, I think it will need to be a loop
         if color == None:
-            mask = np.zeros((image.shape[0], image.shape[1],3),np.uint8)
-            for color in self.line_colors:
+            for i in range(0, len(self.line_colors)):
+                mask = np.zeros((image.shape[0], image.shape[1],3),np.uint8)
+
+                color = self.line_colors[i]
                 color_mask = cv.inRange(hsv, color[0], color[1])
                 mask = cv.bitwise_and(mask, color_mask)
+
+                masks.append(mask)
         else:
-            mask = cv.inRange(hsv, self.line_colors[color][0], self.line_colors[color][1])
-        return mask
+            masks.append(cv.inRange(hsv, self.line_colors[color][0], self.line_colors[color][1]))
+
+        return masks
 
     #Takes an image that is the isolated line blob
     #and returns the angle to vertical
