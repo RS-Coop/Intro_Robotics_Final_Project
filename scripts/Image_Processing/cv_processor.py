@@ -13,13 +13,6 @@ class CVProcessor:
         pass
 
 ################################################################################
-#Main methods and publisher methods
-    #Loop to be run in main script
-    #DONE: I think this works
-    def run_node(self):
-        while not rospy.is_shutdown():
-            continue
-
     # Take in an image and return a dictionary with the information found in the image
     # Should return:
     '''
@@ -54,6 +47,7 @@ class CVProcessor:
       
         lineResult = []
 
+        return output_data
     #Takes an image and color filters for all
     #potential line colors to get line blobs
     #DONE: Creates mask for specfied color or a mask for each color if non-specific
