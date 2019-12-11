@@ -2,21 +2,24 @@ import rospy
 import numpy as np
 import cv2 as cv
 import pyzbar.pyzbar as pyz
+import time
 #This class deals with processing images from the Bebop drones
 class ImageProcessor:
     #List of line color ranges
-    self.line_colors = {'orange':[[5,100,150], [15,255,255]],
+    line_colors = {'orange':[[5,100,150], [15,255,255]],
                         'purple':[[275,100,150], [285,255,255]]}
 
     def __init__(self):
         #Initialize pubs and subs
         #Publishers
-        self.qr_pub = rospy.Publisher('/swarm/qr_code', QR, queue_size=1)
-        self.edges_pub = rospy.Publisher('/swarm/edges', EdgeList, queue_size=1)
-        #Subscribers
-        self.image_sub = rospy.Subscriber('/swarm/drone_image', TaggedImage, self.image_callback())
+        # self.qr_pub = rospy.Publisher('/swarm/qr_code', QR, queue_size=1)
 
-        sleep(1.0)
+        # self.edges_pub = rospy.Publisher('/swarm/edges', EdgeList, queue_size=1)
+        #Subscribers
+        # self.image_sub = rospy.Subscriber('/swarm/drone_image', TaggedImage, self.image_callback())
+
+        time.sleep(1.0)
+        
 
 ################################################################################
 #Main methods and publisher methods
@@ -46,11 +49,9 @@ class ImageProcessor:
             ]
     }
     '''
-    def process_image(self, img) {
-
-        output_data = {"qr" : { "hasQR" : None, "centroid" : (None, None)}, "edges" : []}
+    def process_image(self, img):
+        # output_data = {"qr" : { "hasQR" : None, "centroid" : (None, None)}, "edges" : []}
         pass
-    }
 
 
         # Call process image
@@ -81,7 +82,9 @@ class ImageProcessor:
         lines = cv.HoughLinesP(edges,1,np.pi/180,10)
 
         #Now to calculate angle from lines
-        sum_opp=0, sum_adj=0, num_lines=0
+        sum_opp = 0
+        sum_adj = 0
+        num_lines = 0
         for line in lines:
             for x1,y1,x2,y2 in line:
                 len = np.sqrt((x1-x2)**2+(y1-y2)**2)
@@ -102,9 +105,12 @@ class ImageProcessor:
     #DONE: Detect and calculate centroid if it exists
     def detect_QR_code(self, image):
         code = pyz.decode(image)
-
-        if code != None:
-            bb = code.rect
+        # print(code)
+        # print(code[0])
+        # print(code[0][2])
+        # print(code[0][2][0])
+        if len(code) != 0:
+            bb = code[0][2]
             x = (bb[0] + bb[2])/2
             y = (bb[1] + bb[3])/2
 
@@ -130,10 +136,3 @@ class ImageProcessor:
         # Publish results to topic
 
         pass
-
-################################################################################
-#Tests
-    #Not sure what this does
-    #TODO:
-    def test_method(self):
-        return True
