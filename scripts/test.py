@@ -7,7 +7,7 @@ import cv2 as cv
 
 class TestImageProcessing(unittest.TestCase):
     def setUp(self):
-        self.imageProcessor = ip.ImageProcessor()
+        self.cv_processor = ip.CVProcessor()
 
     # Identify a landmark in an image
     # def test_identify_landmark(self):
@@ -18,17 +18,17 @@ class TestImageProcessing(unittest.TestCase):
     # Test detect_qr code with no QR code
     def test_no_detect_qr_code(self):
         img = cv.imread("test_images/not_has_qr_code.jpg")
-        self.assertEqual(self.imageProcessor.detect_QR_code(img), None)
+        self.assertEqual(self.cv_processor.detect_QR_code(img), None)
 
     # Test detect_qr code with QR code
     def test_detect_qr_code(self):
         img = cv.imread("test_images/has_qr_code.jpg")
-        self.assertNotEqual(self.imageProcessor.detect_QR_code(img), None)
+        self.assertNotEqual(self.cv_processor.detect_QR_code(img), None)
 
     # Test detect_qr code with QR code partially showing in image
     def test_detect_partial_qr_code(self):
         img = cv.imread("test_images/has_partial_qr_upper_left.jpg")
-        self.assertEqual(self.imageProcessor.detect_QR_code(img), None)
+        self.assertEqual(self.cv_processor.detect_QR_code(img), None)
     
     #### Vertex Identification
     # Identify that a QR code is NOT in the image (no QR code showing)
