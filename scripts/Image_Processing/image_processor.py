@@ -4,6 +4,9 @@ import cv2 as cv
 import pyzbar.pyzbar as pyz
 #This class deals with processing images from the Bebop drones
 class ImageProcessor:
+    #List of line color ranges
+    self.line_colors = [[5,100,150], [15,255,255]] #Oragne right now
+
     def __init__(self):
         #Initialize pubs and subs
         #Publishers
@@ -21,6 +24,23 @@ class ImageProcessor:
         while not rospy.is_shutdown():
             continue
 
+    #Takes an image and color filters for all
+    #potential line colors to get line blobs
+    #TODO: Do this
+    def line_color_filter(self, image):
+        hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)
+        #Right now this is just orange, I think it will need to be a loop
+        mask = cv.inRange(hsv, self.line_colors[0], self.line_colors[1])
+
+    #Takes an image that is the isolated line blob
+    #and returns the angle to vertical
+    #TODO: Figure out how to do this
+    def line_angle(self, line_mask):
+        edges = cv.Canny(line_mask,50,150,apertureSize = 3)
+        lines = cv.HoughLinesP(edges,1,np.pi/180,10)
+
+        #Now to calculate angle from lines
+
     #Takes a QR code image and proccess it.
     #DONE: Returns string of QR code data
     def process_QR_code(self,image):
@@ -28,13 +48,7 @@ class ImageProcessor:
 
         return code[0].data.decode('utf-8')
 
-    #Takes an line image, or maybe a sub feature extracted
-    #from an image and determines its direction
-    #i.e. left, right, straight, horizontal
-    #TODO: Figure out how to do this
-    def line_direction(self,image):
-        
-
+    '''
     #Takes in a
     #TODO: What does this do
     def image_evaluate_features_from_file(self, img_loc):
@@ -65,6 +79,7 @@ class ImageProcessor:
         img = cv.imread(img,0)
         edges = cv.Canny(img,700,750)
         return edges
+    '''
 
 ################################################################################
 #Callbacks
