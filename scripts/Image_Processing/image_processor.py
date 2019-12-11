@@ -3,9 +3,11 @@ import numpy as np
 import cv2 as cv
 import pyzbar.pyzbar as pyz
 import time
+from Image_Processing import cv_processor as cvp
+
 #This class deals with processing images from the Bebop drones
 class ImageProcessor:
-    
+
     def __init__(self):
         #Initialize pubs and subs
         #Publishers

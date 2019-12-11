@@ -9,6 +9,9 @@ class CVProcessor:
     line_colors = {'orange':[[5,100,150], [15,255,255]],
                         'purple':[[275,100,150], [285,255,255]]}
 
+    def __init__(self):
+        pass
+
 ################################################################################
 #Main methods and publisher methods
     #Loop to be run in main script

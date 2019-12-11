@@ -2,12 +2,13 @@
 import rospy
 import unittest
 import Drone_Control as dc
-import Image_Processing as ip
+from Image_Processing import cv_processor as cvp
+
 import cv2 as cv
 
 class TestImageProcessing(unittest.TestCase):
     def setUp(self):
-        self.cv_processor = ip.CVProcessor()
+        self.cv_processor = cvp.CVProcessor()
 
     # Identify a landmark in an image
     # def test_identify_landmark(self):
