@@ -24,6 +24,36 @@ class ImageProcessor:
         while not rospy.is_shutdown():
             continue
 
+    # Take in an image and return a dictionary with the information found in the image
+    # Should return:
+    '''
+    {
+        "qr" : 
+            {
+                "hasQR" : bool, 
+                "centroid" : (int, int) # (x, y)
+            },
+        "edges" :
+            [
+                {
+                    "color" : String, # (orange, purple)
+                    "angle" : float,
+                    "centroid" : (int, int) # (x, y)
+                },
+                ...
+            ]
+    }
+    '''
+    def process_image(self, img) {
+
+        output_data = {"qr" : { "hasQR" : None, "centroid" : (None, None)}, "edges" : []}
+        pass
+    }
+
+
+        # Call process image
+        # Publish results to topics
+    
     #Takes an image and color filters for all
     #potential line colors to get line blobs
     #DONE: Creates mask for specfied color or all colors if non-specific
@@ -37,7 +67,6 @@ class ImageProcessor:
                 mask = cv.bitwise_and(mask, color_mask)
         else:
             mask = cv.inRange(hsv, self.line_colors[color][0], self.line_colors[color][1])
-
         return mask
 
     #Takes an image that is the isolated line blob
@@ -111,6 +140,11 @@ class ImageProcessor:
     #Proccesses image from drone
     #TODO: What will this call or do?
     def image_callback(self,data):
+        # Process the image
+        process_image(data)
+
+        # Publish results to topic
+
         pass
 
 ################################################################################
