@@ -18,19 +18,19 @@ class TestImageProcessing(unittest.TestCase):
     #### QR Code Identification
     # Test detect_qr code with no QR code
     def test_no_detect_qr_code(self):
-        img = cv.imread("test_images/not_has_qr_code.jpg")
+        img = cv.imread("../test_images/not_has_qr_code.jpg")
         self.assertEqual(self.cv_processor.detect_QR_code(img), None)
 
     # Test detect_qr code with QR code
     def test_detect_qr_code(self):
-        img = cv.imread("test_images/has_qr_code.jpg")
+        img = cv.imread("../test_images/has_qr_code.jpg")
         self.assertNotEqual(self.cv_processor.detect_QR_code(img), None)
 
     # Test detect_qr code with QR code partially showing in image
     def test_detect_partial_qr_code(self):
-        img = cv.imread("test_images/has_partial_qr_upper_left.jpg")
+        img = cv.imread("../test_images/has_partial_qr_upper_left.jpg")
         self.assertEqual(self.cv_processor.detect_QR_code(img), None)
-    
+
     #### Vertex Identification
     # Identify that a QR code is NOT in the image (no QR code showing)
     # Requires an image with a QR code in it
@@ -43,7 +43,7 @@ class TestImageProcessing(unittest.TestCase):
 
     # Identify that a QR code is NOT in the image (QR code partially showing)
     # Requires an image with a QR code in it
-    
+
     # Identify that a QR code is in the image (entire QR code showing)
     # Requires an image with a QR code in it
 
@@ -56,13 +56,13 @@ class TestImageProcessing(unittest.TestCase):
     # Identify a QR code is centered in the image (only location)
     # Requires an image with a QR code in it centered centered
 
-    #### Edge Identification 
+    #### Edge Identification
     # Identify a single edge coming out of a vertex
     # Requires an image of a centered QR code with one color tape coming out of it
 
     # Identify the angle a single edge is coming out of a vertex
     # Requires an image of a centered QR code with one color tape coming out of it
-    
+
     # Identify 2 edges coming out of a vertex
     # Requires an image of a centered QR code with two colors of tape coming out of it
 

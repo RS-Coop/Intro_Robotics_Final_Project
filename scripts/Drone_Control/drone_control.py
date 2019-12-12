@@ -1,7 +1,6 @@
 import rospy
 from std_msgs.msg import Empty
 from geometry_msgs.msg import Twist
-from nav_msgs.msg import Odometry
 from sensor_msgs.msg import JointState, Image
 #This class deals with interactions between a single drone
 class DroneController:

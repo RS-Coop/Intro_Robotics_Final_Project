@@ -11,14 +11,13 @@ class ImageProcessor:
     def __init__(self):
         #Initialize pubs and subs
         #Publishers
-        # self.qr_pub = rospy.Publisher('/swarm/qr_code', QR, queue_size=1)
-
-        # self.edges_pub = rospy.Publisher('/swarm/edges', EdgeList, queue_size=1)
+        self.qr_pub = rospy.Publisher('/swarm/qr_code', QR, queue_size=1)
+        self.edges_pub = rospy.Publisher('/swarm/edges', EdgeList, queue_size=1)
         #Subscribers
-        # self.image_sub = rospy.Subscriber('/swarm/drone_image', TaggedImage, self.image_callback())
+        self.image_sub = rospy.Subscriber('/swarm/drone_image', TaggedImage, self.image_callback())
 
         time.sleep(1.0)
-        
+
 ################################################################################
 #Callbacks
     #Proccesses image from drone
