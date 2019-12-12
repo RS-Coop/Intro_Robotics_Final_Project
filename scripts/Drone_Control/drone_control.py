@@ -2,6 +2,7 @@ import rospy
 from std_msgs.msg import Empty
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import JointState, Image
+from Intro_Robotics_Final_Project.msg import DroneCommand, TaggedImage
 #This class deals with interactions between a single drone
 class DroneController:
     curr_odom = None
@@ -25,7 +26,7 @@ class DroneController:
         self.camera_joint_sub = rospy.Subscriber(namespace + '/joint_states', JointState, self.camera_joint_callback)
         self.camera_image_sub = rospy.Subscriber(namespace + '/image_raw', Image, self.image_callback)
 
-        sleep(1.0)
+        rospy.sleep(1.0)
 
 ################################################################################
 #Main methods and publisher methods

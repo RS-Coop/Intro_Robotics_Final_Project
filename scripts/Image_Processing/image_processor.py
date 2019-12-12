@@ -2,8 +2,8 @@ import rospy
 import numpy as np
 import cv2 as cv
 import pyzbar.pyzbar as pyz
-import time
 from Image_Processing import cv_processor as cvp
+from Intro_Robotics_Final_Project.msg import EdgeList, TaggedImage, QR
 
 #This class deals with processing images from the Bebop drones
 class ImageProcessor:
@@ -16,7 +16,7 @@ class ImageProcessor:
         #Subscribers
         self.image_sub = rospy.Subscriber('/swarm/drone_image', TaggedImage, self.image_callback())
 
-        time.sleep(1.0)
+        rospy.sleep(1.0)
 
 ################################################################################
 #Callbacks

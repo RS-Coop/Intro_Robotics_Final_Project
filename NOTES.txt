@@ -1,19 +1,8 @@
 <Add any important notes here>
 Apparently we want to run the ROS bebop driver as a nodelet?
 
-Image Processor Capabilities:
-  -Recognize color
-  -Recognize line
-  -Determine where a line is in the picture
-  -Recognize node
-    --QR code or colored shape
-
-Questions:
-  Setting up a specific launch file
-    -Also passing arguments
-
-  Running those tests
-
-  How does ROS know what can be run with rosrun?
-
-  Making sure catkin workspace is all set up and good
+Cooper TODO:
+  Flesh out image_processor
+  Test Drone_Control
+  Flesh out swarm_controller
+  Test all three together

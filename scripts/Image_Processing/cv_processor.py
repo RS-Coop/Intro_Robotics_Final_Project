@@ -17,9 +17,9 @@ class CVProcessor:
     # Should return:
     '''
     {
-        "qr" : 
+        "qr" :
             {
-                "hasQR" : bool, 
+                "hasQR" : bool,
                 "centroid" : (int, int) # (x, y)
             },
         "edges" :
@@ -44,10 +44,11 @@ class CVProcessor:
              output_data["qr"]["hasQR"] = True
         else:
             output_data["qr"]["hasQR"] = False
-      
+
         lineResult = []
 
         return output_data
+        
     #Takes an image and color filters for all
     #potential line colors to get line blobs
     #DONE: Creates mask for specfied color or a mask for each color if non-specific

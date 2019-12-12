@@ -1,12 +1,15 @@
 #!/usr/bin/env python
 import rospy
 import unittest
+import os
 import Drone_Control as dc
 from Image_Processing import cv_processor as cvp
 
 import cv2 as cv
 
 class TestImageProcessing(unittest.TestCase):
+    parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
     def setUp(self):
         self.cv_processor = cvp.CVProcessor()
 
@@ -18,17 +21,17 @@ class TestImageProcessing(unittest.TestCase):
     #### QR Code Identification
     # Test detect_qr code with no QR code
     def test_no_detect_qr_code(self):
-        img = cv.imread("../test_images/not_has_qr_code.jpg")
+        img = cv.imread(self.parent_dir+"/test_images/not_has_qr_code.jpg")
         self.assertEqual(self.cv_processor.detect_QR_code(img), None)
 
     # Test detect_qr code with QR code
     def test_detect_qr_code(self):
-        img = cv.imread("../test_images/has_qr_code.jpg")
+        img = cv.imread(self.parent_dir+"/test_images/has_qr_code.jpg")
         self.assertNotEqual(self.cv_processor.detect_QR_code(img), None)
 
     # Test detect_qr code with QR code partially showing in image
     def test_detect_partial_qr_code(self):
-        img = cv.imread("../test_images/has_partial_qr_upper_left.jpg")
+        img = cv.imread(self.parent_dir+"/test_images/has_partial_qr_upper_left.jpg")
         self.assertEqual(self.cv_processor.detect_QR_code(img), None)
 
     #### Vertex Identification

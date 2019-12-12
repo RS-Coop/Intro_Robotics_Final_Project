@@ -12,13 +12,13 @@ rospy.init_node('Drone1')
 drone = DroneController()
 
 #Handler for rospy shutdown
-rospy.on_shutdown(drone.failsafe())
+rospy.on_shutdown(drone.failsafe)
 print("Ready to fly")
-test_type = rospy.get_param("/test_type")
 
+test_type = rospy.get_param("/Drone1/test_type", None)
 #Runs test
 
-if test_type=='no_fly' | test_type==None:
+if test_type=='no_fly' or test_type==None:
     print('No action')
 
 elif test_type=='takeoffandland':
