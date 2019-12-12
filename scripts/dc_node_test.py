@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import rospy
 from Drone_Control import DroneController
-import sys
 
 #Use sys.argv[1] for test type
 
@@ -14,10 +13,18 @@ drone = DroneController()
 
 #Handler for rospy shutdown
 rospy.on_shutdown(drone.failsafe())
-
-print("Ready to fly.")
+print("Ready to fly")
+test_type = rospy.get_param("/test_type")
 
 #Runs test
-drone.test_takeoffandland()
+
+if test_type=='no_fly' | test_type==None:
+    print('No action')
+
+elif test_type=='takeoffandland':
+    drone.test_takeoffandland()
+
+elif test_type=='moveforward':
+    drone.test_moveforward()
 
 print("Landed")

@@ -1,4 +1,6 @@
 <launch>
   <arg name="namespace" default="swarm" />
-  
+  <node pkg="Intro_Robotics_Final_Project" name="drone_controller" type="drone_node"></node>
+  <node pkg="Intro_Robotics_Final_Project" name="image_processor" type="image_processor_node"></node>
+  <node pkg="Intro_Robotics_Final_Project" name="swarm_controller" type="swarm_node"></node>
 </launch>

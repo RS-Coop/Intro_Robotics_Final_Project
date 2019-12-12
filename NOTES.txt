@@ -7,4 +7,13 @@ Image Processor Capabilities:
   -Determine where a line is in the picture
   -Recognize node
     --QR code or colored shape
-    
+
+Questions:
+  Setting up a specific launch file
+    -Also passing arguments
+
+  Running those tests
+
+  How does ROS know what can be run with rosrun?
+
+  Making sure catkin workspace is all set up and good

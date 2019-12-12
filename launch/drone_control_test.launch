@@ -1,5 +1,6 @@
 <launch>
-  <arg name="test" default="no_fly" />
-  <node pkg="Intro_Robotics_Final_Project" name='drone_control_test' type="dc_test_node" >
+  <arg name="test_type" default="no_fly" />
+  <node pkg="Intro_Robotics_Final_Project" name='drone_control_test' type="dc_node_test" >
+    <param name="test_type" value="$(arg test_type)" />
   </node>
 </launch>
