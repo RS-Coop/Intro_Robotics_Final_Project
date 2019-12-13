@@ -21,10 +21,16 @@ test_type = rospy.get_param("/Drone1/test_type", None)
 if test_type=='no_fly' or test_type==None:
     print('No action')
 
+elif test_type=='failsafe':
+    drone.test_failsafe()
+
 elif test_type=='takeoffandland':
     drone.test_takeoffandland()
 
 elif test_type=='moveforward':
     drone.test_moveforward()
+
+elif test_type=='generalfunction':
+    drone.test_generalfunction()
 
 print("Landed")

@@ -3,6 +3,7 @@ import numpy as np
 import cv2 as cv
 import pyzbar.pyzbar as pyz
 import time
+from Intro_Robotics_Final_Project import QR, EdgeList
 #This class deals with processing images from the Bebop drones
 class CVProcessor:
     #List of line color ranges
@@ -48,7 +49,25 @@ class CVProcessor:
         lineResult = []
 
         return output_data
-        
+
+    #Proccesses an image and prepares msgs for publishing
+    #TODO: Do line stuff
+    #NOTE: Maybe should multi thread this
+    def process_image_msg(self, img):
+        qrMsg = QR()
+        edgeMsg = EdgeList()
+
+        qrResult = self.detect_QR_code(img)
+        if qrResult == None:
+            qrMsg.existing = False
+        else:
+            qrMsg.exisiting = True
+            qrMsg.centroid = qrResult
+
+        #Need to do line stuff here
+
+        return qrMsg, edgeMsg
+
     #Takes an image and color filters for all
     #potential line colors to get line blobs
     #DONE: Creates mask for specfied color or a mask for each color if non-specific

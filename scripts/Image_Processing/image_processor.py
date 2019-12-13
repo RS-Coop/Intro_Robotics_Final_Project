@@ -7,6 +7,7 @@ from Intro_Robotics_Final_Project.msg import EdgeList, TaggedImage, QR
 
 #This class deals with processing images from the Bebop drones
 class ImageProcessor:
+    cvP = cvp.CVProcessor()
 
     def __init__(self):
         #Initialize pubs and subs
@@ -21,11 +22,12 @@ class ImageProcessor:
 ################################################################################
 #Callbacks
     #Proccesses image from drone
-    #TODO: What will this call or do?
+    #DONE: Seems kinda empty, but thats fine
+    #NOTE: Stuff still needs to be finished in cvp
     def image_callback(self,data):
         # Process the image
-        process_image(data)
+        qrMsg, edgeMsg = cvP.process_image(data)
 
         # Publish results to topic
-
-        pass
+        qr_pub.publish(qrMsg)
+        edges_pub.publish(edgeMsg)

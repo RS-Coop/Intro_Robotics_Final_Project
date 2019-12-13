@@ -1,8 +1,21 @@
 <Add any important notes here>
 Apparently we want to run the ROS bebop driver as a nodelet?
 
+Drone Test Notes:
+  Landing is more like falling out of the sky
+  Probably need to increase intensity for movements
+  Takes some time for commands to travel
+
+  Seems like everything is working
+  Failsafe works well
+  Running it as a nodelet works well
+
 Cooper TODO:
   Flesh out image_processor
-  Test Drone_Control
   Flesh out swarm_controller
   Test all three together
+
+Questions for Prof:
+  Is there a better way to do the landing?
+  It feels like some messages take a while to get to the drone
+  Multi-threading in cv a good idea? 

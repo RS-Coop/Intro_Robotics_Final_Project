@@ -3,19 +3,26 @@ from std_msgs.msg import Empty
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import JointState, Image
 from Intro_Robotics_Final_Project.msg import DroneCommand, TaggedImage
+
 #This class deals with interactions between a single drone
+'''
+Overall: Working good, could eliminate camera joint sub, and should tweak
+the intensity for drone movements. But note that intensity is limited to -1,1
+'''
 class DroneController:
     curr_odom = None
     curr_cam_joint = None
+    pre_land = Twist()
+    pre_land.linear.z = -1 #Can maybe increase this
 
     #Initializes object with pubs and subs for speciic namespace
     def __init__(self, namespace='/bebop'):
         self.ID = namespace
         #Initiate pubs and subs for single drone
-        self.takeoff = rospy.Publisher(namespace + '/takeoff', Empty, queue_size=1)
-        self.land = rospy.Publisher(namespace + '/land', Empty, queue_size=1)
-        self.calibrate = rospy.Publisher(namespace + '/flattrim', Empty, queue_size=1)#NOTE: Flat trim might have problems
-        self.emergency = rospy.Publisher(namespace + '/reset', Empty, queue_size=1)
+        self.takeoff_pub = rospy.Publisher(namespace + '/takeoff', Empty, queue_size=1)
+        self.land_pub = rospy.Publisher(namespace + '/land', Empty, queue_size=1)
+        self.calibrate_pub = rospy.Publisher(namespace + '/flattrim', Empty, queue_size=1)#NOTE: Flat trim might have problems
+        self.emergency_pub = rospy.Publisher(namespace + '/reset', Empty, queue_size=1)
 
         self.pilot_pub = rospy.Publisher(namespace + '/cmd_vel', Twist, queue_size=1)
         self.camera_joint_pub = rospy.Publisher(namespace + '/camera_control', Twist, queue_size=1)
@@ -45,66 +52,75 @@ class DroneController:
             self.move_drone(command)
 
     #Move drone
-    #DONE
+    #DONE:
+    #NOTE: Base
     def move_drone(self, command):
         #Command is movement type
         movement = Twist()
-        intensity = 0.2
+        default_intensity = 0.5
 
         if command.intensity != 0:
             default_intensity = command.intensity
 
         if command.cmd_type == 'x':
-            movement.linear.x = intensity * command.direction
+            movement.linear.x = default_intensity * command.direction
 
         elif command.cmd_type == 'y':
-            movement.linear.y = intensity * command.direction
+            movement.linear.y = default_intensity * command.direction
 
         elif command.cmd_type == 'z':
-            movement.linear.z = intensity * command.direction
+            movement.linear.z = default_intensity * command.direction
 
         elif command.cmd_type == 'angular':
-            movement.angular.z = intensity * command.direction
+            # +==CCW, -==CW, i.e. follows unit circle
+            movement.angular.z = default_intensity * command.direction
 
         self.pilot_pub.publish(movement)
 
     #Tells drone to takeoff
     #DONE
     def takeoff(self):
-        self.calibrate.publish(Empty())
+        self.calibrate_pub.publish(Empty())
 
-        sleep(2.0)
+        rospy.sleep(2.0)
 
-        self.takeoff.publish(Empty())
+        self.takeoff_pub.publish(Empty())
 
     #Tells drone to land
-    #DONE
+    #DONE: Lowers drone a little bit before landing
     def land(self):
-        self.land.publish(Empty())
+        self.pilot_pub.publish(self.pre_land)
+        rospy.sleep(3.0)
+        self.land_pub.publish(Empty())
 
     #Set the new camera joint states based on joint_data
-    #DONE
+    #DONE: Defualt behavior is to move camera straight down
     #NOTE: API is unstable as per documentation, joint_data is Twist
-    def move_camera(self, joint_data):
-        self.camera_joint_pub.publish(joint_data)
+    def move_camera(self, joint_data=None):
+        if joint_data == None:
+            joint_data = Twist()
+            joint_data.angular.z = 80
+            self.camera_joint_pub.publish(joint_data)
 
     #Stop moving the drone and land
-    #DONE
-    #NOTE: Not exactly sure what this does
+    #DONE: This works well
+    #NOTE: Using this in ros shutdown hooks works well
     def failsafe(self):
-        self.emergency.publish(Empty())
-        self.land.publish(Empty())
+        self.emergency_pub.publish(Empty())
+        self.land_pub.publish(Empty())
 
 ################################################################################
 #Callbacks
 
     #Callback to update camera joint data
-    #DONE
+    #DONE:
+    #NOTE: Probably dont need this
     def camera_joint_callback(self, data):
         self.curr_cam_joint = data
 
     #Callback to publish image data
     #DONE: Gather image data, tag it and then publish it
+    #NOTE: Havent tested this yet
     def image_callback(self, data):
         drone_image = TaggedImage()
         drone_image.image = data
@@ -114,19 +130,66 @@ class DroneController:
 
 ################################################################################
 #Tests
-
-    #Test Methods
+    #PASS
+    #NOTE: Landing == Falls out of sky
     def test_takeoffandland(self):
-        self.takeoff
-        sleep(5.0)
-        self.land
+        self.takeoff()
+        rospy.sleep(5.0)
+        self.land()
 
-    def test_moveforward(self):
-        self.takeoff
-        sleep(2.0)
+    #PASS
+    #NOTE: Intensity for movements probably needs to be increased
+    def test_failsafe(self):
+        self.takeoff()
+        rospy.sleep(2.0)
         command = DroneCommand()
-        command.cmd_type = 'x'
+        command.cmd_type = 'z'
+        command.drone_id = self.ID
         command.intensity = 0
-        commmand.direction = 1
+        command.direction = -1
 
         self.move_drone(command)
+        print('Waiting for SIGCHLD, will terminate in 10 seconds')
+        rospy.sleep(10.0)
+        self.failsafe()
+
+    #PASS
+    #NOTE: Intensity for movements probably needs to be increased
+    def test_moveforward(self):
+        self.takeoff()
+        rospy.sleep(2.0)
+        command = DroneCommand()
+        command.cmd_type = 'x'
+        command.drone_id = self.ID
+        command.intensity = 0
+        command.direction = 1
+
+        self.move_drone(command)
+        rospy.sleep(5.0)
+        self.land()
+
+    #Not yet tested
+    #Mostly just need to tet camera data
+    def test_generalfunction():
+        self.takeoff()
+        rospy.sleep(2.0)
+        self.move_camera()
+
+        command = DroneCommand()
+        command.cmd_type = 'x'
+        command.drone_id = self.ID
+        command.intensity = 0.3
+        command.direction = 1
+
+        self.move_drone(command)
+        rospy.sleep(10.0)
+
+        command.cmd_type = 'angular'
+        command.drone_id = self.ID
+        command.intensity = 0
+        command.direction = 1
+
+        self.move_drone(command)
+        rospy.sleep(1.0)
+
+        self.land
