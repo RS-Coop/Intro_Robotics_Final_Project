@@ -56,10 +56,18 @@ class SwarmController:
 #Callbacks
 
     def qr_callback(self, data):
-        pass
+        self.qr_data["hasQR"] = data["hasQR"]
+        self.qr_data["hasQR"] = data["centroid"]
 
     def edge_callback(self, data):
-        pass
+        currentIndex = 0
+        for i in range(0, len(data.colors)):
+            self.edge_data["edges"].append({
+                    "color" : data.colors[i], 
+                    "angle" : data.angle[i],
+                    "centroid" : (currentIndex, currentIndex+1)
+                })
+            currentIndex+=2
 
 ################################################################################
 #Tests
