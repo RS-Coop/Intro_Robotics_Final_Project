@@ -52,7 +52,9 @@ class SwarmController:
     #TODO: Based on the centroid move the drone
     #NOTE: This will be within some range of error
     def center_qr(self):
-        
+        center = [320, 184]
+        centroid = self.qr_data["centroid"]
+        error = [np.abs(center[0]-centroid[0]), np.abs(center[1])]
 
     #Determines next line to follow out of the vertex
     #TODO:
