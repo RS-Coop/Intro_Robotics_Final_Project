@@ -59,21 +59,22 @@ class DroneController:
         movement = Twist()
         default_intensity = 0.5
 
-        if command.intensity != 0:
-            default_intensity = command.intensity
+        for i in range(len(command.cmd_type)):
+            if command.intensity[i] != 0:
+                default_intensity = command.intensity[i]
 
-        if command.cmd_type == 'x':
-            movement.linear.x = default_intensity * command.direction
+            if command.cmd_type[i] == 'x':
+                movement.linear.x = default_intensity * command.direction[i]
 
-        elif command.cmd_type == 'y':
-            movement.linear.y = default_intensity * command.direction
+            elif command.cmd_type[i] == 'y':
+                movement.linear.y = default_intensity * command.direction[i]
 
-        elif command.cmd_type == 'z':
-            movement.linear.z = default_intensity * command.direction
+            elif command.cmd_type[i] == 'z':
+                movement.linear.z = default_intensity * command.direction[i]
 
-        elif command.cmd_type == 'angular':
-            # +==CCW, -==CW, i.e. follows unit circle
-            movement.angular.z = default_intensity * command.direction
+            elif command.cmd_type[i] == 'angular':
+                # +==CCW, -==CW, i.e. follows unit circle
+                movement.angular.z = default_intensity * command.direction[i]
 
         self.pilot_pub.publish(movement)
 
@@ -143,10 +144,10 @@ class DroneController:
         self.takeoff()
         rospy.sleep(2.0)
         command = DroneCommand()
-        command.cmd_type = 'z'
+        command.cmd_type[0] = 'z'
         command.drone_id = self.ID
-        command.intensity = 0
-        command.direction = -1
+        command.intensity[0] = 0
+        command.direction[0] = -1
 
         self.move_drone(command)
         print('Waiting for SIGCHLD, will terminate in 10 seconds')
@@ -159,10 +160,10 @@ class DroneController:
         self.takeoff()
         rospy.sleep(2.0)
         command = DroneCommand()
-        command.cmd_type = 'x'
+        command.cmd_type[0] = 'x'
         command.drone_id = self.ID
-        command.intensity = 0
-        command.direction = 1
+        command.intensity[0] = 0
+        command.direction[0] = 1
 
         self.move_drone(command)
         rospy.sleep(5.0)
@@ -176,18 +177,18 @@ class DroneController:
         self.move_camera()
 
         command = DroneCommand()
-        command.cmd_type = 'x'
+        command.cmd_type[0] = 'x'
         command.drone_id = self.ID
-        command.intensity = 0.3
-        command.direction = 1
+        command.intensity[0] = 0.3
+        command.direction[0] = 1
 
         self.move_drone(command)
         rospy.sleep(10.0)
 
-        command.cmd_type = 'angular'
+        command.cmd_type[0] = 'angular'
         command.drone_id = self.ID
-        command.intensity = 0
-        command.direction = 1
+        command.intensity[0] = 0
+        command.direction[0] = 1
 
         self.move_drone(command)
         rospy.sleep(1.0)

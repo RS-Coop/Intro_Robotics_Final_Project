@@ -49,12 +49,33 @@ class SwarmController:
                 self.land_swarm()
 
     #Centers the drone over the QR code
-    #TODO: Based on the centroid move the drone
-    #NOTE: This will be within some range of error
+    #DONE: Based on the centroid move the drone
+    #TODO: Test this
+    #NOTE: This will be within some range of error, right now 10 pixels
     def center_qr(self):
-        center = [320, 184]
+        center = [320, 184] #Not completely sure about this
         centroid = self.qr_data["centroid"]
-        error = [np.abs(center[0]-centroid[0]), np.abs(center[1])]
+
+        x_err = center[0]-centroid[0]
+        y_err = center[1]-centroid[1]
+
+        cmd = DroneCommand()
+        while abs(x_err) > 10 && abs(y_err) > 10:
+            #Determine the drone cmd
+            cmd.drone_id = self.drones[0].ID #Note this would need to be changed for multiple drones
+            #x movement
+            cmd.cmd_type[0] = "x"
+            cmd.intensity[0] = 0 #Will default to base intensity
+            cmd.direction[0] = np.sign(x_err)
+            #y movement
+            cmd.cmd_type[0] = "y"
+            cmd.intensity[0] = 0 #Will default to base intensity
+            cmd.direction[0] = np.sign(y_err)
+
+            #Issue drone commands
+            self.drone_command_pub.publish(cmd)
+
+        self.current_state = self.DETERMINE_NEXT_LINE
 
     #Determines next line to follow out of the vertex
     #TODO:
@@ -66,10 +87,17 @@ class SwarmController:
     def navigate_to_line(self):
         pass
 
-    #Drone follows line untill it reaches vertex
-    #TODO: Follow line
+    #Follows line untill it reaches vertex, adjusts as neccesary
+    #TODO: Do this
+    #NOTE:
     def follow_line(self):
-        pass
+        cmd = DroneCommand()
+        while self.qr_data["hasQR"] == False:
+            
+
+            self.drone_command_pub.publish(cmd)
+
+        self.current_state = self.CENTER_QR
 
     #Launches all drones in swarm
     #DONE: Launch all drones in drones list
