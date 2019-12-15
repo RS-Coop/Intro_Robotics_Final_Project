@@ -34,21 +34,24 @@ class TestImageProcessing(unittest.TestCase):
         img = cv.imread(self.parent_dir+"/test_images/has_partial_qr_upper_left.jpg")
         self.assertEqual(self.cv_processor.detect_QR_code(img), None)
 
-    #### Vertex Identification
+       #### Vertex Identification
     # Identify that a QR code is NOT in the image (no QR code showing)
     # Requires an image with a QR code in it
-    # def test_identify_vertex(self):
-    #     fileName = "has_vertex.png"
-
-    #     # expectedOutput = {"qr" : {"hasQR" : True, ""}}
-
-    #     self.assertEqual()
+    def test_dont_identify_no_qr(self):
+        img = cv.imread(self.parent_dir+"/test_images/not_has_qr_code.jpg")
+        self.assertEqual(self.cv_processor.process_image(img)[0][0], False)
 
     # Identify that a QR code is NOT in the image (QR code partially showing)
     # Requires an image with a QR code in it
-
+    def test_dont_identify_partial_qr(self):
+        img = cv.imread(self.parent_dir+"/test_images/has_partial_qr_upper_left.jpg")
+        self.assertEqual(self.cv_processor.process_image(img)[0][0], False)
+    
     # Identify that a QR code is in the image (entire QR code showing)
     # Requires an image with a QR code in it
+    def test_identify_qr(self):
+        img = cv.imread(self.parent_dir+"/test_images/has_qr_code.jpg")
+        self.assertEqual(self.cv_processor.process_image(img)[0][0], True)
 
     # Identify the location of a QR code in the image
     # Requires an image with a QR code in it
@@ -59,18 +62,23 @@ class TestImageProcessing(unittest.TestCase):
     # Identify a QR code is centered in the image (only location)
     # Requires an image with a QR code in it centered centered
 
-    #### Edge Identification
+    #### Edge Identification 
     # Identify a single edge coming out of a vertex
     # Requires an image of a centered QR code with one color tape coming out of it
 
     # Identify the angle a single edge is coming out of a vertex
     # Requires an image of a centered QR code with one color tape coming out of it
-
+    
     # Identify 2 edges coming out of a vertex
     # Requires an image of a centered QR code with two colors of tape coming out of it
 
     # Identify the angles of 2 edges coming out of a vertex
     # Requires an image of a centered QR code with two colors of tape coming out of it
+
+
+    # def test_detect_partial_qr_code(self):
+    #     img = cv.imread("has_qr_code_lower_third_with_orange_line.jpg")
+    #     self.assertEqual(self.cv_processor.detect_QR_code(img), None)
 
 class TestDroneController():
     def __init__():
