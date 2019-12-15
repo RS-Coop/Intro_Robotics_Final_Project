@@ -35,7 +35,8 @@ class ImageProcessor:
         # Process the image
         img_data = self.cvP.process_image(data)
         qrMsg.existing = img_data["qr"]["hasQR"]
-        qrMsg.centroid = img_data["qr"]["centroid"]
+        qrMsg.centroid[0] = img_data["qr"]["centroid"][0]
+        qrMsg.centroid[1] = img_data["qr"]["centroid"][1]
 
         # Publish results to topic
         qr_pub.publish(qrMsg)

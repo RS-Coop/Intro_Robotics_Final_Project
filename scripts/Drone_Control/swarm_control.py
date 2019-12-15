@@ -6,6 +6,7 @@ class SwarmController:
     drones = [] #List of DroneController objects, for now just 1
     qr_data = {"hasQR" : None, "centroid" : None}
     edge_data = {"edges" : []}
+    graph_edges = []
 
     CENTER_QR = 0
     DETERMINE_NEXT_LINE = 1
@@ -48,10 +49,10 @@ class SwarmController:
                 self.land_swarm()
 
     #Centers the drone over the QR code
-    #TODO:
+    #TODO: Based on the centroid move the drone
     #NOTE: This will be within some range of error
     def center_qr(self):
-        pass
+        
 
     #Determines next line to follow out of the vertex
     #TODO:
@@ -96,7 +97,7 @@ class SwarmController:
         currentIndex = 0
         for i in range(0, len(data.colors)):
             self.edge_data["edges"].append({
-                    "color" : data.colors[i], 
+                    "color" : data.colors[i],
                     "angle" : data.angle[i],
                     "centroid" : (currentIndex, currentIndex+1)
                 })
