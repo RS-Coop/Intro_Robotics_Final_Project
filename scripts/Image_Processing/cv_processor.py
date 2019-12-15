@@ -77,21 +77,21 @@ class CVProcessor:
     #potential line colors to get line blobs
     #DONE: Creates mask for specfied color or a mask for each color if non-specific
     #TODO: Add more colors to line_colors
-    #TODO: Need to some way to determine if a color is even in the image
-    def color_filter(self, image, color=None):
+    def color_filter(self, image, color_type=None):
         masks = []
         colors = []
         hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)
 
-        if color == None:
-            for color in self.line_colors.values():
-                mask = cv.inRange(hsv, color[0], color[1])
+        if color_type == None:
+            for color, range in self.line_colors.items():
+                mask = cv.inRange(hsv, range[0], range[1])
                 masks.append(mask)
+                colors.append(color)
         else:
             masks.append(cv.inRange(hsv, self.line_colors[color][0], self.line_colors[color][1]))
-            colors.append(color)
+            colors.append(color_type)
 
-        return colors, masks
+        return masks
 
     #Takes an image that is the isolated line blob
     #and returns the angle to vertical
@@ -102,24 +102,27 @@ class CVProcessor:
         lines = cv.HoughLinesP(edges,1,np.pi/180,10)
 
         #Now to calculate angle from lines
-        sum_opp = 0
-        sum_adj = 0
-        num_lines = 0
-        for line in lines:
-            for x1,y1,x2,y2 in line:
-                len = np.sqrt((x1-x2)**2+(y1-y2)**2)
-                if len > 5:
-                    adj = np.abs(y1-y2)
-                    opp = np.abs(x1-x2)
-                    if adj > 0:
-                        num_lines += 1
-                        sum_opp += opp
-                        sum_adj += adj
+        if len(lines) > 50:
+            sum_opp = 0
+            sum_adj = 0
+            num_lines = 0
+            for line in lines:
+                for x1,y1,x2,y2 in line:
+                    len = np.sqrt((x1-x2)**2+(y1-y2)**2)
+                    if len > 5:
+                        adj = np.abs(y1-y2)
+                        opp = np.abs(x1-x2)
+                        if adj > 0:
+                            num_lines += 1
+                            sum_opp += opp
+                            sum_adj += adj
 
-        num = (float(sum_opp/num_lines))/float((sum_adj/num_lines))
-        angle = np.arctan(num)
+            num = (float(sum_opp/num_lines))/float((sum_adj/num_lines))
+            angle = np.arctan(num)
 
-        return np.degrees(angle)
+            return np.degrees(angle)
+        else:
+            return None
 
     #Detect a QR code and determine centroid
     #DONE: Detect and calculate centroid if it exists

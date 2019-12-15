@@ -48,6 +48,8 @@ num_lines = 0
 sum_adj = 0
 sum_opp = 0
 
+print('Number of Lines: ', len(lines))
+
 for line in lines:
     for x1,y1,x2,y2 in line:
         len = np.sqrt((x1-x2)**2+(y1-y2)**2)
