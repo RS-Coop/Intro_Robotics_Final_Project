@@ -30,9 +30,10 @@ class SwarmController:
 
     CENTER_QR = 0
     DETERMINE_NEXT_LINE = 1
-    NAVIGATE = 2
+    NAVIGATE_TO_LINE = 2
     FOLLOW_LINE = 3
-    LAND = 4
+    MOVE_ONTO_LINE = 4
+    LAND = 5
 
     current_state = 0
     current_edge = None
@@ -65,6 +66,9 @@ class SwarmController:
 
             elif self.current_state == self.FOLLOW_LINE:
                 self.follow_line()
+
+            elif self.current_state == self.MOVE_ONTO_LINE:
+                self.move_onto_line()
 
             elif self.current_state == self.LAND:
                 self.land_swarm()
@@ -112,6 +116,12 @@ class SwarmController:
                 # If there are no unexplored edges out of the current vertex, and
                 current_state = self.LAND
 
+    #Establishes the drone on a new line to follow
+    #TODO:
+    #NOTE:
+    def move_onto_line(self):
+        self.current_state = FOLLOW_LINE
+
     #Dispatches drone from a vertex to a edge
     #TODO: Select an edge leaving the vertex and go there
     def navigate_to_line(self):
@@ -123,10 +133,13 @@ class SwarmController:
     def follow_line(self):
         cmd = DroneCommand()
         while self.qr_data["hasQR"] == False:
-            
+            #Do some stuff here
 
             self.drone_command_pub.publish(cmd)
 
+        #Add the end vertex to the edge
+        self.current_edge["v2"] = self.qr_data["value"]
+        #Change state
         self.current_state = self.CENTER_QR
 
     #Launches all drones in swarm
