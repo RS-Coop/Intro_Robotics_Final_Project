@@ -8,6 +8,7 @@ from Intro_Robotics_Final_Project.msg import EdgeList, TaggedImage, QR
 #This class deals with processing images from the Bebop drones
 class ImageProcessor:
     cvP = cvp.CVProcessor()
+    last_call = 0.0
 
     def __init__(self):
         #Initialize pubs and subs
@@ -25,6 +26,9 @@ class ImageProcessor:
     #DONE: Seems kinda empty, but thats fine
     #NOTE: Stuff still needs to be finished in cvp
     def image_callback(self,data):
+        #Not sure we need this but if process_image is too slow then yes
+        # if rospy.get_time() - last_call < 0.5
+
         # Process the image
         qrMsg, edgeMsg = cvP.process_image(data)
 

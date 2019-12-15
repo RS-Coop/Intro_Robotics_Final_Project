@@ -15,7 +15,7 @@ Cooper TODO:
   Flesh out swarm_controller
   Test all three together
 
-Questions for Prof:
-  Is there a better way to do the landing?
-  It feels like some messages take a while to get to the drone
-  Multi-threading in cv a good idea? 
+TODO:
+  Make color_filter more robust to line detection
+  Fix process_image_msg to do line stuff
+  Do actual line following logic in swarm

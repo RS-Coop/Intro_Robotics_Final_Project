@@ -51,7 +51,7 @@ class CVProcessor:
         return output_data
 
     #Proccesses an image and prepares msgs for publishing
-    #TODO: Do line stuff
+    #TODO: Need to do line angle stuff still
     #NOTE: Maybe should multi thread this
     def process_image_msg(self, img):
         qrMsg = QR()
@@ -65,6 +65,8 @@ class CVProcessor:
             qrMsg.centroid = qrResult
 
         #Need to do line stuff here
+        #Call color_filter and line_angle
+
 
         return qrMsg, edgeMsg
 
@@ -72,6 +74,7 @@ class CVProcessor:
     #potential line colors to get line blobs
     #DONE: Creates mask for specfied color or a mask for each color if non-specific
     #TODO: Add more colors to line_colors
+    #TODO: Need to some way to determine if a color is even in the image
     def color_filter(self, image, color=None):
         masks = []
         hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)
