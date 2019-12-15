@@ -30,7 +30,7 @@ class ImageProcessor:
         # if rospy.get_time() - last_call < 0.5
 
         # Process the image
-        qrMsg, edgeMsg = cvP.process_image(data)
+        qrMsg, edgeMsg = self.cvP.process_image(data)
 
         # Publish results to topic
         qr_pub.publish(qrMsg)

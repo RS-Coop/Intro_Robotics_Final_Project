@@ -1,5 +1,5 @@
 import rospy
-from Intro_Robotics_Final_Project import QR, EdgeList, DroneCommand
+from Intro_Robotics_Final_Project.msg import QR, EdgeList, DroneCommand
 #This class deals with controlling all drones
 class SwarmController:
     drones = [] #List of DroneController objects, for now just 1

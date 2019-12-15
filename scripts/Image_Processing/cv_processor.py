@@ -3,7 +3,7 @@ import numpy as np
 import cv2 as cv
 import pyzbar.pyzbar as pyz
 import time
-from Intro_Robotics_Final_Project import QR, EdgeList
+from Intro_Robotics_Final_Project.msg import QR, EdgeList
 #This class deals with processing images from the Bebop drones
 class CVProcessor:
     #List of line color ranges
@@ -66,7 +66,10 @@ class CVProcessor:
 
         #Need to do line stuff here
         #Call color_filter and line_angle
-
+        colors, masks = self.color_filter(img)
+        for i in range(len(masks)):
+            edgeMsg.colors[i] = colors[i]
+            edgeMsg.angles[i] = self.line_angle(masks[i])
 
         return qrMsg, edgeMsg
 
@@ -77,21 +80,18 @@ class CVProcessor:
     #TODO: Need to some way to determine if a color is even in the image
     def color_filter(self, image, color=None):
         masks = []
+        colors = []
         hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)
-        #Right now this is just orange, I think it will need to be a loop
+
         if color == None:
-            for i in range(0, len(self.line_colors)):
-                mask = np.zeros((image.shape[0], image.shape[1],3),np.uint8)
-
-                color = self.line_colors[i]
-                color_mask = cv.inRange(hsv, color[0], color[1])
-                mask = cv.bitwise_and(mask, color_mask)
-
+            for color in self.line_colors.values():
+                mask = cv.inRange(hsv, color[0], color[1])
                 masks.append(mask)
         else:
             masks.append(cv.inRange(hsv, self.line_colors[color][0], self.line_colors[color][1]))
+            colors.append(color)
 
-        return masks
+        return colors, masks
 
     #Takes an image that is the isolated line blob
     #and returns the angle to vertical
