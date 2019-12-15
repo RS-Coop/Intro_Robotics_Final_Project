@@ -7,8 +7,8 @@ from Intro_Robotics_Final_Project.msg import QR, EdgeList
 #This class deals with processing images from the Bebop drones
 class CVProcessor:
     #List of line color ranges
-    line_colors = {'orange':[[5,100,150], [15,255,255]],
-                        'purple':[[275,100,150], [285,255,255]]}
+    line_colors = {'orange':[np.array([5,100,150]), np.array([15,255,255])],
+                        'purple':[np.array([275,100,150]), np.array([285,255,255])]}
 
     def __init__(self):
         pass
@@ -45,6 +45,7 @@ class CVProcessor:
              output_data["qr"]["hasQR"] = True
         else:
             output_data["qr"]["hasQR"] = False
+            output_data["qr"]["centroid"] = 0
 
         colors, masks = self.color_filter(img)
         for i in range(len(masks)):
@@ -84,27 +85,28 @@ class CVProcessor:
         lines = cv.HoughLinesP(edges,1,np.pi/180,10)
 
         #Now to calculate angle from lines
-        if len(lines) > 50:
-            sum_opp = 0
-            sum_adj = 0
-            num_lines = 0
-            for line in lines:
-                for x1,y1,x2,y2 in line:
-                    len = np.sqrt((x1-x2)**2+(y1-y2)**2)
-                    if len > 5:
-                        adj = np.abs(y1-y2)
-                        opp = np.abs(x1-x2)
-                        if adj > 0:
-                            num_lines += 1
-                            sum_opp += opp
-                            sum_adj += adj
+        if lines != None:
+            if lines > 50:
+                sum_opp = 0
+                sum_adj = 0
+                num_lines = 0
+                for line in lines:
+                    for x1,y1,x2,y2 in line:
+                        length = np.sqrt((x1-x2)**2+(y1-y2)**2)
+                        if length > 5:
+                            adj = np.abs(y1-y2)
+                            opp = np.abs(x1-x2)
+                            if adj > 0:
+                                num_lines += 1
+                                sum_opp += opp
+                                sum_adj += adj
 
-            num = (float(sum_opp/num_lines))/float((sum_adj/num_lines))
-            angle = np.arctan(num)
+                num = (float(sum_opp/num_lines))/float((sum_adj/num_lines))
+                angle = np.arctan(num)
 
-            return np.degrees(angle)
-        else:
-            return None
+                return np.degrees(angle)
+
+        return None
 
     #Detect a QR code and determine centroid
     #DONE: Detect and calculate centroid if it exists

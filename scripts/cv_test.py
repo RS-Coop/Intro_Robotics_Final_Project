@@ -39,19 +39,19 @@ class TestImageProcessing(unittest.TestCase):
     # Requires an image with a QR code in it
     def test_dont_identify_no_qr(self):
         img = cv.imread(self.parent_dir+"/test_images/not_has_qr_code.jpg")
-        self.assertEqual(self.cv_processor.process_image(img)[0][0], False)
+        self.assertEqual(self.cv_processor.process_image(img)["qr"]["hasQR"], False)
 
     # Identify that a QR code is NOT in the image (QR code partially showing)
     # Requires an image with a QR code in it
     def test_dont_identify_partial_qr(self):
         img = cv.imread(self.parent_dir+"/test_images/has_partial_qr_upper_left.jpg")
-        self.assertEqual(self.cv_processor.process_image(img)[0][0], False)
-    
+        self.assertEqual(self.cv_processor.process_image(img)["qr"]["hasQR"], False)
+
     # Identify that a QR code is in the image (entire QR code showing)
     # Requires an image with a QR code in it
     def test_identify_qr(self):
         img = cv.imread(self.parent_dir+"/test_images/has_qr_code.jpg")
-        self.assertEqual(self.cv_processor.process_image(img)[0][0], True)
+        self.assertEqual(self.cv_processor.process_image(img)["qr"]["hasQR"], True)
 
     # Identify the location of a QR code in the image
     # Requires an image with a QR code in it
@@ -62,13 +62,13 @@ class TestImageProcessing(unittest.TestCase):
     # Identify a QR code is centered in the image (only location)
     # Requires an image with a QR code in it centered centered
 
-    #### Edge Identification 
+    #### Edge Identification
     # Identify a single edge coming out of a vertex
     # Requires an image of a centered QR code with one color tape coming out of it
 
     # Identify the angle a single edge is coming out of a vertex
     # Requires an image of a centered QR code with one color tape coming out of it
-    
+
     # Identify 2 edges coming out of a vertex
     # Requires an image of a centered QR code with two colors of tape coming out of it
 

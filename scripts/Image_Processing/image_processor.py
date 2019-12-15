@@ -29,8 +29,13 @@ class ImageProcessor:
         #Not sure we need this but if process_image is too slow then yes
         # if rospy.get_time() - last_call < 0.5
 
+        qrMsg = QR()
+        edgeMsg = EdgeList()
+
         # Process the image
-        qrMsg, edgeMsg = self.cvP.process_image(data)
+        img_data = self.cvP.process_image(data)
+        qrMsg.existing = img_data["qr"]["hasQR"]
+        qrMsg.centroid = img_data["qr"]["centroid"]
 
         # Publish results to topic
         qr_pub.publish(qrMsg)
