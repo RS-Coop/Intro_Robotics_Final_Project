@@ -37,15 +37,17 @@ class CVProcessor:
     def process_image(self, img):
         # Call process image
         # Publish results to topics
-        output_data = {"qr" : { "hasQR" : None, "centroid" : None}, "edges" : []}
-        qrResult = self.detect_QR_code(img)
+        output_data = {"qr" : { "hasQR" : None, "centroid" : None, "value" : None}, "edges" : []}
+        value, bb = self.detect_QR_code(img)
 
-        if(qrResult != None):
-            output_data["qr"]["hasQR"] = True
-            output_data["qr"]["centroid"] = qrResult   
+        if(value != None):
+             output_data["qr"]["centroid"] = bb
+             output_data["qr"]["hasQR"] = True
+             output_data["qr"]["value"] = value
         else:
             output_data["qr"]["hasQR"] = False
-            output_data["qr"]["centroid"] = 0
+            output_data["qr"]["centroid"] = (0,0)
+            output_data["qr"]["value"] = 0
 
         colors, masks = self.color_filter(img)
         for i in range(len(masks)):
@@ -112,22 +114,20 @@ class CVProcessor:
     #DONE: Detect and calculate centroid if it exists
     def detect_QR_code(self, image):
         code = pyz.decode(image)
-        # print(code)
-        # print(code[0])
-        # print(code[0][2])
-        # print(code[0][2][0])
         if len(code) != 0:
             bb = code[0][2]
             x = (bb[0] + bb[2])/2
             y = (bb[1] + bb[3])/2
+            value = code[0].data.decode('utf-8')
 
-            return (x,y)
+            return value, (x,y)
 
-        return None
-
+        return None, None
+'''
     #Takes a QR code image and proccess it.
     #DONE: Returns string of QR code data
     def process_QR_code(self, image):
         code = pyz.decode(image)
 
         return code[0].data.decode('utf-8')
+'''
