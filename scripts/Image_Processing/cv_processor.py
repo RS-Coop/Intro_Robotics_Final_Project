@@ -46,32 +46,14 @@ class CVProcessor:
         else:
             output_data["qr"]["hasQR"] = False
 
-        lineResult = []
-
-        return output_data
-
-    #Proccesses an image and prepares msgs for publishing
-    #TODO: Need to do line angle stuff still
-    #NOTE: Maybe should multi thread this
-    def process_image_msg(self, img):
-        qrMsg = QR()
-        edgeMsg = EdgeList()
-
-        qrResult = self.detect_QR_code(img)
-        if qrResult == None:
-            qrMsg.existing = False
-        else:
-            qrMsg.exisiting = True
-            qrMsg.centroid = qrResult
-
-        #Need to do line stuff here
-        #Call color_filter and line_angle
         colors, masks = self.color_filter(img)
         for i in range(len(masks)):
-            edgeMsg.colors[i] = colors[i]
-            edgeMsg.angles[i] = self.line_angle(masks[i])
+            angle = self.line_angle(masks[i])
+            if angle != None:
+                edge = {"color":colors[i], "angle":angle, "centroid":None}
+                output_data["edges"].append(edge)
 
-        return qrMsg, edgeMsg
+        return output_data
 
     #Takes an image and color filters for all
     #potential line colors to get line blobs
@@ -91,7 +73,7 @@ class CVProcessor:
             masks.append(cv.inRange(hsv, self.line_colors[color][0], self.line_colors[color][1]))
             colors.append(color_type)
 
-        return masks
+        return colors, masks
 
     #Takes an image that is the isolated line blob
     #and returns the angle to vertical
