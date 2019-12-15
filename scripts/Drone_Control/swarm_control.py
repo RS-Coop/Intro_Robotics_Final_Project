@@ -5,7 +5,27 @@ from Intro_Robotics_Final_Project.msg import QR, EdgeList, DroneCommand
 class SwarmController:
     drones = [] #List of DroneController objects, for now just 1
     qr_data = {"hasQR" : None, "centroid" : None}
+    # edge_data
+    '''
+    [
+        {
+            "color" : String, # (orange, purple)
+            "angle" : float,
+            "centroid" : (int, int) # (x, y)
+        }
+    ]
+    '''
     edge_data = {"edges" : []}
+    # Graph Edges:
+    '''
+    [
+        {
+            color: string,
+            v1: int,
+            v2: int
+        }
+    ]
+    '''    
     graph_edges = []
 
     CENTER_QR = 0
@@ -24,7 +44,7 @@ class SwarmController:
         self.qr_sub = rospy.Subscriber('/swarm/qr_code', QR, self.qr_callback)
         self.edges_sub = rospy.Subscriber('/swarm/edges', EdgeList, self.edge_callback)
 
-        sleep(1.0)
+        # sleep(1.0)
 
 ################################################################################
 #Main methods and publishing methods
@@ -52,7 +72,7 @@ class SwarmController:
     #TODO: Based on the centroid move the drone
     #NOTE: This will be within some range of error
     def center_qr(self):
-        
+        pass
 
     #Determines next line to follow out of the vertex
     #TODO:
@@ -93,7 +113,17 @@ class SwarmController:
 
     # This helper funciton will add all of the edge colors in the edges array to the graph
     def add_edges_to_graph(self, edges):
-        pass
+        for edge in edges:
+            if(is_edge_in_graph(edge, graph_edges) == False):
+                new_edge = {"color": edge["color"], "v1": int, v2: int}
+
+    # Returns True/False
+    def is_edge_in_graph(self, edge, graph, qrValue):
+        for g_edge in graph:
+            if (g_edge["color"] == edge["color"] and (g_edge["v1"] == qrValue or g_edge["v2"] == qrValue)):
+                return True
+        return False
+            
 
 ################################################################################
 #Callbacks
