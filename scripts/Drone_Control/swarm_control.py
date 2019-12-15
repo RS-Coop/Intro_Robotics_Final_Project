@@ -80,7 +80,7 @@ class SwarmController:
         y_err = center[1]-centroid[1]
 
         cmd = DroneCommand()
-        while abs(x_err) > 10 && abs(y_err) > 10:
+        while abs(x_err) > 10 and abs(y_err) > 10:
             #Determine the drone cmd
             cmd.drone_id = self.drones[0].ID #Note this would need to be changed for multiple drones
             #x movement
@@ -144,15 +144,16 @@ class SwarmController:
     # This helper funciton will add all of the edge colors in the edges array to the graph
     def add_edges_to_graph(self, edges):
         for edge in edges:
-            if(is_edge_in_graph(edge, graph_edges) == False):
-                new_edge = {"color": edge["color"], "v1": int, v2: int}
+            if(is_edge_in_graph(edge, graph_edges) == None):
+                new_edge = {"color": edge["color"], "v1": qr_data["value"], v2: None}
+                graph_edges.append(new_edge)
 
-    # Returns True/False
+    # Returns None if not found, return the graph edge otherwise
     def is_edge_in_graph(self, edge, graph, qrValue):
         for g_edge in graph:
             if (g_edge["color"] == edge["color"] and (g_edge["v1"] == qrValue or g_edge["v2"] == qrValue)):
-                return True
-        return False
+                return g_edge
+        return None
             
 
 ################################################################################
