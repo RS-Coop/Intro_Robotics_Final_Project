@@ -56,7 +56,12 @@ class SwarmController:
     #Determines next line to follow out of the vertex
     #TODO:
     def determine_next_line(self):
-        pass
+        # Add the currently visible lines to the graph
+        add_edges_to_graph(edge_data)
+        # If there is an unexplored edge out of the current vertex, switch to line following state
+        
+        # If there are no unexplored edges out of the current vertex, and
+        current_state = self.LAND
 
     #Dispatches drone from a vertex to a edge
     #TODO: Select an edge leaving the vertex and go there
@@ -84,6 +89,10 @@ class SwarmController:
     def failsafe(self):
         for drone in self.drones:
             drone.failsafe()
+
+    # This helper funciton will add all of the edge colors in the edges array to the graph
+    def add_edges_to_graph(self, edges):
+        pass
 
 ################################################################################
 #Callbacks
