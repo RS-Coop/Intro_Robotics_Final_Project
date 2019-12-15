@@ -4,8 +4,7 @@ from Intro_Robotics_Final_Project.msg import QR, EdgeList, DroneCommand
 
 class SwarmController:
     drones = [] #List of DroneController objects, for now just 1
-<<<<<<< HEAD
-    qr_data = {"hasQR" : None, "centroid" : None}
+    qr_data = {"hasQR" : None, "centroid" : None, "value" : None}
     # edge_data
     '''
     [
@@ -16,9 +15,6 @@ class SwarmController:
         }
     ]
     '''
-=======
-    qr_data = {"hasQR" : None, "centroid" : None, "value" : None}
->>>>>>> 5e2b313f8201ec818cf88ece11ecf11c1567bbb5
     edge_data = {"edges" : []}
     # Graph Edges:
     '''
@@ -77,9 +73,6 @@ class SwarmController:
     #TODO: Test this
     #NOTE: This will be within some range of error, right now 10 pixels
     def center_qr(self):
-<<<<<<< HEAD
-        pass
-=======
         center = [320, 184] #Not completely sure about this
         centroid = self.qr_data["centroid"]
 
@@ -103,7 +96,6 @@ class SwarmController:
             self.drone_command_pub.publish(cmd)
 
         self.current_state = self.DETERMINE_NEXT_LINE
->>>>>>> 5e2b313f8201ec818cf88ece11ecf11c1567bbb5
 
     #Determines next line to follow out of the vertex
     #TODO:
