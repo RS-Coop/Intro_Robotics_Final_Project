@@ -4,7 +4,7 @@ from Intro_Robotics_Final_Project.msg import QR, EdgeList, DroneCommand
 
 class SwarmController:
     drones = [] #List of DroneController objects, for now just 1
-    qr_data = {"hasQR" : None, "centroid" : None}
+    qr_data = {"hasQR" : None, "centroid" : None, "value" : None}
     edge_data = {"edges" : []}
     graph_edges = []
 
@@ -92,8 +92,9 @@ class SwarmController:
 #Callbacks
 
     def qr_callback(self, data):
-        self.qr_data["hasQR"] = data["hasQR"]
-        self.qr_data["hasQR"] = data["centroid"]
+        self.qr_data["hasQR"] = data.existing
+        self.qr_data["hasQR"] = data.centroid
+        self.qr_data["value"] = data.value
 
     def edge_callback(self, data):
         currentIndex = 0

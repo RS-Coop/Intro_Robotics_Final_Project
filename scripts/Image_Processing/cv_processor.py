@@ -40,16 +40,10 @@ class CVProcessor:
         output_data = {"qr" : { "hasQR" : None, "centroid" : None, "value" : None}, "edges" : []}
         value, bb = self.detect_QR_code(img)
 
-<<<<<<< HEAD
         if(value != None):
              output_data["qr"]["centroid"] = bb
              output_data["qr"]["hasQR"] = True
              output_data["qr"]["value"] = value
-=======
-        if(qrResult != None):
-            output_data["qr"]["hasQR"] = True
-            output_data["qr"]["centroid"] = qrResult   
->>>>>>> 18a87d95a285abb58f58a92ae961a30de96276dd
         else:
             output_data["qr"]["hasQR"] = False
             output_data["qr"]["centroid"] = (0,0)

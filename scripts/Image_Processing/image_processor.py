@@ -37,6 +37,7 @@ class ImageProcessor:
         qrMsg.existing = img_data["qr"]["hasQR"]
         qrMsg.centroid[0] = img_data["qr"]["centroid"][0]
         qrMsg.centroid[1] = img_data["qr"]["centroid"][1]
+        qrMsg.value = img_data["qr"]["value"]
 
         currentIndex = 0
         currentAngleInex = 0
@@ -50,5 +51,5 @@ class ImageProcessor:
             currentAngleInex+=2
 
         # Publish results to topic
-        qr_pub.publish(qrMsg)
-        edges_pub.publish(edgeMsg)
+        self.qr_pub.publish(qrMsg)
+        self.edges_pub.publish(edgeMsg)
