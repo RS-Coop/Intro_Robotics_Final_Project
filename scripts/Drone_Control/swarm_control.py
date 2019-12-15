@@ -35,6 +35,7 @@ class SwarmController:
     LAND = 4
 
     current_state = 0
+    current_edge = None
 
     def __init__(self):
         #Initialize pubs and subs
@@ -103,9 +104,13 @@ class SwarmController:
         # Add the currently visible lines to the graph
         add_edges_to_graph(edge_data)
         # If there is an unexplored edge out of the current vertex, switch to line following state
-        
-        # If there are no unexplored edges out of the current vertex, and
-        current_state = self.LAND
+        for edge in edge_data:
+            existingEdge = is_edge_in_graph(edge, graph_edges, qr_data["value"])
+            if existingEdge["v2"] == None:
+                current_state = self.follow_line
+            else:
+                # If there are no unexplored edges out of the current vertex, and
+                current_state = self.LAND
 
     #Dispatches drone from a vertex to a edge
     #TODO: Select an edge leaving the vertex and go there
@@ -144,7 +149,7 @@ class SwarmController:
     # This helper funciton will add all of the edge colors in the edges array to the graph
     def add_edges_to_graph(self, edges):
         for edge in edges:
-            if(is_edge_in_graph(edge, graph_edges) == None):
+            if(is_edge_in_graph(edge, graph_edges, qr_data["value"]) == None):
                 new_edge = {"color": edge["color"], "v1": qr_data["value"], v2: None}
                 graph_edges.append(new_edge)
 
