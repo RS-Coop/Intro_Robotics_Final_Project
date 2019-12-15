@@ -41,8 +41,8 @@ class CVProcessor:
         qrResult = self.detect_QR_code(img)
 
         if(qrResult != None):
-             output_data["qr"]["centroid"] = qrResult
-             output_data["qr"]["hasQR"] = True
+            output_data["qr"]["hasQR"] = True
+            output_data["qr"]["centroid"] = qrResult   
         else:
             output_data["qr"]["hasQR"] = False
             output_data["qr"]["centroid"] = 0
