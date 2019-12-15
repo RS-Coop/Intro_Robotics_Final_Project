@@ -3,14 +3,16 @@ from Intro_Robotics_Final_Project.msg import QR, EdgeList, DroneCommand
 #This class deals with controlling all drones
 class SwarmController:
     drones = [] #List of DroneController objects, for now just 1
+    qr_data = {"hasQR" : None, "centroid" : None}
+    edge_data = {"edges" : []}
 
     def __init__(self):
         #Initialize pubs and subs
         #Publishers
         drone_command_pub = rospy.Publisher('/swarm/drone_command', DroneCommand, queue_size=1)
         #Subscribers
-        qr_sub = rospy.Subscriber('/swarm/qr_code', QR, qr_callback())
-        edges_sub = rospy.Subscriber('/swarm/edges', EdgeList, edge_callback())
+        qr_sub = rospy.Subscriber('/swarm/qr_code', QR, self.qr_callback)
+        edges_sub = rospy.Subscriber('/swarm/edges', EdgeList, self.edge_callback)
 
         sleep(1.0)
 
@@ -21,7 +23,7 @@ class SwarmController:
     #DONE: Loops while core is running
     def run_node(self):
         while not rospy.is_shutdown():
-            continue
+            pass
 
     #Dispatches drone from a vertex to a edge
     #TODO: Select an edge leaving the vertex and go there
@@ -53,10 +55,10 @@ class SwarmController:
 ################################################################################
 #Callbacks
 
-    def qr_callback(self):
+    def qr_callback(self, data):
         pass
 
-    def edge_callback(self):
+    def edge_callback(self, data):
         pass
 
 ################################################################################
