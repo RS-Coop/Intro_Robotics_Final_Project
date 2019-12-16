@@ -120,19 +120,6 @@ class CVProcessor:
     #Detect a QR code and determine centroid
     #DONE: Detect and calculate centroid if it exists
     def detect_QR_code(self, image):
-<<<<<<< HEAD
-        print('In QR detection: ', type(image))
-        code = pyz.decode(image)
-        if len(code) != 0:
-            bb = code[0][2]
-            x = (bb[0] + bb[2])/2
-            y = (bb[1] + bb[3])/2
-            value = code[0].data.decode('utf-8')
-
-            return value, (x,y)
-
-        return None, None
-=======
         try :
             code = pyz.decode(image)
             if len(code) != 0:
@@ -146,4 +133,3 @@ class CVProcessor:
         except:
             print("An exception occurred")
             return None, None
->>>>>>> 3f89cc7b21aa1f64ab3fe46b76716d1278dafb8b
