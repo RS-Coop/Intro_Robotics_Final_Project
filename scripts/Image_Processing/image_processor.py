@@ -34,20 +34,15 @@ class ImageProcessor:
         # Process the image
         img_data = self.cvP.process_image(data)
         qrMsg.existing = img_data["qr"]["hasQR"]
-        qrMsg.centroid[0] = img_data["qr"]["centroid"][0]
-        qrMsg.centroid[1] = img_data["qr"]["centroid"][1]
+        qrMsg.centroid.append(img_data["qr"]["centroid"][0])
+        qrMsg.centroid.append(img_data["qr"]["centroid"][1])
         qrMsg.value = img_data["qr"]["value"]
 
-        currentIndex = 0
-        currentAngleIndex = 0
         for i in img_data["edges"]:
-            edgeMsg.colors[currentIndex] = i["color"]
-            edgeMsg.angles[currentIndex] = i["angle"]
-            edgeMsg.angles[currentAngleIndex] = i["centroid"][0]
-            edgeMsg.angles[currentAngleIndex + 1] = i["centroid"][1]
-
-            currentIndex+=1
-            currentAngleIndex+=2
+            edgeMsg.colors.append(i["color"])
+            edgeMsg.angles.append(i["angle"])
+            edgeMsg.angles.append(i["centroid"][0])
+            edgeMsg.angles.append(i["centroid"][1])
 
         # Publish results to topic
         self.qr_pub.publish(qrMsg)

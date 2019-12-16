@@ -11,3 +11,6 @@ class Globals:
     QR_ERROR = 10
     #Angle bound to determine if theta needs correcting
     ANGLE_BOUND = 15
+
+    #Center of bebop center
+    BEBOP_CENTER = (320, 184)

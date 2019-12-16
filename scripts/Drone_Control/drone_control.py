@@ -145,10 +145,10 @@ class DroneController:
         self.takeoff()
         rospy.sleep(2.0)
         command = DroneCommand()
-        command.cmd_type[0] = 'z'
+        command.cmd_type.append('z')
         command.drone_id = self.ID
-        command.intensity[0] = 0
-        command.direction[0] = -1
+        command.intensity.append(0)
+        command.direction.append(-1)
 
         self.move_drone(command)
         print('Waiting for SIGCHLD, will terminate in 10 seconds')
@@ -161,10 +161,10 @@ class DroneController:
         self.takeoff()
         rospy.sleep(2.0)
         command = DroneCommand()
-        command.cmd_type[0] = 'x'
+        command.cmd_type.append('x')
         command.drone_id = self.ID
-        command.intensity[0] = 0
-        command.direction[0] = 1
+        command.intensity.append(0)
+        command.direction.append(1)
 
         self.move_drone(command)
         rospy.sleep(5.0)
@@ -178,18 +178,18 @@ class DroneController:
         self.move_camera()
 
         command = DroneCommand()
-        command.cmd_type[0] = 'x'
+        command.cmd_type.append('x')
         command.drone_id = self.ID
-        command.intensity[0] = 0.3
-        command.direction[0] = 1
+        command.intensity.append(0.3)
+        command.direction.append(1)
 
         self.move_drone(command)
         rospy.sleep(10.0)
 
-        command.cmd_type[0] = 'angular'
+        command.cmd_type.append('angular')
         command.drone_id = self.ID
-        command.intensity[0] = 0
-        command.direction[0] = 1
+        command.intensity.append(0)
+        command.direction.append(1)
 
         self.move_drone(command)
         rospy.sleep(1.0)
