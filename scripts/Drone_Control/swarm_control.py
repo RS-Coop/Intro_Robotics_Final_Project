@@ -1,11 +1,13 @@
 import rospy
 from Intro_Robotics_Final_Project.msg import QR, EdgeList, DroneCommand
-#This class deals with controlling all drones
 
+#This class deals with controlling all drones
 class SwarmController:
-    drones = [] #List of DroneController objects, for now just 1
+    #Drones in swarm (NOTE: Righ now just 1)
+    drones = []
+    #QR Code data from img processor
     qr_data = {"hasQR" : None, "centroid" : None, "value" : None}
-    # edge_data
+    #Line data from img processor
     '''
     [
         {
@@ -16,7 +18,8 @@ class SwarmController:
     ]
     '''
     edge_data = {"edges" : []}
-    # Graph Edges:
+    
+    #Edges in graph
     '''
     [
         {
@@ -25,9 +28,10 @@ class SwarmController:
             v2: int
         }
     ]
-    '''    
+    '''
     graph_edges = []
 
+    #State definitions
     CENTER_QR = 0
     DETERMINE_NEXT_LINE = 1
     NAVIGATE_TO_LINE = 2
@@ -35,11 +39,12 @@ class SwarmController:
     MOVE_ONTO_LINE = 4
     LAND = 5
 
+    #Current state
     current_state = 0
+    #Current edge being followed
     current_edge = None
 
     def __init__(self):
-        #Initialize pubs and subs
         #Publishers
         self.drone_command_pub = rospy.Publisher('/swarm/drone_command', DroneCommand, queue_size=1)
         #Subscribers
@@ -53,25 +58,27 @@ class SwarmController:
 
     #Loop to be run inside main script
     #DONE: Loops while core is running
+    #NOTE: Navigate to line not implemented
     def run_node(self):
         while not rospy.is_shutdown():
             if self.current_state == self.CENTER_QR:
-                self.center_qr()
+                self.center_qr() #Center qr code
 
             elif self.current_state == self.DETERMINE_NEXT_LINE:
-                self.determine_next_line()
+                self.determine_next_line() #Choose a new line to follow
 
+            #NOTE: Not yet being used
             elif self.current_state == self.NAVIGATE:
                 self.navigate_to_line()
 
             elif self.current_state == self.FOLLOW_LINE:
-                self.follow_line()
+                self.follow_line() #Follow current edge
 
             elif self.current_state == self.MOVE_ONTO_LINE:
-                self.move_onto_line()
+                self.move_onto_line() #Move into position over new line
 
             elif self.current_state == self.LAND:
-                self.land_swarm()
+                self.land_swarm() #Land the drones
 
     #Centers the drone over the QR code
     #DONE: Based on the centroid move the drone
@@ -134,7 +141,7 @@ class SwarmController:
     def follow_line(self):
         cmd = DroneCommand()
         while self.qr_data["hasQR"] == False:
-            angle = self.current_edge["angle"]
+            angle = self.current_edge["angle"] #I think this being current edge is bad
             if np.abs(angle) > 15:
                 cmd.drone_id = self.drones[0].ID
 
@@ -160,6 +167,9 @@ class SwarmController:
     def launch_swarm(self):
         for drone in self.drones:
             drone.takeoff()
+            drone.move_camera()
+
+        sleep(2.0)
 
     #Lands all drones in swarm
     #DONE: Land all drones in drones list
@@ -185,7 +195,7 @@ class SwarmController:
             if (g_edge["color"] == edge["color"] and (g_edge["v1"] == qrValue or g_edge["v2"] == qrValue)):
                 return g_edge
         return None
-            
+
 
 ################################################################################
 #Callbacks

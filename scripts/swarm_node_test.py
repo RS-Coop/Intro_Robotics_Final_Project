@@ -11,9 +11,4 @@ swarm = SwarmController()
 #Handler for rospy shutdown
 rospy.on_shutdown(swarm.failsafe())
 
-print("Swarm ready")
-
-#Runs loop
-swarm.run_node()
-
-print("Swarm landed")
+#Do some testing here

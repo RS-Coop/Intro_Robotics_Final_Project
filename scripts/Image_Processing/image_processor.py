@@ -11,7 +11,6 @@ class ImageProcessor:
     last_call = 0.0
 
     def __init__(self):
-        #Initialize pubs and subs
         #Publishers
         self.qr_pub = rospy.Publisher('/swarm/qr_code', QR, queue_size=1)
         self.edges_pub = rospy.Publisher('/swarm/edges', EdgeList, queue_size=1)
@@ -40,15 +39,15 @@ class ImageProcessor:
         qrMsg.value = img_data["qr"]["value"]
 
         currentIndex = 0
-        currentAngleInex = 0
+        currentAngleIndex = 0
         for i in img_data["edges"]:
             edgeMsg.colors[currentIndex] = i["color"]
             edgeMsg.angles[currentIndex] = i["angle"]
-            edgeMsg.angles[currentAngleInex] = i["centroid"][0]
-            edgeMsg.angles[currentAngleInex + 1] = i["centroid"][1]
+            edgeMsg.angles[currentAngleIndex] = i["centroid"][0]
+            edgeMsg.angles[currentAngleIndex + 1] = i["centroid"][1]
 
             currentIndex+=1
-            currentAngleInex+=2
+            currentAngleIndex+=2
 
         # Publish results to topic
         self.qr_pub.publish(qrMsg)

@@ -10,27 +10,25 @@ Overall: Working good, could eliminate camera joint sub, and should tweak
 the intensity for drone movements. But note that intensity is limited to -1,1
 '''
 class DroneController:
-    curr_odom = None
-    curr_cam_joint = None
     pre_land = Twist()
     pre_land.linear.z = -1 #Can maybe increase this
 
     #Initializes object with pubs and subs for speciic namespace
     def __init__(self, namespace='/bebop'):
         self.ID = namespace
-        #Initiate pubs and subs for single drone
+        #Pubs
+        self.pilot_pub = rospy.Publisher(namespace + '/cmd_vel', Twist, queue_size=1)
         self.takeoff_pub = rospy.Publisher(namespace + '/takeoff', Empty, queue_size=1)
         self.land_pub = rospy.Publisher(namespace + '/land', Empty, queue_size=1)
         self.calibrate_pub = rospy.Publisher(namespace + '/flattrim', Empty, queue_size=1)#NOTE: Flat trim might have problems
         self.emergency_pub = rospy.Publisher(namespace + '/reset', Empty, queue_size=1)
 
-        self.pilot_pub = rospy.Publisher(namespace + '/cmd_vel', Twist, queue_size=1)
         self.camera_joint_pub = rospy.Publisher(namespace + '/camera_control', Twist, queue_size=1)
         self.camera_image_pub = rospy.Publisher('/swarm/drone_image', TaggedImage, queue_size=1)
 
-        #NOTE:Need to figure out flow of commands from SwarmController
+        #Subs
         self.pilot_sub = rospy.Subscriber('/swarm/drone_command', DroneCommand, self.move_drone_callback)
-        self.camera_joint_sub = rospy.Subscriber(namespace + '/joint_states', JointState, self.camera_joint_callback)
+        # self.camera_joint_sub = rospy.Subscriber(namespace + '/joint_states', JointState, self.camera_joint_callback)
         self.camera_image_sub = rospy.Subscriber(namespace + '/image_raw', Image, self.image_callback)
 
         rospy.sleep(1.0)
@@ -39,7 +37,7 @@ class DroneController:
 #Main methods and publisher methods
 
     #Loop to be run inside node script
-    #DONE
+    #TODO:
     #NOTE: Not sure if this is exactly what we need
     def run_node(self):
         while not rospy.is_shutdown():
@@ -53,7 +51,7 @@ class DroneController:
 
     #Move drone
     #DONE:
-    #NOTE: Base
+    #NOTE: Need to re-test this
     def move_drone(self, command):
         #Command is movement type
         movement = Twist()
@@ -90,8 +88,10 @@ class DroneController:
     #Tells drone to land
     #DONE: Lowers drone a little bit before landing
     def land(self):
-        self.pilot_pub.publish(self.pre_land)
-        rospy.sleep(3.0)
+        self.pilot_pub.publish(self.pre_land) #Not sure this is needed
+
+        rospy.sleep(1.0)
+
         self.land_pub.publish(Empty())
 
     #Set the new camera joint states based on joint_data
@@ -112,12 +112,13 @@ class DroneController:
 
 ################################################################################
 #Callbacks
-
+    '''
     #Callback to update camera joint data
     #DONE:
     #NOTE: Probably dont need this
     def camera_joint_callback(self, data):
         self.curr_cam_joint = data
+    '''
 
     #Callback to publish image data
     #DONE: Gather image data, tag it and then publish it
