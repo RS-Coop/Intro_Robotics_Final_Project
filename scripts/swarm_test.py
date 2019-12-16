@@ -147,7 +147,7 @@ class TestSwarm(unittest.TestCase):
         # Check resulting state and values
         self.assertEqual(thisSwarmC.current_state, G.DETERMINE_NEXT_LINE)
 
-    def test_center_qr_centered_1(self):
+    def test_center_qr_centered_2(self):
         # Instantiate swarm controller
         thisSwarmC = sc.SwarmController()
         # Set curr_state
@@ -244,6 +244,6 @@ class TestSwarm(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    # rospy.init_node('Test_Node')
+    rospy.init_node('Test_Node')
 
     unittest.main()

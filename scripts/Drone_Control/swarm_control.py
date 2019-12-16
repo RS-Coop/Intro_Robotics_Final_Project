@@ -1,11 +1,12 @@
 import rospy
+import numpy as np
 from Globals import Globals as G
 from Intro_Robotics_Final_Project.msg import QR, EdgeList, DroneCommand
 
 #This class deals with controlling all drones
 class SwarmController:
     #Drones in swarm (NOTE: Right now just 1)
-    drones = []
+    drones = ['/bebop']
     #QR Code data from img processor
     qr_data = {"hasQR" : None, "centroid" : None, "value" : None}
     #Line data from img processor
@@ -18,7 +19,7 @@ class SwarmController:
         }
     ]
     '''
-    edge_data = {"edges" : []}
+    edge_data = []
 
     #Edges in graph
     '''
@@ -79,24 +80,23 @@ class SwarmController:
     #TODO: Test this
     #NOTE: This will be within some range of error, right now 10 pixels
     def center_qr(self):
-        center = [320, 184] #Not completely sure about this
         centroid = self.qr_data["centroid"]
 
-        x_err = center[0]-centroid[0]
-        y_err = center[1]-centroid[1]
+        x_err = G.BEBOP_CENTER[0]-centroid[0]
+        y_err = centroid[1]-G.BEBOP_CENTER[1]
 
-        if abs(x_err) > G.QR_ERROR and abs(y_err) > G.QR_ERROR:
+        if abs(x_err) > G.QR_ERROR or abs(y_err) > G.QR_ERROR:
             cmd = DroneCommand()
             #Determine the drone cmd
-            cmd.drone_id = self.drones[0].ID #Note this would need to be changed for multiple drones
+            cmd.drone_id = self.drones[0] #Note this would need to be changed for multiple drones
             #x movement
-            cmd.cmd_type[0] = "x"
-            cmd.intensity[0] = 0 #Will default to base intensity
-            cmd.direction[0] = np.sign(x_err)
+            cmd.cmd_type.append("x")
+            cmd.intensity.append(0) #Will default to base intensity
+            cmd.direction.append(np.sign(x_err))
             #y movement
-            cmd.cmd_type[1] = "y"
-            cmd.intensity[1] = 0 #Will default to base intensity
-            cmd.direction[1] = np.sign(y_err)
+            cmd.cmd_type.append("y")
+            cmd.intensity.append(0) #Will default to base intensity
+            cmd.direction.append(np.sign(y_err))
 
             #Issue drone commands
             self.drone_command_pub.publish(cmd)
@@ -129,21 +129,21 @@ class SwarmController:
     def move_onto_line(self):
         if self.qr_data["hasQR"] == True:
             cmd = DroneCommand()
-            for edge in self.edge_data["edges"]:
+            for edge in self.edge_data:
                 if edge["color"] == self.current_edge["color"]:
                     angle = edge["angle"]
                     break
 
             if angle > 10:
                 #angular adjustment
-                cmd.cmd_type[0] = "angular"
-                cmd.intensity[0] = 0 #Will default to base intensity
-                cmd.direction[0] = np.sign(angle)
+                cmd.cmd_type.append("angular")
+                cmd.intensity.append(0) #Will default to base intensity
+                cmd.direction.append(np.sign(angle))
 
             else:
-                cmd.cmd_type[1] = "x"
-                cmd.intensity[1] = 1 #Will default to base intensity
-                cmd.direction[1] = 1
+                cmd.cmd_type.append("x")
+                cmd.intensity.append(1) #Will default to base intensity
+                cmd.direction.append(1)
 
         else:
             self.current_state = G.FOLLOW_LINE
@@ -159,26 +159,26 @@ class SwarmController:
     def follow_line(self):
         if self.qr_data["hasQR"] == False:
             cmd = DroneCommand()
-            for edge in self.edge_data["edges"]:
+            for edge in self.edge_data:
                 if edge["color"] == self.current_edge["color"]:
                     angle = edge["angle"]
             if np.abs(angle) > G.ANGLE_BOUND:
-                cmd.drone_id = self.drones[0].ID
+                cmd.drone_id = self.drones[0]
 
                 #angular adjustment
-                cmd.cmd_type[0] = "angular"
-                cmd.intensity[0] = 0 #Will default to base intensity
-                cmd.direction[0] = np.sign(angle)
+                cmd.cmd_type.append("angular")
+                cmd.intensity.append(0) #Will default to base intensity
+                cmd.direction.append(np.sign(angle))
                 #move forward
-                cmd.cmd_type[1] = "x"
-                cmd.intensity[1] = 0 #Will default to base intensity
-                cmd.direction[1] = 1
+                cmd.cmd_type.append("x")
+                cmd.intensity.append(0) #Will default to base intensity
+                cmd.direction.append(1)
 
             self.drone_command_pub.publish(cmd)
 
         else:
             #Add the end vertex to the edge
-            self.current_edge["v2"] = self.qr_data["value"]
+            self.update_v2(self.current_edge, self.graph_edges, self.current_edge["v1"],self.qr_data["value"])
             self.current_edge = None
             #Change state
             self.current_state = G.CENTER_QR
