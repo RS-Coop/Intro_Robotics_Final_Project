@@ -26,13 +26,13 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC.edge_data = [{"color" : "orange", "angle" : 90, "centroid" : (0, 0)}]
         thisSwarmC.graph_edges = []
         thisSwarmC.current_edge = None
-        thisSwarmC.current_state = sc.SwarmController.DETERMINE_NEXT_LINE
+        thisSwarmC.current_state = G.DETERMINE_NEXT_LINE
         # Determine next line
         thisSwarmC.determine_next_line()
         # Check resulting state and values
         self.assertEqual(thisSwarmC.graph_edges, [{"color": "orange", "v1": 1, "v2": None}])
         self.assertEqual(thisSwarmC.current_edge, {"color": "orange", "v1": 1, "v2": None})
-        self.assertEqual(thisSwarmC.current_state, sc.SwarmController.MOVE_ONTO_LINE)
+        self.assertEqual(thisSwarmC.current_state, G.MOVE_ONTO_LINE)
 
     def test_determine_no_line_1(self):
         # Instantiate swarm controller
@@ -42,13 +42,13 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC.edge_data = [{"color" : "orange", "angle" : 90, "centroid" : (0, 0)}]
         thisSwarmC.graph_edges = [{"color": "orange", "v1": 1, "v2": None}]
         thisSwarmC.current_edge = {"color": "orange", "v1": 1, "v2": None}
-        thisSwarmC.current_state = sc.SwarmController.DETERMINE_NEXT_LINE
+        thisSwarmC.current_state = G.DETERMINE_NEXT_LINE
         # Determine next line
         thisSwarmC.determine_next_line()
         # Check resulting state and values
         self.assertEqual(thisSwarmC.graph_edges, [{"color": "orange", "v1": 1, "v2": 2}])
         self.assertEqual(thisSwarmC.current_edge, None)
-        self.assertEqual(thisSwarmC.current_state, sc.SwarmController.LAND)
+        self.assertEqual(thisSwarmC.current_state, G.LAND)
 
     ###
     ### tests for center_qr
@@ -61,11 +61,11 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC.edge_data = []
         thisSwarmC.graph_edges = []
         thisSwarmC.current_edge = None
-        thisSwarmC.current_state = sc.SwarmController.CENTER_QR
+        thisSwarmC.current_state = G.CENTER_QR
         # Determine next line
         thisSwarmC.center_qr()
         # Check resulting state and values
-        self.assertEqual(thisSwarmC.current_state, sc.SwarmController.CENTER_QR)
+        self.assertEqual(thisSwarmC.current_state, G.CENTER_QR)
 
         # Instantiate swarm controller
         thisSwarmC = sc.SwarmController()
@@ -74,11 +74,11 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC.edge_data = []
         thisSwarmC.graph_edges = []
         thisSwarmC.current_edge = None
-        thisSwarmC.current_state = sc.SwarmController.CENTER_QR
+        thisSwarmC.current_state = G.CENTER_QR
         # Determine next line
         thisSwarmC.center_qr()
         # Check resulting state and values
-        self.assertEqual(thisSwarmC.current_state, sc.SwarmController.CENTER_QR)
+        self.assertEqual(thisSwarmC.current_state, G.CENTER_QR)
 
         # Instantiate swarm controller
         thisSwarmC = sc.SwarmController()
@@ -87,11 +87,11 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC.edge_data = []
         thisSwarmC.graph_edges = []
         thisSwarmC.current_edge = None
-        thisSwarmC.current_state = sc.SwarmController.CENTER_QR
+        thisSwarmC.current_state = G.CENTER_QR
         # Determine next line
         thisSwarmC.center_qr()
         # Check resulting state and values
-        self.assertEqual(thisSwarmC.current_state, sc.SwarmController.CENTER_QR)
+        self.assertEqual(thisSwarmC.current_state, G.CENTER_QR)
 
         # Instantiate swarm controller
         thisSwarmC = sc.SwarmController()
@@ -100,11 +100,11 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC.edge_data = []
         thisSwarmC.graph_edges = []
         thisSwarmC.current_edge = None
-        thisSwarmC.current_state = sc.SwarmController.CENTER_QR
+        thisSwarmC.current_state = G.CENTER_QR
         # Determine next line
         thisSwarmC.center_qr()
         # Check resulting state and values
-        self.assertEqual(thisSwarmC.current_state, sc.SwarmController.CENTER_QR)
+        self.assertEqual(thisSwarmC.current_state, G.CENTER_QR)
 
         # Instantiate swarm controller
         thisSwarmC = sc.SwarmController()
@@ -113,11 +113,11 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC.edge_data = []
         thisSwarmC.graph_edges = []
         thisSwarmC.current_edge = None
-        thisSwarmC.current_state = sc.SwarmController.CENTER_QR
+        thisSwarmC.current_state = G.CENTER_QR
         # Determine next line
         thisSwarmC.center_qr()
         # Check resulting state and values
-        self.assertEqual(thisSwarmC.current_state, sc.SwarmController.CENTER_QR)
+        self.assertEqual(thisSwarmC.current_state, G.CENTER_QR)
 
     def test_center_qr_uncentered_2(self):
         # Instantiate swarm controller
@@ -127,11 +127,11 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC.edge_data = [{"color" : "orange", "angle" : 90, "centroid" : (0, 0)}]
         thisSwarmC.graph_edges = [{"color": "orange", "v1": 1, "v2": None}]
         thisSwarmC.current_edge = None
-        thisSwarmC.current_state = sc.SwarmController.CENTER_QR
+        thisSwarmC.current_state = G.CENTER_QR
         # Determine next line
         thisSwarmC.center_qr()
         # Check resulting state and values
-        self.assertEqual(thisSwarmC.current_state, sc.SwarmController.CENTER_QR)
+        self.assertEqual(thisSwarmC.current_state, G.CENTER_QR)
 
     def test_center_qr_centered_1(self):
         # Instantiate swarm controller
@@ -141,11 +141,11 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC.edge_data = []
         thisSwarmC.graph_edges = []
         thisSwarmC.current_edge = None
-        thisSwarmC.current_state = sc.SwarmController.CENTER_QR
+        thisSwarmC.current_state = G.CENTER_QR
         # Determine next line
         thisSwarmC.center_qr()
         # Check resulting state and values
-        self.assertEqual(thisSwarmC.current_state, sc.SwarmController.DETERMINE_NEXT_LINE)
+        self.assertEqual(thisSwarmC.current_state, G.DETERMINE_NEXT_LINE)
 
     def test_center_qr_centered_1(self):
         # Instantiate swarm controller
@@ -155,11 +155,11 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC.edge_data = [{"color" : "orange", "angle" : 90, "centroid" : (0, 0)}]
         thisSwarmC.graph_edges = [{"color": "orange", "v1": 1, "v2": None}]
         thisSwarmC.current_edge = None
-        thisSwarmC.current_state = sc.SwarmController.CENTER_QR
+        thisSwarmC.current_state = G.CENTER_QR
         # Determine next line
         thisSwarmC.center_qr()
         # Check resulting state and values
-        self.assertEqual(thisSwarmC.current_state, sc.SwarmController.DETERMINE_NEXT_LINE)
+        self.assertEqual(thisSwarmC.current_state, G.DETERMINE_NEXT_LINE)
 
 
 
