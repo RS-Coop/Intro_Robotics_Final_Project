@@ -76,63 +76,71 @@ class TestImageProcessing(unittest.TestCase):
     # Requires an image of a centered QR code with one color tape coming out of it
     def test_identify_one_edge(self):
         img = cv.imread(self.parent_dir+"/test_images/1_edge.jpg")
-        img = cv.resize(img, (640, 368))
+        # img = cv.resize(img, (640, 368))
         self.assertEqual(len(self.cv_processor.process_image(img)["edges"]), 1)
 
     # Identify the angle a single edge is coming out of a vertex
     # Requires an image of a centered QR code with one color tape coming out of it
     # Test edge at 90 degrees
-    def test_identify_one_edge_135_degrees(self):
-        pass
+    # def test_identify_one_edge_135_degrees(self):
+    #     pass
 
     def test_identify_one_edge_90_degrees(self):
         img = cv.imread(self.parent_dir+"/test_images/90_deg.jpg")
-        img = cv.resize(img, (640, 368))
+        # img = cv.resize(img, (640, 368))
 
         #This might work better as a range
         self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], 90)
 
-    def test_identify_one_edge_45_degrees(self):
-        img = cv.imread(self.parent_dir+"/test_images/45_deg.jpg")
-        img = cv.resize(img, (640, 368))
+    # def test_identify_one_edge_45_degrees(self):
+    #     img = cv.imread(self.parent_dir+"/test_images/45_deg.jpg")
+    #     # img = cv.resize(img, (640, 368))
 
-        #This might work better as a range
-        self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], 45)
+    #     #This might work better as a range
+    #     self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], 45)
 
-    def test_identify_one_edge_0_degrees(self):
-        img = cv.imread(self.parent_dir+"/test_images/0_deg.jpg")
-        img = cv.resize(img, (640, 368))
+    # def test_identify_one_edge_0_degrees(self):
+    #     img = cv.imread(self.parent_dir+"/test_images/0_deg.jpg")
+    #     # img = cv.resize(img, (640, 368))
 
-        #This might work better as a range
-        self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], 0)
+    #     #This might work better as a range
+    #     self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], 0)
 
-    def test_identify_one_edge_neg_45_degrees(self):
-        img = cv.imread(self.parent_dir+"/test_images/negative_45_deg.jpg")
-        img = cv.resize(img, (640, 368))
+    # def test_identify_one_edge_neg_45_degrees(self):
+    #     img = cv.imread(self.parent_dir+"/test_images/negative_45_deg.jpg")
+    #     # img = cv.resize(img, (640, 368))
 
-        #This might work better as a range
-        self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], -45)
+    #     #This might work better as a range
+    #     self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], -45)
 
-    def test_identify_one_edge_neg_90_degrees(self):
-        img = cv.imread(self.parent_dir+"/test_images/negative_90_deg.jpg")
-        img = cv.resize(img, (640, 368))
+    # def test_identify_one_edge_neg_90_degrees(self):
+    #     img = cv.imread(self.parent_dir+"/test_images/negative_90_deg.jpg")
+    #     # img = cv.resize(img, (640, 368))
 
-        #This might work better as a range
-        self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], -95)
+    #     #This might work better as a range
+    #     self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], -95)
 
-    def test_identify_one_edge_neg_135_degrees(self):
-        img = cv.imread(self.parent_dir+"/test_images/negative_135_deg.jpg")
-        img = cv.resize(img, (640, 368))
+    # def test_identify_one_edge_neg_135_degrees(self):
+    #     img = cv.imread(self.parent_dir+"/test_images/negative_135_deg.jpg")
+    #     # img = cv.resize(img, (640, 368))
 
-        #This might work better as a range
-        self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], -135)
+    #     #This might work better as a range
+    #     self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], -135)
 
     # Identify 2 edges coming out of a vertex
     # Requires an image of a centered QR code with two colors of tape coming out of it
     def test_identify_two_edges(self):
         img = cv.imread(self.parent_dir+"/test_images/2_edge.jpg")
-        img = cv.resize(img, (640, 368))
+        # img = cv.resize(img, (640, 368))
         self.assertEqual(len(self.cv_processor.process_image(img)["edges"]), 2)
+
+    ###
+    ### Test decode
+    ### 
+    def test_decode_none_1(self):
+        img = None
+        self.assertEqual(self.cv_processor.detect_QR_code(img), (None, None))
+
 
 
 class TestDroneController():

@@ -1,7 +1,7 @@
 import numpy as np
 
 class Globals:
-    #State definitions
+    # State definitions
     CENTER_QR = 0
     DETERMINE_NEXT_LINE = 1
     NAVIGATE_TO_LINE = 2
@@ -9,10 +9,10 @@ class Globals:
     MOVE_ONTO_LINE = 4
     LAND = 5
 
-    #Error for QR BB
+    # Error for QR BB
     QR_ERROR = 10
 
-    #Angle bound to determine if theta needs correcting
+    # Angle bound to determine if theta needs correcting
     ANGLE_BOUND = 15
 
     # Line Colors
@@ -26,5 +26,7 @@ class Globals:
         BLUE:[np.array([100,50,50]), np.array([115,255,255])]
     }
 
-    #Center of bebop center
+    # Center of bebop center
     BEBOP_CENTER = (320, 184)
+
+    # 

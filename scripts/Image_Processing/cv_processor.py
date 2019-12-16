@@ -4,6 +4,7 @@ import cv2 as cv
 import pyzbar.pyzbar as pyz
 import time
 from Intro_Robotics_Final_Project.msg import QR, EdgeList
+from Globals import Globals as G
 
 #This class deals with processing images from the Bebop drones
 class CVProcessor:
@@ -114,13 +115,16 @@ class CVProcessor:
     #Detect a QR code and determine centroid
     #DONE: Detect and calculate centroid if it exists
     def detect_QR_code(self, image):
-        code = pyz.decode(image)
-        if len(code) != 0:
-            bb = code[0][2]
-            x = (bb[0] + bb[2])/2
-            y = (bb[1] + bb[3])/2
-            value = code[0].data.decode('utf-8')
+        try :
+            code = pyz.decode(image)
+            if len(code) != 0:
+                bb = code[0][2]
+                x = (bb[0] + bb[2])/2
+                y = (bb[1] + bb[3])/2
+                value = code[0].data.decode('utf-8')
 
-            return value, (x,y)
-
-        return None, None
+                return value, (x,y)
+            return None, None
+        except:
+            print("An exception occurred")
+            return None, None
