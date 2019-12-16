@@ -40,8 +40,24 @@ class TestSwarm(unittest.TestCase):
         # Set curr_state
         thisSwarmC.qr_data = {"hasQR" : True, "centroid" : (0, 0), "value" : 2}
         thisSwarmC.edge_data = [{"color" : G.ORANGE, "angle" : 90, "centroid" : (0, 0)}]
-        thisSwarmC.graph_edges = [{"color": G.ORANGE, "v1": 1, "v2": None}]
-        thisSwarmC.current_edge = {"color": G.ORANGE, "v1": 1, "v2": None}
+        thisSwarmC.graph_edges = [{"color": G.ORANGE, "v1": 1, "v2": 2}]
+        thisSwarmC.current_edge = None
+        thisSwarmC.current_state = G.DETERMINE_NEXT_LINE
+        # Determine next line
+        thisSwarmC.determine_next_line()
+        # Check resulting state and values
+        self.assertEqual(thisSwarmC.graph_edges, [{"color": G.ORANGE, "v1": 1, "v2": 2}])
+        self.assertEqual(thisSwarmC.current_edge, None)
+        self.assertEqual(thisSwarmC.current_state, G.LAND)
+
+    def test_determine_no_line_2(self):
+        # Instantiate swarm controller
+        thisSwarmC = sc.SwarmController()
+        # Set curr_state
+        thisSwarmC.qr_data = {"hasQR" : True, "centroid" : (0, 0), "value" : 2}
+        thisSwarmC.edge_data = [{"color" : G.ORANGE, "angle" : 90, "centroid" : (0, 0)}]
+        thisSwarmC.graph_edges = [{"color": G.ORANGE, "v1": 1, "v2": 2}]
+        thisSwarmC.current_edge = None
         thisSwarmC.current_state = G.DETERMINE_NEXT_LINE
         # Determine next line
         thisSwarmC.determine_next_line()
@@ -273,6 +289,38 @@ class TestSwarm(unittest.TestCase):
         qrValue = 1
         self.assertEqual(self.swarm_controller.get_edge_in_graph(edge, graph, qrValue), None)
 
+    ###
+    ### tests for update_v2 helper function
+    ###
+    def test_update_v2_1(self):
+        # Instantiate swarm controller
+        thisSwarmC = sc.SwarmController()
+        # Set curr_state
+        thisSwarmC.qr_data = {"hasQR" : True, "centroid" : (0, 0), "value" : 2}
+        thisSwarmC.edge_data = [{"color" : G.ORANGE, "angle" : 90, "centroid" : (0, 0)}]
+        thisSwarmC.graph_edges = [{"color": G.ORANGE, "v1": 1, "v2": None}]
+        thisSwarmC.current_edge = {"color": G.ORANGE, "v1": 1, "v2": None}
+        thisSwarmC.current_state = G.MOVE_ONTO_LINE
+        # Determine next line
+        thisSwarmC.update_v2(thisSwarmC.current_edge, thisSwarmC.graph_edges, thisSwarmC.current_edge["v1"], thisSwarmC.qr_data["value"])
+        # Check resulting state and values
+        
+        self.assertEqual(thisSwarmC.graph_edges, [{"color": G.ORANGE, "v1": 1, "v2": 2}])
+
+    def test_update_v2_2(self):
+        # Instantiate swarm controller
+        thisSwarmC = sc.SwarmController()
+        # Set curr_state
+        thisSwarmC.qr_data = {"hasQR" : True, "centroid" : (0, 0), "value" : 2}
+        thisSwarmC.edge_data = [{"color" : G.ORANGE, "angle" : 90, "centroid" : (0, 0)}]
+        thisSwarmC.graph_edges = [{"color": G.ORANGE, "v1": 1, "v2": None}, {"color": G.PURPLE, "v1": 1, "v2": None}]
+        thisSwarmC.current_edge = {"color": G.ORANGE, "v1": 1, "v2": None}
+        thisSwarmC.current_state = G.MOVE_ONTO_LINE
+        # Determine next line
+        thisSwarmC.update_v2(thisSwarmC.current_edge, thisSwarmC.graph_edges, thisSwarmC.current_edge["v1"], thisSwarmC.qr_data["value"])
+        # Check resulting state and values
+        
+        self.assertEqual(thisSwarmC.graph_edges, [{"color": G.ORANGE, "v1": 1, "v2": 2}, {"color": G.PURPLE, "v1": 1, "v2": None}])
 
 if __name__ == '__main__':
     rospy.init_node('Test_Node')

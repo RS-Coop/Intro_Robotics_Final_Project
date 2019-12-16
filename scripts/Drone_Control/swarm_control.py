@@ -115,7 +115,7 @@ class SwarmController:
             # Get the current edge in graph_edges
             existingEdge = self.get_edge_in_graph(edge, self.graph_edges, self.qr_data["value"])
             # If the current edge started at the current QR (has it for v1 instaed of v2) then explore it
-            if existingEdge["v2"] == None:
+            if existingEdge != None and existingEdge["v2"] == None:
                 self.current_edge = existingEdge
                 self.current_state = G.MOVE_ONTO_LINE
                 return
@@ -206,20 +206,12 @@ class SwarmController:
     # This helper funciton will add all of the edge colors in the edges array to the graph
     def add_edges_to_graph(self, edges):
         for edge in edges:
-            # If there is no current edge being followed:
-            if(self.current_edge == None):
+            edgeFromGraph = self.get_edge_in_graph(edge, self.graph_edges, self.qr_data["value"])
+            # If there is no matching edge in the graph:
+            if(edgeFromGraph == None):
                 new_edge = {"color": edge["color"], "v1": self.qr_data["value"], "v2": None}
                 self.graph_edges.append(new_edge)
-            # If the edge was the edge that we came on (it has v1 value of the node we came form)
-            elif(self.get_edge_in_graph(edge, self.graph_edges, self.current_edge["v1"]) != None):
-                # Then add the current QR value as v2
-                self.update_v2(edge, self.graph_edges, self.current_edge["v1"], self.qr_data["value"])
-            # Else, if there is not also a line already added starting at this node with this color, add it
-            elif(self.get_edge_in_graph(edge, self.graph_edges, self.qr_data["value"]) == None):
-                new_edge = {"color": edge["color"], "v1": self.qr_data["value"], "v2": None}
-                self.graph_edges.append(new_edge)
-            else:
-                print("WARN: Unexpected case in add_edges_to_graph in swarm_control.py")
+                pass
 
     # Returns None if not found, return the graph edge otherwise
     def get_edge_in_graph(self, edge, graph, qrValue):
