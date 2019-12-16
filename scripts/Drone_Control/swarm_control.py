@@ -106,15 +106,16 @@ class SwarmController:
     #TODO:
     def determine_next_line(self):
         # Add the currently visible lines to the graph
-        add_edges_to_graph(edge_data)
+        self.add_edges_to_graph(self.edge_data)
         # If there is an unexplored edge out of the current vertex, switch to line following state
-        for edge in edge_data:
-            existingEdge = is_edge_in_graph(edge, graph_edges, qr_data["value"])
+        for edge in self.edge_data:
+            existingEdge = self.get_edge_in_graph(edge, self.graph_edges, self.qr_data["value"])
             if existingEdge["v2"] == None:
-                current_state = self.follow_line
+                self.current_edge = existingEdge
+                self.current_state = self.MOVE_ONTO_LINE
             else:
                 # If there are no unexplored edges out of the current vertex, and
-                current_state = self.LAND
+                self.current_state = self.LAND
 
     #Establishes the drone on a new line to follow
     #TODO:
@@ -174,12 +175,12 @@ class SwarmController:
     # This helper funciton will add all of the edge colors in the edges array to the graph
     def add_edges_to_graph(self, edges):
         for edge in edges:
-            if(is_edge_in_graph(edge, graph_edges, qr_data["value"]) == None):
-                new_edge = {"color": edge["color"], "v1": qr_data["value"], v2: None}
-                graph_edges.append(new_edge)
+            if(self.get_edge_in_graph(edge, self.graph_edges, self.qr_data["value"]) == None):
+                new_edge = {"color": edge["color"], "v1": self.qr_data["value"], "v2": None}
+                self.graph_edges.append(new_edge)
 
     # Returns None if not found, return the graph edge otherwise
-    def is_edge_in_graph(self, edge, graph, qrValue):
+    def get_edge_in_graph(self, edge, graph, qrValue):
         for g_edge in graph:
             if (g_edge["color"] == edge["color"] and (g_edge["v1"] == qrValue or g_edge["v2"] == qrValue)):
                 return g_edge
@@ -197,7 +198,7 @@ class SwarmController:
     def edge_callback(self, data):
         currentIndex = 0
         for i in range(0, len(data.colors)):
-            self.edge_data["edges"].append({
+            self.edge_data.append({
                     "color" : data.colors[i],
                     "angle" : data.angle[i],
                     "centroid" : (currentIndex, currentIndex+1)
