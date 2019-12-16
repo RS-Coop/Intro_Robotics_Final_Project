@@ -3,6 +3,7 @@ import rospy
 import unittest
 import os
 import Drone_Control as dc
+from Globals import Globals as G
 from Image_Processing import cv_processor as cvp
 
 import cv2 as cv

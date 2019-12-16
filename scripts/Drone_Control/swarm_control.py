@@ -1,9 +1,10 @@
 import rospy
+from Globals import Globals as G
 from Intro_Robotics_Final_Project.msg import QR, EdgeList, DroneCommand
 
 #This class deals with controlling all drones
 class SwarmController:
-    #Drones in swarm (NOTE: Righ now just 1)
+    #Drones in swarm (NOTE: Right now just 1)
     drones = []
     #QR Code data from img processor
     qr_data = {"hasQR" : None, "centroid" : None, "value" : None}
@@ -31,14 +32,6 @@ class SwarmController:
     '''
     graph_edges = []
 
-    #State definitions
-    CENTER_QR = 0
-    DETERMINE_NEXT_LINE = 1
-    NAVIGATE_TO_LINE = 2
-    FOLLOW_LINE = 3
-    MOVE_ONTO_LINE = 4
-    LAND = 5
-
     #Current state
     current_state = 0
     #Current edge being followed
@@ -61,23 +54,23 @@ class SwarmController:
     #NOTE: Navigate to line not implemented
     def run_node(self):
         while not rospy.is_shutdown():
-            if self.current_state == self.CENTER_QR:
+            if self.current_state == G.CENTER_QR:
                 self.center_qr() #Center qr code
 
-            elif self.current_state == self.DETERMINE_NEXT_LINE:
+            elif self.current_state == G.DETERMINE_NEXT_LINE:
                 self.determine_next_line() #Choose a new line to follow
 
             #NOTE: Not yet being used
-            elif self.current_state == self.NAVIGATE:
+            elif self.current_state == G.NAVIGATE:
                 self.navigate_to_line()
 
-            elif self.current_state == self.FOLLOW_LINE:
+            elif self.current_state == G.FOLLOW_LINE:
                 self.follow_line() #Follow current edge
 
-            elif self.current_state == self.MOVE_ONTO_LINE:
+            elif self.current_state == G.MOVE_ONTO_LINE:
                 self.move_onto_line() #Move into position over new line
 
-            elif self.current_state == self.LAND:
+            elif self.current_state == G.LAND:
                 self.land_swarm() #Land the drones
                 break
 
@@ -92,8 +85,8 @@ class SwarmController:
         x_err = center[0]-centroid[0]
         y_err = center[1]-centroid[1]
 
-        cmd = DroneCommand()
-        while abs(x_err) > 10 and abs(y_err) > 10:
+        if abs(x_err) > G.QR_ERROR and abs(y_err) > G.QR_ERROR:
+            cmd = DroneCommand()
             #Determine the drone cmd
             cmd.drone_id = self.drones[0].ID #Note this would need to be changed for multiple drones
             #x movement
@@ -101,21 +94,22 @@ class SwarmController:
             cmd.intensity[0] = 0 #Will default to base intensity
             cmd.direction[0] = np.sign(x_err)
             #y movement
-            cmd.cmd_type[0] = "y"
-            cmd.intensity[0] = 0 #Will default to base intensity
-            cmd.direction[0] = np.sign(y_err)
+            cmd.cmd_type[1] = "y"
+            cmd.intensity[1] = 0 #Will default to base intensity
+            cmd.direction[1] = np.sign(y_err)
 
             #Issue drone commands
             self.drone_command_pub.publish(cmd)
 
-        self.current_state = self.DETERMINE_NEXT_LINE
+        else:
+            self.current_state = G.DETERMINE_NEXT_LINE
 
     #Determines next line to follow out of the vertex
     #TODO:
     def determine_next_line(self):
         # Add the currently visible lines to the graph
         self.add_edges_to_graph(self.edge_data)
-        
+
         # If there is an unexplored edge out of the current vertex, switch to line following state
         for edge in self.edge_data:
             # Get the current edge in graph_edges
@@ -125,17 +119,36 @@ class SwarmController:
             if existingEdge["v2"] == None:
                 print("v2 none")
                 self.current_edge = existingEdge
-                self.current_state = self.MOVE_ONTO_LINE
+                self.current_state = G.MOVE_ONTO_LINE
                 return
         # If there are no unexplored edges out of the current vertex, and
         self.current_edge = None
-        self.current_state = self.LAND
+        self.current_state = G.LAND
 
     #Establishes the drone on a new line to follow
-    #TODO:
+    #TODO: Move the drone onto
     #NOTE:
     def move_onto_line(self):
-        self.current_state = FOLLOW_LINE
+        if self.qr_data["hasQR"] == True:
+            cmd = DroneCommand()
+            for edge in self.edge_data["edges"]:
+                if edge["color"] == self.current_edge["color"]:
+                    angle = edge["angle"]
+                    break
+
+            if angle > 10:
+                #angular adjustment
+                cmd.cmd_type[0] = "angular"
+                cmd.intensity[0] = 0 #Will default to base intensity
+                cmd.direction[0] = np.sign(angle)
+
+            else:
+                cmd.cmd_type[1] = "x"
+                cmd.intensity[1] = 1 #Will default to base intensity
+                cmd.direction[1] = 1
+
+        else:
+            self.current_state = G.FOLLOW_LINE
 
     #Dispatches drone from a vertex to a edge
     #TODO: Select an edge leaving the vertex and go there
@@ -146,12 +159,12 @@ class SwarmController:
     #TODO: Do this
     #NOTE:
     def follow_line(self):
-        cmd = DroneCommand()
-        while self.qr_data["hasQR"] == False:
+        if self.qr_data["hasQR"] == False:
+            cmd = DroneCommand()
             for edge in self.edge_data["edges"]:
                 if edge["color"] == self.current_edge["color"]:
                     angle = edge["angle"]
-            if np.abs(angle) > 15:
+            if np.abs(angle) > G.ANGLE_BOUND:
                 cmd.drone_id = self.drones[0].ID
 
                 #angular adjustment
@@ -159,17 +172,18 @@ class SwarmController:
                 cmd.intensity[0] = 0 #Will default to base intensity
                 cmd.direction[0] = np.sign(angle)
                 #move forward
-                cmd.cmd_type[0] = "x"
-                cmd.intensity[0] = 0 #Will default to base intensity
-                cmd.direction[0] = 1
+                cmd.cmd_type[1] = "x"
+                cmd.intensity[1] = 0 #Will default to base intensity
+                cmd.direction[1] = 1
 
             self.drone_command_pub.publish(cmd)
 
-        #Add the end vertex to the edge
-        self.current_edge["v2"] = self.qr_data["value"]
-        self.current_edge = None
-        #Change state
-        self.current_state = self.CENTER_QR
+        else:
+            #Add the end vertex to the edge
+            self.current_edge["v2"] = self.qr_data["value"]
+            self.current_edge = None
+            #Change state
+            self.current_state = G.CENTER_QR
 
     #Launches all drones in swarm
     #DONE: Launch all drones in drones list

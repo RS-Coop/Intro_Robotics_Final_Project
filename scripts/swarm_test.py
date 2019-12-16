@@ -4,6 +4,7 @@ import unittest
 import os
 # import Drone_Control as dc
 # from Image_Processing import cv_processor as cvp
+from Globals import Globals as G
 from Drone_Control import swarm_control as sc
 
 import cv2 as cv
@@ -14,16 +15,6 @@ class TestSwarm(unittest.TestCase):
     def setUp(self):
         self.swarm_controller = sc.SwarmController()
 
-<<<<<<< HEAD
-    # def test_qr_center
-
-    # def test_line_follow(self):
-    #     # Instantiate swarm controller
-    #     thisSwarmC = new SwarmController()
-    #     # Set curr_state
-    #     thisSwarmC.current_state = LINE_FOLLOW
-    #     thisSwarmC.qr
-=======
     def test_determine_next_line_1(self):
         # Instantiate swarm controller
         thisSwarmC = sc.SwarmController()
@@ -39,7 +30,6 @@ class TestSwarm(unittest.TestCase):
         self.assertEqual(thisSwarmC.graph_edges, [{"color": "orange", "v1": 1, "v2": None}])
         self.assertEqual(thisSwarmC.current_edge, {"color": "orange", "v1": 1, "v2": None})
         self.assertEqual(thisSwarmC.current_state, sc.SwarmController.MOVE_ONTO_LINE)
->>>>>>> 7cb16a83fea106fc21b06231b9aedd446c58f50b
 
     def test_determine_no_line_1(self):
         # Instantiate swarm controller
@@ -102,15 +92,9 @@ class TestSwarm(unittest.TestCase):
         graph = [{"color": "orange", "v1": None, "v2": 2}]
         edge = {"color" : "orange", "angle" : 90, "centroid" : (1, 1)}
         qrValue = 1
-<<<<<<< HEAD
-        self.assertEqual(self.swarm_controller.is_edge_in_graph(edge, graph, qrValue), None)
-
-
-=======
         self.assertEqual(self.swarm_controller.get_edge_in_graph(edge, graph, qrValue), None)
-        
-        
->>>>>>> 7cb16a83fea106fc21b06231b9aedd446c58f50b
+
+
 if __name__ == '__main__':
     # rospy.init_node('Test_Node')
 
