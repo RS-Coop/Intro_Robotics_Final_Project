@@ -3,6 +3,7 @@ import numpy as np
 import cv2 as cv
 import pyzbar.pyzbar as pyz
 import time
+import math
 from Intro_Robotics_Final_Project.msg import QR, EdgeList
 from Globals import Globals as G
 from cv_bridge import CvBridge
@@ -106,7 +107,7 @@ class CVProcessor:
                 for line in lines:
                     for x1,y1,x2,y2 in line:
                         length = np.sqrt((x1-x2)**2+(y1-y2)**2)
-                        if length > 5:
+                        if length > 2:
                             adj = np.abs(y1-y2)
                             opp = np.abs(x1-x2)
                             if adj > 0:
@@ -114,8 +115,10 @@ class CVProcessor:
                                 sum_opp += opp
                                 sum_adj += adj
 
-                num = (float(sum_opp/num_lines))/float((sum_adj/num_lines))
-                angle = np.arctan(num)
+                hyp = math.sqrt(float(sum_opp/num_lines)**2 + float(sum_adj/num_lines)**2)
+                #num = (float(sum_opp/num_lines))/float((sum_adj/num_lines))
+                num = float(sum_adj/num_lines) / hyp
+                angle = np.arccos(num)
 
                 return np.degrees(angle)
 

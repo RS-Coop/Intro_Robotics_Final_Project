@@ -99,12 +99,13 @@ class TestImageProcessing(unittest.TestCase):
     #     #This might work better as a range
     #     self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], 45)
 
-    # def test_identify_one_edge_0_degrees(self):
-    #     img = cv.imread(self.parent_dir+"/test_images/0_deg.jpg")
-    #     # img = cv.resize(img, (640, 368))
+    def test_identify_one_edge_0_degrees(self):
+        img = cv.imread(self.parent_dir+"/test_images/0_deg.jpg")
+        img = cv.rotate(img, cv.ROTATE_90_CLOCKWISE)
+        # img = cv.resize(img, (640, 368))
 
-    #     #This might work better as a range
-    #     self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], 0)
+        #This might work better as a range
+        self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], 0)
 
     # def test_identify_one_edge_neg_45_degrees(self):
     #     img = cv.imread(self.parent_dir+"/test_images/negative_45_deg.jpg")
@@ -146,6 +147,7 @@ class TestImageProcessing(unittest.TestCase):
         img = cv.imread(self.parent_dir+"/test_images/one_line_following_1.jpg")
         output_data = self.cv_processor.process_image(img)
         # Asserts
+        self.assertEqual(-5 <= self.cv_processor.process_image(img)["edges"][0]["angle"] <= 5, True)
         # Check has QR code
         self.assertTrue(output_data["qr"]["hasQR"])
         # Check QR centroid
@@ -157,29 +159,53 @@ class TestImageProcessing(unittest.TestCase):
         # Check centroid
         self.assertEqual(output_data["edges"][0]["centroid"], (0, 0))
 
-        # QR code partially visible departing
-        img = cv.imread(self.parent_dir+"/test_images/one_line_following_1.jpg")
-        output_data = self.cv_processor.process_image(img)
-        # Asserts
-        self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], 90)
-
         # Only line visible
-        img = cv.imread(self.parent_dir+"/test_images/one_line_following_1.jpg")
+        img = cv.imread(self.parent_dir+"/test_images/one_line_following_2.jpg")
         output_data = self.cv_processor.process_image(img)
         # Asserts
-        self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], 90)
+        self.assertTrue(-5 <= self.cv_processor.process_image(img)["edges"][0]["angle"] <= 5, True)
+        # Check has QR code
+        self.assertTrue(output_data["qr"]["hasQR"])
+        # Check QR centroid
+        self.assertEqual(output_data["qr"]["centroid"], (0,0))
+        # Check QR value
+        self.assertEqual(output_data["qr"]["value"], 1)
+        # Check angle
+        self.assertEqual(output_data["edges"][0]["angle"], 0)
+        # Check centroid
+        self.assertEqual(output_data["edges"][0]["centroid"], (0, 0))
 
         # QR code partially visible ariving
-        img = cv.imread(self.parent_dir+"/test_images/one_line_following_1.jpg")
+        img = cv.imread(self.parent_dir+"/test_images/one_line_following_3.jpg")
         output_data = self.cv_processor.process_image(img)
         # Asserts
-        self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], 90)
+        self.assertTrue(-5 <= self.cv_processor.process_image(img)["edges"][0]["angle"] <= 5, True)
+        # Check has QR code
+        self.assertTrue(output_data["qr"]["hasQR"])
+        # Check QR centroid
+        self.assertEqual(output_data["qr"]["centroid"], (0,0))
+        # Check QR value
+        self.assertEqual(output_data["qr"]["value"], 1)
+        # Check angle
+        self.assertEqual(output_data["edges"][0]["angle"], 0)
+        # Check centroid
+        self.assertEqual(output_data["edges"][0]["centroid"], (0, 0))
 
         # QR code entirley visible ariving
-        img = cv.imread(self.parent_dir+"/test_images/one_line_following_1.jpg")
+        img = cv.imread(self.parent_dir+"/test_images/one_line_following_4.jpg")
         output_data = self.cv_processor.process_image(img)
         # Asserts
-        self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], 90)
+        self.assertTrue(-5 <= self.cv_processor.process_image(img)["edges"][0]["angle"] <= 5, True)
+        # Check has QR code
+        self.assertTrue(output_data["qr"]["hasQR"])
+        # Check QR centroid
+        self.assertEqual(output_data["qr"]["centroid"], (0,0))
+        # Check QR value
+        self.assertEqual(output_data["qr"]["value"], 1)
+        # Check angle
+        self.assertEqual(output_data["edges"][0]["angle"], 0)
+        # Check centroid
+        self.assertEqual(output_data["edges"][0]["centroid"], (0, 0))
 
 
 
