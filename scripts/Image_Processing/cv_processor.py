@@ -114,6 +114,7 @@ class CVProcessor:
     #Detect a QR code and determine centroid
     #DONE: Detect and calculate centroid if it exists
     def detect_QR_code(self, image):
+        print('In QR detection: ', type(image))
         code = pyz.decode(image)
         if len(code) != 0:
             bb = code[0][2]

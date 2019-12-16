@@ -6,7 +6,7 @@ import Image_Processing as ip
 rospy.init_node('Image_Processor')
 
 #Initializes a drone
-proc = ImageProcessor()
+proc = ip.ImageProcessor()
 
 print("Image processor ready")
 
