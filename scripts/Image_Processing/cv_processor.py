@@ -4,9 +4,11 @@ import cv2 as cv
 import pyzbar.pyzbar as pyz
 import time
 from Intro_Robotics_Final_Project.msg import QR, EdgeList
+
 #This class deals with processing images from the Bebop drones
 class CVProcessor:
     #List of line color ranges
+    #NOTE: Will need to add to this
     line_colors = {'orange':[np.array([5,100,150]), np.array([15,255,255])],
                         'purple':[np.array([275,100,150]), np.array([285,255,255])]}
 
@@ -123,11 +125,3 @@ class CVProcessor:
             return value, (x,y)
 
         return None, None
-'''
-    #Takes a QR code image and proccess it.
-    #DONE: Returns string of QR code data
-    def process_QR_code(self, image):
-        code = pyz.decode(image)
-
-        return code[0].data.decode('utf-8')
-'''
