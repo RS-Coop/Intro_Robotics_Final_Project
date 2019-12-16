@@ -146,7 +146,9 @@ class TestImageProcessing(unittest.TestCase):
         img = cv.imread(self.parent_dir+"/test_images/one_line_following_1.jpg")
         output_data = self.cv_processor.process_image(img)
         # Asserts
-        self.assertEqual(-5 <= self.cv_processor.process_image(img)["edges"][0]["angle"] <= 5, True)
+        self.assertTrue(-5 <= self.cv_processor.process_image(img)["edges"][0]["angle"] <= 5)
+        # self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], 0)
+
         # Check has QR code
         self.assertTrue(output_data["qr"]["hasQR"])
         # Check QR centroid
