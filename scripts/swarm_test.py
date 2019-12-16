@@ -14,6 +14,8 @@ class TestSwarm(unittest.TestCase):
     def setUp(self):
         self.swarm_controller = sc.SwarmController()
 
+    # def test_qr_center
+
     # def test_line_follow(self):
     #     # Instantiate swarm controller
     #     thisSwarmC = new SwarmController()
@@ -71,8 +73,8 @@ class TestSwarm(unittest.TestCase):
         edge = {"color" : "orange", "angle" : 90, "centroid" : (1, 1)}
         qrValue = 1
         self.assertEqual(self.swarm_controller.is_edge_in_graph(edge, graph, qrValue), None)
-        
-        
+
+
 if __name__ == '__main__':
     # rospy.init_node('Test_Node')
 
