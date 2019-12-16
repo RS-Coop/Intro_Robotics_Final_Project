@@ -14,19 +14,37 @@ class TestSwarm(unittest.TestCase):
     def setUp(self):
         self.swarm_controller = sc.SwarmController()
 
-    def test_determine_next_line(self):
+    def test_determine_next_line_1(self):
         # Instantiate swarm controller
         thisSwarmC = sc.SwarmController()
         # Set curr_state
         thisSwarmC.current_state = sc.SwarmController.DETERMINE_NEXT_LINE
         thisSwarmC.qr_data = {"hasQR" : True, "centroid" : (0, 0), "value" : 1}
         thisSwarmC.graph_edges = []
-        thisSwarmC.edge_data = [{"color": "orange", "v1": 1, "v2": None}]
+        thisSwarmC.edge_data = [{"color" : "orange", "angle" : 90, "centroid" : (0, 0)}]
+        thisSwarmC.current_edge = None
+        # Determine next line
         thisSwarmC.determine_next_line()
-
+        # Check resulting state and values
         self.assertEqual(thisSwarmC.graph_edges, [{"color": "orange", "v1": 1, "v2": None}])
         self.assertEqual(thisSwarmC.current_edge, {"color": "orange", "v1": 1, "v2": None})
         self.assertEqual(thisSwarmC.current_state, sc.SwarmController.MOVE_ONTO_LINE)
+
+    def test_determine_no_line_1(self):
+        # Instantiate swarm controller
+        thisSwarmC = sc.SwarmController()
+        # Set curr_state
+        thisSwarmC.current_state = sc.SwarmController.DETERMINE_NEXT_LINE
+        thisSwarmC.qr_data = {"hasQR" : True, "centroid" : (0, 0), "value" : 2}
+        thisSwarmC.graph_edges = [{"color": "orange", "v1": 1, "v2": None}]
+        thisSwarmC.edge_data = [{"color" : "orange", "angle" : 90, "centroid" : (0, 0)}]
+        thisSwarmC.current_edge = {"color": "orange", "v1": 1, "v2": None}
+        # Determine next line
+        thisSwarmC.determine_next_line()
+        # Check resulting state and values
+        self.assertEqual(thisSwarmC.graph_edges, [{"color": "orange", "v1": 1, "v2": 2}])
+        self.assertEqual(thisSwarmC.current_edge, None)
+        self.assertEqual(thisSwarmC.current_state, sc.SwarmController.LAND)
 
     def test_is_edge_in_graph_true(self):
         # Vertex and color already in graph

@@ -114,15 +114,21 @@ class SwarmController:
     def determine_next_line(self):
         # Add the currently visible lines to the graph
         self.add_edges_to_graph(self.edge_data)
+        
         # If there is an unexplored edge out of the current vertex, switch to line following state
         for edge in self.edge_data:
+            # Get the current edge in graph_edges
             existingEdge = self.get_edge_in_graph(edge, self.graph_edges, self.qr_data["value"])
+            # If the current edge started at the current QR (has it for v1 instaed of v2) then explore it
+            print("Edge:", existingEdge)
             if existingEdge["v2"] == None:
+                print("v2 none")
                 self.current_edge = existingEdge
                 self.current_state = self.MOVE_ONTO_LINE
-            else:
-                # If there are no unexplored edges out of the current vertex, and
-                self.current_state = self.LAND
+                return
+        # If there are no unexplored edges out of the current vertex, and
+        self.current_edge = None
+        self.current_state = self.LAND
 
     #Establishes the drone on a new line to follow
     #TODO:
@@ -185,15 +191,36 @@ class SwarmController:
     # This helper funciton will add all of the edge colors in the edges array to the graph
     def add_edges_to_graph(self, edges):
         for edge in edges:
-            if(self.get_edge_in_graph(edge, self.graph_edges, self.qr_data["value"]) == None):
+            # If there is no current edge being followed:
+            if(self.current_edge == None):
+                print("1")
                 new_edge = {"color": edge["color"], "v1": self.qr_data["value"], "v2": None}
                 self.graph_edges.append(new_edge)
+            # If the edge was the edge that we came on (it has v1 value of the node we came form)
+            elif(self.get_edge_in_graph(edge, self.graph_edges, self.current_edge["v1"]) != None):
+                print("2")
+                # Then add the current QR value as v2
+                self.update_v2(edge, self.graph_edges, self.current_edge["v1"], self.qr_data["value"])
+            # Else, if there is not also a line already added starting at this node with this color, add it
+            elif(self.get_edge_in_graph(edge, self.graph_edges, self.qr_data["value"]) == None):
+                print("3")
+                new_edge = {"color": edge["color"], "v1": self.qr_data["value"], "v2": None}
+                self.graph_edges.append(new_edge)
+            else:
+                print("WARN: Unexpected case in add_edges_to_graph in swarm_control.py")
 
     # Returns None if not found, return the graph edge otherwise
     def get_edge_in_graph(self, edge, graph, qrValue):
         for g_edge in graph:
             if (g_edge["color"] == edge["color"] and (g_edge["v1"] == qrValue or g_edge["v2"] == qrValue)):
                 return g_edge
+        return None
+
+    # Returns None if not found, return the graph edge otherwise
+    def update_v2(self, edge, graph, v1, qrValue):
+        for g_edge in graph:
+            if (g_edge["color"] == edge["color"] and g_edge["v1"] == v1):
+                g_edge["v2"] = qrValue
         return None
 
 
