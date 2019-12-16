@@ -19,7 +19,7 @@ class SwarmController:
         }
     ]
     '''
-    edge_data = {"edges" : []}
+    edge_data = []
 
     #Edges in graph
     '''
@@ -129,7 +129,7 @@ class SwarmController:
     def move_onto_line(self):
         if self.qr_data["hasQR"] == True:
             cmd = DroneCommand()
-            for edge in self.edge_data["edges"]:
+            for edge in self.edge_data:
                 if edge["color"] == self.current_edge["color"]:
                     angle = edge["angle"]
                     break
@@ -159,7 +159,7 @@ class SwarmController:
     def follow_line(self):
         if self.qr_data["hasQR"] == False:
             cmd = DroneCommand()
-            for edge in self.edge_data["edges"]:
+            for edge in self.edge_data:
                 if edge["color"] == self.current_edge["color"]:
                     angle = edge["angle"]
             if np.abs(angle) > G.ANGLE_BOUND:
