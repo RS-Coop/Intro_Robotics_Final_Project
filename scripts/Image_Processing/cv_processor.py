@@ -5,6 +5,7 @@ import pyzbar.pyzbar as pyz
 import time
 from Intro_Robotics_Final_Project.msg import QR, EdgeList
 from Globals import Globals as G
+from cv_bridge import CvBridge, CvBridgeError
 
 #This class deals with processing images from the Bebop drones
 class CVProcessor:
@@ -59,6 +60,10 @@ class CVProcessor:
                 output_data["edges"].append(edge)
 
         return output_data
+
+    def process_ros_image(self, ros_img):
+        img = bridge.imgmsg_to_cv2(ros_img, desired_encoding="passthrough")
+        process_image(img)
 
     #Takes an image and color filters for all
     #potential line colors to get line blobs
