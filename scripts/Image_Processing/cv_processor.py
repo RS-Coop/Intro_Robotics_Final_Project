@@ -24,7 +24,8 @@ class CVProcessor:
         "qr" :
             {
                 "hasQR" : bool,
-                "centroid" : (int, int) # (x, y)
+                "centroid" : (int, int) # (x, y),
+                "value: : int
             },
         "edges" :
             [
