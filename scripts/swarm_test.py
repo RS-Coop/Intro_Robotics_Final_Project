@@ -6,6 +6,7 @@ import os
 # from Image_Processing import cv_processor as cvp
 from Globals import Globals as G
 from Drone_Control import swarm_control as sc
+from Image_Processing import cv_processor as cvp
 
 import cv2 as cv
 

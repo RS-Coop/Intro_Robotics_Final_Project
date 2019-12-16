@@ -34,7 +34,7 @@ class SwarmController:
     graph_edges = []
 
     #Current state
-    current_state = 0
+    current_state = G.TAKEOFF
     #Current edge being followed
     current_graph_edge = None
 
@@ -55,25 +55,33 @@ class SwarmController:
     #NOTE: Navigate to line not implemented
     def run_node(self):
         while not rospy.is_shutdown():
-            if self.current_state == G.CENTER_QR:
-                self.center_qr() #Center qr code
-
-            elif self.current_state == G.DETERMINE_NEXT_LINE:
-                self.determine_next_line() #Choose a new line to follow
-
-            #NOTE: Not yet being used
-            elif self.current_state == G.NAVIGATE:
-                self.navigate_to_line()
-
-            elif self.current_state == G.FOLLOW_LINE:
-                self.follow_line() #Follow current edge
-
-            elif self.current_state == G.MOVE_ONTO_LINE:
-                self.move_onto_line() #Move into position over new line
-
-            elif self.current_state == G.LAND:
-                self.land_swarm() #Land the drones
+            if self.run_state():
                 break
+
+    # Run based off state, if state is land, return true
+    def run_state(self):
+        if self.current_state == G.TAKEOFF:
+            self.takeoff() #Center qr code
+            return False
+        elif self.current_state == G.CENTER_QR:
+            self.center_qr() #Center qr code
+            return False
+        elif self.current_state == G.DETERMINE_NEXT_LINE:
+            self.determine_next_line() #Choose a new line to follow
+            return False
+        #NOTE: Not yet being used
+        elif self.current_state == G.NAVIGATE:
+            self.navigate_to_line()
+            return False
+        elif self.current_state == G.FOLLOW_LINE:
+            self.follow_line() #Follow current edge
+            return False
+        elif self.current_state == G.MOVE_ONTO_LINE:
+            self.move_onto_line() #Move into position over new line
+            return False
+        elif self.current_state == G.LAND:
+            self.land_swarm() #Land the drones
+            return True
 
     #Centers the drone over the QR code
     #DONE: Based on the centroid move the drone
@@ -183,6 +191,13 @@ class SwarmController:
             #Change state
             self.current_state = G.CENTER_QR
 
+    # TODO
+    # Has the drones take off!
+    def takeoff(self):
+        # Make the drones take off here: TODO
+        # Change state
+        self.current_state = G.CENTER_QR
+    
     #Launches all drones in swarm
     #DONE: Launch all drones in drones list
     def launch_swarm(self):

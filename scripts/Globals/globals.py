@@ -2,6 +2,7 @@ import numpy as np
 
 class Globals:
     # State definitions
+    TAKEOFF = -1
     CENTER_QR = 0
     DETERMINE_NEXT_LINE = 1
     NAVIGATE_TO_LINE = 2
