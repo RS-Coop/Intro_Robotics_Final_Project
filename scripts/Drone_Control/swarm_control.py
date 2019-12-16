@@ -133,12 +133,24 @@ class SwarmController:
     def follow_line(self):
         cmd = DroneCommand()
         while self.qr_data["hasQR"] == False:
-            #Do some stuff here
+            angle = self.current_edge["angle"]
+            if np.abs(angle) > 15:
+                cmd.drone_id = self.drones[0].ID
+
+                #angular adjustment
+                cmd.cmd_type[0] = "angular"
+                cmd.intensity[0] = 0 #Will default to base intensity
+                cmd.direction[0] = np.sign(angle)
+                #move forward
+                cmd.cmd_type[0] = "x"
+                cmd.intensity[0] = 0 #Will default to base intensity
+                cmd.direction[0] = 1
 
             self.drone_command_pub.publish(cmd)
 
         #Add the end vertex to the edge
         self.current_edge["v2"] = self.qr_data["value"]
+
         #Change state
         self.current_state = self.CENTER_QR
 
