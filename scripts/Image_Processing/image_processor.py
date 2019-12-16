@@ -37,7 +37,7 @@ class ImageProcessor:
         edgeMsg = EdgeList()
 
         # Process the image
-        img_data = self.cvP.process_image(data)
+        img_data = self.cvP.process_ros_image(data.image)
         qrMsg.existing = img_data["qr"]["hasQR"]
         qrMsg.centroid.append(img_data["qr"]["centroid"][0])
         qrMsg.centroid.append(img_data["qr"]["centroid"][1])
