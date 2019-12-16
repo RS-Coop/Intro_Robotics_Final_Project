@@ -161,7 +161,36 @@ class TestSwarm(unittest.TestCase):
         # Check resulting state and values
         self.assertEqual(thisSwarmC.current_state, G.DETERMINE_NEXT_LINE)
 
+    ###
+    ### tests for follow_line
+    ###
+    def test_follow_line_no_qr_detected_1(self):
+        # Instantiate swarm controller
+        thisSwarmC = sc.SwarmController()
+        # Set curr_state
+        thisSwarmC.qr_data = {"hasQR" : False, "centroid" : None, "value" : None}
+        thisSwarmC.edge_data = [{"color" : "orange", "angle" : 90, "centroid" : (0, 0)}]
+        thisSwarmC.graph_edges = [{"color": "orange", "v1": 1, "v2": None}]
+        thisSwarmC.current_edge = {"color": "orange", "v1": 1, "v2": None}
+        thisSwarmC.current_state = G.FOLLOW_LINE
+        # Determine next line
+        thisSwarmC.follow_line()
+        # Check resulting state and values
+        self.assertEqual(thisSwarmC.current_state, G.FOLLOW_LINE)
 
+    def test_follow_line_qr_detected_1(self):
+        # Instantiate swarm controller
+        thisSwarmC = sc.SwarmController()
+        # Set curr_state
+        thisSwarmC.qr_data = {"hasQR" : True, "centroid" : (0, 0), "value" : 2}
+        thisSwarmC.edge_data = [{"color" : "orange", "angle" : 90, "centroid" : (0, 0)}]
+        thisSwarmC.graph_edges = [{"color": "orange", "v1": 1, "v2": None}]
+        thisSwarmC.current_edge = {"color": "orange", "v1": 1, "v2": None}
+        thisSwarmC.current_state = G.FOLLOW_LINE
+        # Determine next line
+        thisSwarmC.follow_line()
+        # Check resulting state and values
+        self.assertEqual(thisSwarmC.current_state, G.CENTER_QR)
 
     ###
     ### tests for get_edge_in_graph helper function
