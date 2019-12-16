@@ -115,9 +115,7 @@ class SwarmController:
             # Get the current edge in graph_edges
             existingEdge = self.get_edge_in_graph(edge, self.graph_edges, self.qr_data["value"])
             # If the current edge started at the current QR (has it for v1 instaed of v2) then explore it
-            print("Edge:", existingEdge)
             if existingEdge["v2"] == None:
-                print("v2 none")
                 self.current_edge = existingEdge
                 self.current_state = G.MOVE_ONTO_LINE
                 return
@@ -210,17 +208,14 @@ class SwarmController:
         for edge in edges:
             # If there is no current edge being followed:
             if(self.current_edge == None):
-                print("1")
                 new_edge = {"color": edge["color"], "v1": self.qr_data["value"], "v2": None}
                 self.graph_edges.append(new_edge)
             # If the edge was the edge that we came on (it has v1 value of the node we came form)
             elif(self.get_edge_in_graph(edge, self.graph_edges, self.current_edge["v1"]) != None):
-                print("2")
                 # Then add the current QR value as v2
                 self.update_v2(edge, self.graph_edges, self.current_edge["v1"], self.qr_data["value"])
             # Else, if there is not also a line already added starting at this node with this color, add it
             elif(self.get_edge_in_graph(edge, self.graph_edges, self.qr_data["value"]) == None):
-                print("3")
                 new_edge = {"color": edge["color"], "v1": self.qr_data["value"], "v2": None}
                 self.graph_edges.append(new_edge)
             else:
