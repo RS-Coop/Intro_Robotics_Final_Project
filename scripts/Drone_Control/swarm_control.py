@@ -7,12 +7,7 @@ class SwarmController:
     drones = []
     #QR Code data from img processor
     qr_data = {"hasQR" : None, "centroid" : None, "value" : None}
-<<<<<<< HEAD
     #Line data from img processor
-    edge_data = {"edges" : []}
-    #Edges in graph
-=======
-    # edge_data
     '''
     [
         {
@@ -23,7 +18,8 @@ class SwarmController:
     ]
     '''
     edge_data = {"edges" : []}
-    # Graph Edges:
+    
+    #Edges in graph
     '''
     [
         {
@@ -32,8 +28,7 @@ class SwarmController:
             v2: int
         }
     ]
-    '''    
->>>>>>> ac1ee43152aa1907dda8242f7347f522015be0ec
+    '''
     graph_edges = []
 
     #State definitions
@@ -199,7 +194,7 @@ class SwarmController:
             if (g_edge["color"] == edge["color"] and (g_edge["v1"] == qrValue or g_edge["v2"] == qrValue)):
                 return g_edge
         return None
-            
+
 
 ################################################################################
 #Callbacks
