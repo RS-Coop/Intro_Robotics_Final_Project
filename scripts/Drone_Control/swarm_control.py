@@ -7,9 +7,33 @@ class SwarmController:
     drones = []
     #QR Code data from img processor
     qr_data = {"hasQR" : None, "centroid" : None, "value" : None}
+<<<<<<< HEAD
     #Line data from img processor
     edge_data = {"edges" : []}
     #Edges in graph
+=======
+    # edge_data
+    '''
+    [
+        {
+            "color" : String, # (orange, purple)
+            "angle" : float,
+            "centroid" : (int, int) # (x, y)
+        }
+    ]
+    '''
+    edge_data = {"edges" : []}
+    # Graph Edges:
+    '''
+    [
+        {
+            color: string,
+            v1: int,
+            v2: int
+        }
+    ]
+    '''    
+>>>>>>> ac1ee43152aa1907dda8242f7347f522015be0ec
     graph_edges = []
 
     #State definitions
@@ -32,7 +56,7 @@ class SwarmController:
         self.qr_sub = rospy.Subscriber('/swarm/qr_code', QR, self.qr_callback)
         self.edges_sub = rospy.Subscriber('/swarm/edges', EdgeList, self.edge_callback)
 
-        sleep(1.0)
+        # sleep(1.0)
 
 ################################################################################
 #Main methods and publishing methods
@@ -73,7 +97,7 @@ class SwarmController:
         y_err = center[1]-centroid[1]
 
         cmd = DroneCommand()
-        while abs(x_err) > 10 && abs(y_err) > 10:
+        while abs(x_err) > 10 and abs(y_err) > 10:
             #Determine the drone cmd
             cmd.drone_id = self.drones[0].ID #Note this would need to be changed for multiple drones
             #x movement
@@ -93,7 +117,16 @@ class SwarmController:
     #Determines next line to follow out of the vertex
     #TODO:
     def determine_next_line(self):
-        pass
+        # Add the currently visible lines to the graph
+        add_edges_to_graph(edge_data)
+        # If there is an unexplored edge out of the current vertex, switch to line following state
+        for edge in edge_data:
+            existingEdge = is_edge_in_graph(edge, graph_edges, qr_data["value"])
+            if existingEdge["v2"] == None:
+                current_state = self.follow_line
+            else:
+                # If there are no unexplored edges out of the current vertex, and
+                current_state = self.LAND
 
     #Establishes the drone on a new line to follow
     #TODO:
@@ -152,6 +185,21 @@ class SwarmController:
     def failsafe(self):
         for drone in self.drones:
             drone.failsafe()
+
+    # This helper funciton will add all of the edge colors in the edges array to the graph
+    def add_edges_to_graph(self, edges):
+        for edge in edges:
+            if(is_edge_in_graph(edge, graph_edges, qr_data["value"]) == None):
+                new_edge = {"color": edge["color"], "v1": qr_data["value"], v2: None}
+                graph_edges.append(new_edge)
+
+    # Returns None if not found, return the graph edge otherwise
+    def is_edge_in_graph(self, edge, graph, qrValue):
+        for g_edge in graph:
+            if (g_edge["color"] == edge["color"] and (g_edge["v1"] == qrValue or g_edge["v2"] == qrValue)):
+                return g_edge
+        return None
+            
 
 ################################################################################
 #Callbacks
