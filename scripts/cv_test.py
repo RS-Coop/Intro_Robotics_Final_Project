@@ -101,7 +101,6 @@ class TestImageProcessing(unittest.TestCase):
 
     def test_identify_one_edge_0_degrees(self):
         img = cv.imread(self.parent_dir+"/test_images/0_deg.jpg")
-        img = cv.rotate(img, cv.ROTATE_90_CLOCKWISE)
         # img = cv.resize(img, (640, 368))
 
         #This might work better as a range

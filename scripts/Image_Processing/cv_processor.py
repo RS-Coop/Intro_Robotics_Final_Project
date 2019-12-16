@@ -107,13 +107,14 @@ class CVProcessor:
                 for line in lines:
                     for x1,y1,x2,y2 in line:
                         length = np.sqrt((x1-x2)**2+(y1-y2)**2)
+                        
                         if length > 2:
                             adj = np.abs(y1-y2)
                             opp = np.abs(x1-x2)
-                            if adj > 0:
-                                num_lines += 1
-                                sum_opp += opp
-                                sum_adj += adj
+
+                            num_lines += 1
+                            sum_opp += opp
+                            sum_adj += adj
 
                 hyp = math.sqrt(float(sum_opp/num_lines)**2 + float(sum_adj/num_lines)**2)
                 #num = (float(sum_opp/num_lines))/float((sum_adj/num_lines))
