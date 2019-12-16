@@ -89,8 +89,8 @@ class CVProcessor:
         lines = cv.HoughLinesP(edges,1,np.pi/180,10)
 
         #Now to calculate angle from lines
-        if lines != None:
-            if lines > 50:
+        if lines is not None:
+            if len(lines) > 0:
                 sum_opp = 0
                 sum_adj = 0
                 num_lines = 0
