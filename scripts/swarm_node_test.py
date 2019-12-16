@@ -6,9 +6,12 @@ from Drone_Control import SwarmController
 rospy.init_node('Swarm')
 
 #Initializes a drone
-swarm = SwarmController()
+swarm = SwarmController('test') #Different namespace so wont fly drone
 
 #Handler for rospy shutdown
+#Should not be necessary as we wont be flying
 rospy.on_shutdown(swarm.failsafe())
 
 #Do some testing here
+swarm.run_node()
+#Can look at messages being published on rostopic

@@ -212,7 +212,6 @@ class TestSwarm(unittest.TestCase):
         qrValue = 1
         self.assertEqual(self.swarm_controller.get_edge_in_graph(edge, graph, qrValue), None)
         
-        
 if __name__ == '__main__':
     # rospy.init_node('Test_Node')
 

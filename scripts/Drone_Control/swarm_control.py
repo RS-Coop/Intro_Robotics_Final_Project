@@ -18,7 +18,7 @@ class SwarmController:
     ]
     '''
     edge_data = {"edges" : []}
-    
+
     #Edges in graph
     '''
     [
@@ -42,14 +42,14 @@ class SwarmController:
     #Current state
     current_state = 0
     #Current edge being followed
-    current_edge = None
+    current_graph_edge = None
 
-    def __init__(self):
+    def __init__(self, namespace='/swarm'):
         #Publishers
-        self.drone_command_pub = rospy.Publisher('/swarm/drone_command', DroneCommand, queue_size=1)
+        self.drone_command_pub = rospy.Publisher(namespace+'/drone_command', DroneCommand, queue_size=1)
         #Subscribers
-        self.qr_sub = rospy.Subscriber('/swarm/qr_code', QR, self.qr_callback)
-        self.edges_sub = rospy.Subscriber('/swarm/edges', EdgeList, self.edge_callback)
+        self.qr_sub = rospy.Subscriber(namespace+'/qr_code', QR, self.qr_callback)
+        self.edges_sub = rospy.Subscriber(namespace+'/edges', EdgeList, self.edge_callback)
 
         # sleep(1.0)
 
@@ -79,6 +79,7 @@ class SwarmController:
 
             elif self.current_state == self.LAND:
                 self.land_swarm() #Land the drones
+                break
 
     #Centers the drone over the QR code
     #DONE: Based on the centroid move the drone
@@ -145,7 +146,9 @@ class SwarmController:
     def follow_line(self):
         cmd = DroneCommand()
         while self.qr_data["hasQR"] == False:
-            angle = self.current_edge["angle"] #I think this being current edge is bad
+            for edge in self.edge_data["edges"]:
+                if edge["color"] == self.current_edge["color"]:
+                    angle = edge["angle"]
             if np.abs(angle) > 15:
                 cmd.drone_id = self.drones[0].ID
 
@@ -162,7 +165,7 @@ class SwarmController:
 
         #Add the end vertex to the edge
         self.current_edge["v2"] = self.qr_data["value"]
-
+        self.current_edge = None
         #Change state
         self.current_state = self.CENTER_QR
 
