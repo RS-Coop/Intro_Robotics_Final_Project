@@ -15,12 +15,9 @@ class TestSwarm(unittest.TestCase):
     def setUp(self):
         self.swarm_controller = sc.SwarmController()
 
-<<<<<<< HEAD
-=======
     ###
     ### tests for determine_next_line
     ###
->>>>>>> 622025cd5ced968a580a086b59f03d6935ec578e
     def test_determine_next_line_1(self):
         # Instantiate swarm controller
         thisSwarmC = sc.SwarmController()
@@ -164,7 +161,7 @@ class TestSwarm(unittest.TestCase):
         # Check resulting state and values
         self.assertEqual(thisSwarmC.current_state, sc.SwarmController.DETERMINE_NEXT_LINE)
 
-        
+
 
     ###
     ### tests for get_edge_in_graph helper function
@@ -215,12 +212,8 @@ class TestSwarm(unittest.TestCase):
         edge = {"color" : "orange", "angle" : 90, "centroid" : (1, 1)}
         qrValue = 1
         self.assertEqual(self.swarm_controller.get_edge_in_graph(edge, graph, qrValue), None)
-<<<<<<< HEAD
 
 
-=======
-        
->>>>>>> 622025cd5ced968a580a086b59f03d6935ec578e
 if __name__ == '__main__':
     # rospy.init_node('Test_Node')
 
