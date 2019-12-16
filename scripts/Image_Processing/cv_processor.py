@@ -9,8 +9,7 @@ from Intro_Robotics_Final_Project.msg import QR, EdgeList
 class CVProcessor:
     #List of line color ranges
     #NOTE: Will need to add to this
-    line_colors = {'orange':[np.array([5,100,150]), np.array([15,255,255])],
-                        'purple':[np.array([275,100,150]), np.array([285,255,255])]}
+    # line_colors = {'orange':[np.array([5,100,150]), np.array([15,255,255])],'purple':[np.array([275,100,150]), np.array([285,255,255])]}
 
     def __init__(self):
         pass
@@ -70,12 +69,12 @@ class CVProcessor:
         hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)
 
         if color_type == None:
-            for color, range in self.line_colors.items():
+            for color, range in G.LINE_COLORS.items():
                 mask = cv.inRange(hsv, range[0], range[1])
                 masks.append(mask)
                 colors.append(color)
         else:
-            masks.append(cv.inRange(hsv, self.line_colors[color][0], self.line_colors[color][1]))
+            masks.append(cv.inRange(hsv, G.LINE_COLORS[color][0], G.LINE_COLORS[color][1]))
             colors.append(color_type)
 
         return colors, masks

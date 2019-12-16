@@ -1,3 +1,5 @@
+import numpy as np
+
 class Globals:
     #State definitions
     CENTER_QR = 0
@@ -9,5 +11,15 @@ class Globals:
 
     #Error for QR BB
     QR_ERROR = 10
+    
     #Angle bound to determine if theta needs correcting
     ANGLE_BOUND = 15
+
+    # Line Colors
+    ORANGE = "orange"
+    PURPLE = "purple"
+    # Color ranges
+    LINE_COLORS = {
+        ORANGE:[np.array([5,100,150]), np.array([15,255,255])],
+        PURPLE:[np.array([275,100,150]), np.array([285,255,255])]
+    }

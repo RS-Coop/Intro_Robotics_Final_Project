@@ -23,15 +23,15 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC = sc.SwarmController()
         # Set curr_state
         thisSwarmC.qr_data = {"hasQR" : True, "centroid" : (0, 0), "value" : 1}
-        thisSwarmC.edge_data = [{"color" : "orange", "angle" : 90, "centroid" : (0, 0)}]
+        thisSwarmC.edge_data = [{"color" : G.ORANGE, "angle" : 90, "centroid" : (0, 0)}]
         thisSwarmC.graph_edges = []
         thisSwarmC.current_edge = None
         thisSwarmC.current_state = G.DETERMINE_NEXT_LINE
         # Determine next line
         thisSwarmC.determine_next_line()
         # Check resulting state and values
-        self.assertEqual(thisSwarmC.graph_edges, [{"color": "orange", "v1": 1, "v2": None}])
-        self.assertEqual(thisSwarmC.current_edge, {"color": "orange", "v1": 1, "v2": None})
+        self.assertEqual(thisSwarmC.graph_edges, [{"color": G.ORANGE, "v1": 1, "v2": None}])
+        self.assertEqual(thisSwarmC.current_edge, {"color": G.ORANGE, "v1": 1, "v2": None})
         self.assertEqual(thisSwarmC.current_state, G.MOVE_ONTO_LINE)
 
     def test_determine_no_line_1(self):
@@ -39,14 +39,14 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC = sc.SwarmController()
         # Set curr_state
         thisSwarmC.qr_data = {"hasQR" : True, "centroid" : (0, 0), "value" : 2}
-        thisSwarmC.edge_data = [{"color" : "orange", "angle" : 90, "centroid" : (0, 0)}]
-        thisSwarmC.graph_edges = [{"color": "orange", "v1": 1, "v2": None}]
-        thisSwarmC.current_edge = {"color": "orange", "v1": 1, "v2": None}
+        thisSwarmC.edge_data = [{"color" : G.ORANGE, "angle" : 90, "centroid" : (0, 0)}]
+        thisSwarmC.graph_edges = [{"color": G.ORANGE, "v1": 1, "v2": None}]
+        thisSwarmC.current_edge = {"color": G.ORANGE, "v1": 1, "v2": None}
         thisSwarmC.current_state = G.DETERMINE_NEXT_LINE
         # Determine next line
         thisSwarmC.determine_next_line()
         # Check resulting state and values
-        self.assertEqual(thisSwarmC.graph_edges, [{"color": "orange", "v1": 1, "v2": 2}])
+        self.assertEqual(thisSwarmC.graph_edges, [{"color": G.ORANGE, "v1": 1, "v2": 2}])
         self.assertEqual(thisSwarmC.current_edge, None)
         self.assertEqual(thisSwarmC.current_state, G.LAND)
 
@@ -124,8 +124,8 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC = sc.SwarmController()
         # Set curr_state
         thisSwarmC.qr_data = {"hasQR" : True, "centroid" : (100, 224), "value" : 1}
-        thisSwarmC.edge_data = [{"color" : "orange", "angle" : 90, "centroid" : (0, 0)}]
-        thisSwarmC.graph_edges = [{"color": "orange", "v1": 1, "v2": None}]
+        thisSwarmC.edge_data = [{"color" : G.ORANGE, "angle" : 90, "centroid" : (0, 0)}]
+        thisSwarmC.graph_edges = [{"color": G.ORANGE, "v1": 1, "v2": None}]
         thisSwarmC.current_edge = None
         thisSwarmC.current_state = G.CENTER_QR
         # Determine next line
@@ -152,8 +152,8 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC = sc.SwarmController()
         # Set curr_state
         thisSwarmC.qr_data = {"hasQR" : True, "centroid" : (320, 184), "value" : 1}
-        thisSwarmC.edge_data = [{"color" : "orange", "angle" : 90, "centroid" : (0, 0)}]
-        thisSwarmC.graph_edges = [{"color": "orange", "v1": 1, "v2": None}]
+        thisSwarmC.edge_data = [{"color" : G.ORANGE, "angle" : 90, "centroid" : (0, 0)}]
+        thisSwarmC.graph_edges = [{"color": G.ORANGE, "v1": 1, "v2": None}]
         thisSwarmC.current_edge = None
         thisSwarmC.current_state = G.CENTER_QR
         # Determine next line
@@ -169,9 +169,9 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC = sc.SwarmController()
         # Set curr_state
         thisSwarmC.qr_data = {"hasQR" : False, "centroid" : None, "value" : None}
-        thisSwarmC.edge_data = [{"color" : "orange", "angle" : 90, "centroid" : (0, 0)}]
-        thisSwarmC.graph_edges = [{"color": "orange", "v1": 1, "v2": None}]
-        thisSwarmC.current_edge = {"color": "orange", "v1": 1, "v2": None}
+        thisSwarmC.edge_data = [{"color" : G.ORANGE, "angle" : 90, "centroid" : (0, 0)}]
+        thisSwarmC.graph_edges = [{"color": G.ORANGE, "v1": 1, "v2": None}]
+        thisSwarmC.current_edge = {"color": G.ORANGE, "v1": 1, "v2": None}
         thisSwarmC.current_state = G.FOLLOW_LINE
         # Determine next line
         thisSwarmC.follow_line()
@@ -183,9 +183,9 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC = sc.SwarmController()
         # Set curr_state
         thisSwarmC.qr_data = {"hasQR" : True, "centroid" : (0, 0), "value" : 2}
-        thisSwarmC.edge_data = [{"color" : "orange", "angle" : 90, "centroid" : (0, 0)}]
-        thisSwarmC.graph_edges = [{"color": "orange", "v1": 1, "v2": None}]
-        thisSwarmC.current_edge = {"color": "orange", "v1": 1, "v2": None}
+        thisSwarmC.edge_data = [{"color" : G.ORANGE, "angle" : 90, "centroid" : (0, 0)}]
+        thisSwarmC.graph_edges = [{"color": G.ORANGE, "v1": 1, "v2": None}]
+        thisSwarmC.current_edge = {"color": G.ORANGE, "v1": 1, "v2": None}
         thisSwarmC.current_state = G.FOLLOW_LINE
         # Determine next line
         thisSwarmC.follow_line()
@@ -197,48 +197,48 @@ class TestSwarm(unittest.TestCase):
     ###
     def test_is_edge_in_graph_true(self):
         # Vertex and color already in graph
-        graph = [{"color": "orange", "v1": 1, "v2": None}]
-        edge = {"color" : "orange", "angle" : 90, "centroid" : (1, 1)}
+        graph = [{"color": G.ORANGE, "v1": 1, "v2": None}]
+        edge = {"color" : G.ORANGE, "angle" : 90, "centroid" : (1, 1)}
         qrValue = 1
         self.assertNotEqual(self.swarm_controller.get_edge_in_graph(edge, graph, qrValue), None)
 
-        graph = [{"color": "orange", "v1": None, "v2": 1}]
-        edge = {"color" : "orange", "angle" : 90, "centroid" : (1, 1)}
+        graph = [{"color": G.ORANGE, "v1": None, "v2": 1}]
+        edge = {"color" : G.ORANGE, "angle" : 90, "centroid" : (1, 1)}
         qrValue = 1
         self.assertNotEqual(self.swarm_controller.get_edge_in_graph(edge, graph, qrValue), None)
 
         # Two edges in graph
-        graph = [{"color": "purple", "v1": 1, "v2": 2}, {"color": "orange", "v1": 2, "v2": None}]
-        edge = {"color" : "orange", "angle" : 90, "centroid" : (1, 1)}
+        graph = [{"color": G.PURPLE, "v1": 1, "v2": 2}, {"color": G.ORANGE, "v1": 2, "v2": None}]
+        edge = {"color" : G.ORANGE, "angle" : 90, "centroid" : (1, 1)}
         qrValue = 2
         self.assertNotEqual(self.swarm_controller.get_edge_in_graph(edge, graph, qrValue), None)
 
     def test_is_edge_in_graph_false(self):
         # Empty graph
         graph = []
-        edge = {"color" : "orange", "angle" : 90, "centroid" : (1, 1)}
+        edge = {"color" : G.ORANGE, "angle" : 90, "centroid" : (1, 1)}
         qrValue = 1
         self.assertEqual(self.swarm_controller.get_edge_in_graph(edge, graph, qrValue), None)
 
         # Graph has different color
-        graph = [{"color": "purple", "v1": 1, "v2": None}]
-        edge = {"color" : "orange", "angle" : 90, "centroid" : (1, 1)}
+        graph = [{"color": G.PURPLE, "v1": 1, "v2": None}]
+        edge = {"color" : G.ORANGE, "angle" : 90, "centroid" : (1, 1)}
         qrValue = 1
         self.assertEqual(self.swarm_controller.get_edge_in_graph(edge, graph, qrValue), None)
 
-        graph = [{"color": "purple", "v1": None, "v2": 1}]
-        edge = {"color" : "orange", "angle" : 90, "centroid" : (1, 1)}
+        graph = [{"color": G.PURPLE, "v1": None, "v2": 1}]
+        edge = {"color" : G.ORANGE, "angle" : 90, "centroid" : (1, 1)}
         qrValue = 1
         self.assertEqual(self.swarm_controller.get_edge_in_graph(edge, graph, qrValue), None)
 
         # Graph has different vertex id
-        graph = [{"color": "orange", "v1": 2, "v2": None}]
-        edge = {"color" : "orange", "angle" : 90, "centroid" : (1, 1)}
+        graph = [{"color": G.ORANGE, "v1": 2, "v2": None}]
+        edge = {"color" : G.ORANGE, "angle" : 90, "centroid" : (1, 1)}
         qrValue = 1
         self.assertEqual(self.swarm_controller.get_edge_in_graph(edge, graph, qrValue), None)
 
-        graph = [{"color": "orange", "v1": None, "v2": 2}]
-        edge = {"color" : "orange", "angle" : 90, "centroid" : (1, 1)}
+        graph = [{"color": G.ORANGE, "v1": None, "v2": 2}]
+        edge = {"color" : G.ORANGE, "angle" : 90, "centroid" : (1, 1)}
         qrValue = 1
         self.assertEqual(self.swarm_controller.get_edge_in_graph(edge, graph, qrValue), None)
 
