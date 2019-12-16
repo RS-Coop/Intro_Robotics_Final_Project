@@ -4,6 +4,8 @@ import cv2 as cv
 import pyzbar.pyzbar as pyz
 import time
 from Intro_Robotics_Final_Project.msg import QR, EdgeList
+from Globals import Globals as G
+from cv_bridge import CvBridge, CvBridgeError
 
 #This class deals with processing images from the Bebop drones
 class CVProcessor:
@@ -58,6 +60,10 @@ class CVProcessor:
                 output_data["edges"].append(edge)
 
         return output_data
+
+    def process_ros_image(self, ros_img):
+        img = bridge.imgmsg_to_cv2(ros_img, desired_encoding="passthrough")
+        process_image(img)
 
     #Takes an image and color filters for all
     #potential line colors to get line blobs
@@ -114,6 +120,7 @@ class CVProcessor:
     #Detect a QR code and determine centroid
     #DONE: Detect and calculate centroid if it exists
     def detect_QR_code(self, image):
+<<<<<<< HEAD
         print('In QR detection: ', type(image))
         code = pyz.decode(image)
         if len(code) != 0:
@@ -125,3 +132,18 @@ class CVProcessor:
             return value, (x,y)
 
         return None, None
+=======
+        try :
+            code = pyz.decode(image)
+            if len(code) != 0:
+                bb = code[0][2]
+                x = (bb[0] + bb[2])/2
+                y = (bb[1] + bb[3])/2
+                value = code[0].data.decode('utf-8')
+
+                return value, (x,y)
+            return None, None
+        except:
+            print("An exception occurred")
+            return None, None
+>>>>>>> 3f89cc7b21aa1f64ab3fe46b76716d1278dafb8b
