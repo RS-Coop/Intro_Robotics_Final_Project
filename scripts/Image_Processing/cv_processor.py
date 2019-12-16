@@ -5,14 +5,14 @@ import pyzbar.pyzbar as pyz
 import time
 from Intro_Robotics_Final_Project.msg import QR, EdgeList
 from Globals import Globals as G
-from cv_bridge import CvBridge, CvBridgeError
+from cv_bridge import CvBridge
 
 #This class deals with processing images from the Bebop drones
 class CVProcessor:
     #List of line color ranges
     #NOTE: Will need to add to this
     # line_colors = {'orange':[np.array([5,100,150]), np.array([15,255,255])],'purple':[np.array([275,100,150]), np.array([285,255,255])]}
-
+    bridge = CvBridge()
     def __init__(self):
         pass
 
@@ -58,12 +58,15 @@ class CVProcessor:
             if angle != None:
                 edge = {"color":colors[i], "angle":angle, "centroid":None}
                 output_data["edges"].append(edge)
+            else:
+                output_data["edges"].append(None)
 
         return output_data
 
     def process_ros_image(self, ros_img):
-        img = bridge.imgmsg_to_cv2(ros_img, desired_encoding="passthrough")
-        process_image(img)
+        img = self.bridge.imgmsg_to_cv2(ros_img, desired_encoding="bgr8")
+        output_data = self.process_image(img)
+        return output_data
 
     #Takes an image and color filters for all
     #potential line colors to get line blobs

@@ -38,16 +38,18 @@ class ImageProcessor:
 
         # Process the image
         img_data = self.cvP.process_ros_image(data.image)
+
         qrMsg.existing = img_data["qr"]["hasQR"]
         qrMsg.centroid.append(img_data["qr"]["centroid"][0])
         qrMsg.centroid.append(img_data["qr"]["centroid"][1])
         qrMsg.value = img_data["qr"]["value"]
 
         for i in img_data["edges"]:
-            edgeMsg.colors.append(i["color"])
-            edgeMsg.angles.append(i["angle"])
-            edgeMsg.angles.append(i["centroid"][0])
-            edgeMsg.angles.append(i["centroid"][1])
+            if (i!=None and i["centroid"]!=None):
+                edgeMsg.colors.append(i["color"])
+                edgeMsg.angles.append(i["angle"])
+                edgeMsg.angles.append(i["centroid"][0])
+                edgeMsg.angles.append(i["centroid"][1])
 
         # Publish results to topic
         self.qr_pub.publish(qrMsg)
