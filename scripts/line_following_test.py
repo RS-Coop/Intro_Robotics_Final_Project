@@ -21,11 +21,74 @@ class TestLineFollowing(unittest.TestCase):
         self.cv_processor = cvp.CVProcessor()
 
     ###
-    ### Test follow one line
+    ###
+    ### Test follow one line1 
+    ###
     ###
 
     #### START
     def test_follow_one_line_1(self):        
+        self.assertEqual(self.swarmC.current_state, G.TAKEOFF)
+        self.assertEqual(self.swarmC.current_edge_color, None)
+
+    #### TAKEOFF
+    # def test_follow_one_line_2(self):
+        self.swarmC.run_state()
+        self.assertEqual(self.swarmC.current_state, G.CENTER_QR)
+        self.assertEqual(self.swarmC.current_edge_color, None)
+
+    #### CENTER
+    # def test_follow_one_line_3(self):
+        self.simulate_swarm_callback(self.swarmC, self.parent_dir+"/test_images/one_line_following_1.jpg")
+        self.swarmC.run_state()
+        self.assertEqual(self.swarmC.current_state, G.DETERMINE_NEXT_LINE)
+        self.assertEqual(self.swarmC.current_edge_color, None)
+
+    #### DETERMINE_NEXT_LINE
+    # def test_follow_one_line_4(self):
+        self.simulate_swarm_callback(self.swarmC, self.parent_dir+"/test_images/one_line_following_1.jpg")
+        self.swarmC.run_state()
+        self.assertEqual(self.swarmC.current_state, G.MOVE_ONTO_LINE)
+        self.assertEqual(self.swarmC.current_edge_color, G.BLUE)
+
+    #### MOVE_ONTO_LINE (qr code is still readable, but at bottom of image)
+    # def test_follow_one_line_5(self):
+        self.simulate_swarm_callback(self.swarmC, self.parent_dir+"/test_images/one_line_following_2.jpg")
+        self.swarmC.run_state()
+        self.assertEqual(self.swarmC.current_state, G.MOVE_ONTO_LINE)
+        self.assertEqual(self.swarmC.current_edge_color, G.BLUE)
+
+
+    #### MOVE_ONTO_LINE (qr code is visible but not readabledeparting)
+    # def test_follow_one_line_6(self):
+        self.simulate_swarm_callback(self.swarmC, self.parent_dir+"/test_images/one_line_following_3.jpg")
+        self.swarmC.run_state()
+        self.assertEqual(self.swarmC.current_state, G.FOLLOW_LINE)
+        self.assertEqual(self.swarmC.current_edge_color, G.BLUE)
+
+    #### FOLLOW_LINE (just line)
+    # def test_follow_one_line_7(self):
+        self.simulate_swarm_callback(self.swarmC, self.parent_dir+"/test_images/one_line_following_4.jpg")
+        self.swarmC.run_state()
+        self.assertEqual(self.swarmC.current_state, G.FOLLOW_LINE)
+        self.assertEqual(self.swarmC.current_edge_color, G.BLUE)
+    
+    #### FOLLOW_LINE (qr code is visible but not readable ariving)
+    # def test_follow_one_line_8(self):
+        self.simulate_swarm_callback(self.swarmC, self.parent_dir+"/test_images/one_line_following_5.jpg")
+        self.swarmC.run_state()
+        self.assertEqual(self.swarmC.current_state, G.FOLLOW_LINE)
+        self.assertEqual(self.swarmC.current_edge_color, G.BLUE)
+        self.assertEqual(self.swarmC.graph_edges, [{"color": G.BLUE, "v1": 2, "v2": None}])
+
+    ###
+    ###
+    ### Test follow one line 2
+    ###
+    ###
+
+    #### START
+    def test_follow_one_line_2(self):        
         self.assertEqual(self.swarmC.current_state, G.TAKEOFF)
         self.assertEqual(self.swarmC.current_edge_color, None)
 
