@@ -33,3 +33,16 @@ class Globals:
     # Max photos center
     MAX_CENTER = (320, 184)
     MAX_ERROR = 50
+
+    #Mask bands
+    #Outer
+    O_TOP = 'outer top'
+    O_BOTTOM = 'outer bottom'
+    O_LEFT = 'outer left'
+    O_RIGHT = 'outer right'
+
+    #Inner
+    I_TOP = 'inner top'
+    I_BOTTOM = 'inner bottom'
+    I_LEFT = 'inner left'
+    I_RIGHT = 'inner right'

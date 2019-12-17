@@ -1,16 +1,16 @@
 import cv2 as cv
 import numpy as np
 
-image = cv.imread('../test_images/sample_blue_line_45.jpg')
+image = cv.imread('../test_images/sample_purple_line2.jpg')
 cv.imshow('Image',image)
 cv.waitKey(0)
 cv.destroyAllWindows()
 
 #First filter for color
 hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)
-lower_blue = np.array([100,50,50])
-upper_blue = np.array([115,255,255])
-mask = cv.inRange(hsv, lower_blue, upper_blue)
+lower = np.array([100,0,0])
+upper = np.array([115,255,255])
+mask = cv.inRange(hsv, lower, upper)
 cv.imshow('Mask', mask)
 
 cv.waitKey(0)

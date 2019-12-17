@@ -45,11 +45,10 @@ class ImageProcessor:
         qrMsg.value = img_data["qr"]["value"]
 
         for i in img_data["edges"]:
-            if (i!=None and i["centroid"]!=None):
+            if i!=None:
                 edgeMsg.colors.append(i["color"])
-                edgeMsg.angles.append(i["angle"])
-                edgeMsg.angles.append(i["centroid"][0])
-                edgeMsg.angles.append(i["centroid"][1])
+                for value in i["pos_avgs"].values():
+                    edgeMsg.pos_avgs.append(value)
 
         # Publish results to topic
         self.qr_pub.publish(qrMsg)

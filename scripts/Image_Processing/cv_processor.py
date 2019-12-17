@@ -32,23 +32,27 @@ class CVProcessor:
             [
                 {
                     "color" : String, # (orange, purple)
-                    "angle" : float,
-                    "centroid" : (int, int) # (x, y)
+                    "pos_avgs" : {
+                                    I_TOP :
+                                    I_BOTTOM:
+                                    ...
+                                    O_RIGHT
+                                  },
                 },
                 ...
             ]
     }
     '''
-    def process_image(self, img):
+    def process_image(self, image):
         # Call process image
         # Publish results to topics
         output_data = {"qr" : { "hasQR" : None, "centroid" : None, "value" : None}, "edges" : []}
-        value, bb = self.detect_QR_code(img)
+        value, bb = self.detect_QR_code(image)
 
         if(value != None):
-             output_data["qr"]["centroid"] = bb
-             output_data["qr"]["hasQR"] = True
-             output_data["qr"]["value"] = value
+            output_data["qr"]["hasQR"] = True
+            output_data["qr"]["centroid"] = bb
+            output_data["qr"]["value"] = value
         else:
             output_data["qr"]["hasQR"] = False
             output_data["qr"]["centroid"] = (0,0)
@@ -56,12 +60,11 @@ class CVProcessor:
 
         colors, masks = self.color_filter(img)
         for i in range(len(masks)):
-            angle = self.line_angle(masks[i])
-            if angle != None:
-                edge = {"color":colors[i], "angle":angle, "centroid":None}
+            band_avgs = self.get_band_averages(masks[i])
+
+            if band_avgs != None:
+                edge = {"color":colors[i], "pos_avgs":band_avgs}
                 output_data["edges"].append(edge)
-            else:
-                output_data["edges"].append(None)
 
         return output_data
 
@@ -90,6 +93,28 @@ class CVProcessor:
 
         return colors, masks
 
+    #Takes a mask and gets the band averages
+    #TODO:
+    #NOTE: Returns a dictionary of avgs
+    def get_band_averages(self, mask):
+
+
+    #Detect a QR code and determine centroid
+    #DONE: Detect and calculate centroid if it exists
+    def detect_QR_code(self, image):
+        try:
+            code = pyz.decode(image)
+            if len(code) != 0:
+                bb = code[0].rect
+                value = code[0].data.decode('utf-8')
+
+                return value, (bb[0],bb[1])
+            return None, None
+        except:
+            print("An exception occurred")
+            return None, None
+
+    '''
     #Takes an image that is the isolated line blob
     #and returns the angle to vertical
     #DONE: Calculates avg x and y components and then computes angle
@@ -107,7 +132,7 @@ class CVProcessor:
                 for line in lines:
                     for x1,y1,x2,y2 in line:
                         length = np.sqrt((x1-x2)**2+(y1-y2)**2)
-                        
+
                         if length > 2:
                             adj = np.abs(y1-y2)
                             opp = np.abs(x1-x2)
@@ -115,29 +140,16 @@ class CVProcessor:
                             num_lines += 1
                             sum_opp += opp
                             sum_adj += adj
+                try:
+                    hyp = math.sqrt(float(sum_opp/num_lines)**2 + float(sum_adj/num_lines)**2)
+                    #num = (float(sum_opp/num_lines))/float((sum_adj/num_lines))
+                    num = float(sum_adj/num_lines) / hyp
+                    angle = np.arccos(num)
 
-                hyp = math.sqrt(float(sum_opp/num_lines)**2 + float(sum_adj/num_lines)**2)
-                #num = (float(sum_opp/num_lines))/float((sum_adj/num_lines))
-                num = float(sum_adj/num_lines) / hyp
-                angle = np.arccos(num)
+                    return np.degrees(angle)
 
-                return np.degrees(angle)
+                except:
+                    return None
 
         return None
-
-    #Detect a QR code and determine centroid
-    #DONE: Detect and calculate centroid if it exists
-    def detect_QR_code(self, image):
-        try :
-            code = pyz.decode(image)
-            if len(code) != 0:
-                bb = code[0][2]
-                x = (bb[0] + bb[2])/2
-                y = (bb[1] + bb[3])/2
-                value = code[0].data.decode('utf-8')
-
-                return value, (x,y)
-            return None, None
-        except:
-            print("An exception occurred")
-            return None, None
+        '''
