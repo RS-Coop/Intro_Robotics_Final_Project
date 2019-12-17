@@ -40,8 +40,8 @@ class SwarmController:
 
     #Current state
     current_state = G.TAKEOFF
-    #Current edge being followed
-    current_graph_edge = None
+    #Color of current edge being followed
+    current_edge_color = None
 
     def __init__(self, namespace='/swarm'):
         #Publishers
@@ -130,14 +130,14 @@ class SwarmController:
         # If there is an unexplored edge out of the current vertex, switch to line following state
         for edge in self.edge_data:
             # Get the current edge in graph_edges
-            existingEdge = self.get_edge_in_graph(edge, self.graph_edges, self.qr_data["value"])
+            existingEdge = self.get_edge_in_graph(edge["color"], self.graph_edges, self.qr_data["value"])
             # If the current edge started at the current QR (has it for v1 instaed of v2) then explore it
             if existingEdge != None and existingEdge["v2"] == None:
-                self.current_edge = existingEdge
+                self.current_edge_color = existingEdge["color"]
                 self.current_state = G.MOVE_ONTO_LINE
                 return
         # If there are no unexplored edges out of the current vertex, and
-        self.current_edge = None
+        self.current_edge_color = None
         self.current_state = G.LAND
 
     #Establishes the drone on a new line to follow
@@ -146,21 +146,21 @@ class SwarmController:
     def move_onto_line(self):
         if self.qr_data["hasQR"] == True:
             cmd = DroneCommand()
-            for edge in self.edge_data:
-                if edge["color"] == self.current_edge["color"]:
-                    angle = edge["angle"]
-                    break
+            # for edge in self.edge_data:
+            #     if edge["color"] == self.current_edge_color:
+            #         angle = edge["angle"]
+            #         break
 
-            if angle > 10:
-                #angular adjustment
-                cmd.cmd_type.append("angular")
-                cmd.intensity.append(0) #Will default to base intensity
-                cmd.direction.append(np.sign(angle))
+            # if angle > 10:
+            #     #angular adjustment
+            #     cmd.cmd_type.append("angular")
+            #     cmd.intensity.append(0) #Will default to base intensity
+            #     cmd.direction.append(np.sign(angle))
 
-            else:
-                cmd.cmd_type.append("x")
-                cmd.intensity.append(1) #Will default to base intensity
-                cmd.direction.append(1)
+            # else:
+            #     cmd.cmd_type.append("x")
+            #     cmd.intensity.append(1) #Will default to base intensity
+            #     cmd.direction.append(1)
 
         else:
             self.current_state = G.FOLLOW_LINE
@@ -175,10 +175,12 @@ class SwarmController:
     #NOTE:
     def follow_line(self):
         if self.qr_data["hasQR"] == False:
+            
             cmd = DroneCommand()
             for edge in self.edge_data:
-                if edge["color"] == self.current_edge["color"]:
+                if edge["color"] == self.current_edge_color:
                     angle = edge["angle"]
+            
             if np.abs(angle) > G.ANGLE_BOUND:
                 cmd.drone_id = self.drones[0]
 
@@ -195,10 +197,19 @@ class SwarmController:
 
         else:
             #Add the end vertex to the edge
-            self.update_v2(self.current_edge, self.graph_edges, self.current_edge["v1"],self.qr_data["value"])
-            self.current_edge = None
+            current_edge = self.get_edge_pose(self.current_edge_color)
+            self.update_v2(self.current_edge_color, self.graph_edges, current_edge["v1"], self.qr_data["value"])
+            self.current_edge_color = None
             #Change state
             self.current_state = G.CENTER_QR
+
+    # Return true if the line is veritical in the image with a certain error
+    def is_line_vertical(self):
+        pass
+    
+    # Return true if the line is centered in the image with a certain error
+    def is_line_centered(self):
+        pass
 
     # TODO
     # Has the drones take off!
@@ -231,7 +242,7 @@ class SwarmController:
     def add_edges_to_graph(self, edges):
         try:
             for edge in edges:
-                edgeFromGraph = self.get_edge_in_graph(edge, self.graph_edges, self.qr_data["value"])
+                edgeFromGraph = self.get_edge_in_graph(edge["color"], self.graph_edges, self.qr_data["value"])
                 # If there is no matching edge in the graph:
                 if(edgeFromGraph == None):
                     new_edge = {"color": edge["color"], "v1": self.qr_data["value"], "v2": None}
@@ -241,18 +252,25 @@ class SwarmController:
             print("WARN: UNEXPECTED ISSUE IN add_edges_to_graph")
 
     # Returns None if not found, return the graph edge otherwise
-    def get_edge_in_graph(self, edge, graph, qrValue):
+    def get_edge_in_graph(self, edge_color, graph, qrValue):
         for g_edge in graph:
-            if (g_edge["color"] == edge["color"] and (g_edge["v1"] == qrValue or g_edge["v2"] == qrValue)):
+            if (g_edge["color"] == edge_color and (g_edge["v1"] == qrValue or g_edge["v2"] == qrValue)):
                 return g_edge
         return None
 
     # Returns None if not found, return the graph edge otherwise
-    def update_v2(self, edge, graph, v1, qrValue):
+    def update_v2(self, edge_color, graph, v1, qrValue):
         for g_edge in graph:
-            if (g_edge["color"] == edge["color"] and g_edge["v1"] == v1):
+            if (g_edge["color"] == edge_color and g_edge["v1"] == v1):
                 g_edge["v2"] = qrValue
         return None
+
+    def get_edge_pose(self, edge_color):
+        for g_edge in self.graph_edges:
+            if (g_edge["color"] == edge_color):
+                return g_edge
+        return None
+        
 
 
 ################################################################################
@@ -266,12 +284,23 @@ class SwarmController:
     def edge_callback(self, data):
         currentIndex = 0
         for i in range(0, len(data.colors)):
-            self.edge_data.append({
-                    "color" : data.colors[i],
-                    "angle" : data.angle[i],
-                    "centroid" : (currentIndex, currentIndex+1)
-                })
-            currentIndex+=2
+
+            newDict = {
+                        "color" : data.colors[i],
+                        "pos_avg" : {}
+                      }
+
+            newDict["pos_avg"]["O_TOP"] = (data.pos_avg[currentIndex], data.pos_avg[currentIndex+1])
+            newDict["pos_avg"]["O_BOTTOM"] = (data.pos_avg[currentIndex+2], data.pos_avg[currentIndex+3])
+            newDict["pos_avg"]["O_LEFT"] = (data.pos_avg[currentIndex+4], data.pos_avg[currentIndex+5])
+            newDict["pos_avg"]["O_RIGHT"] = (data.pos_avg[currentIndex+6], data.pos_avg[currentIndex+7])
+            newDict["pos_avg"]["I_TOP"] = (data.pos_avg[currentIndex+8], data.pos_avg[currentIndex+9])
+            newDict["pos_avg"]["I_BOTTOM"] = (data.pos_avg[currentIndex+10], data.pos_avg[currentIndex+11])
+            newDict["pos_avg"]["I_LEFT"] = (data.pos_avg[currentIndex+12], data.pos_avg[currentIndex+13])
+            newDict["pos_avg"]["I_RIGHT"] = (data.pos_avg[currentIndex+14], data.pos_avg[currentIndex+15])
+
+            self.edge_data.append(newDict)
+            currentIndex+=16
 
 ################################################################################
 #Tests
