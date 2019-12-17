@@ -229,25 +229,26 @@ class SwarmController:
         if currentLine == None:
             return (None, None)
         else:
-            firstPoint = None
-            secondPoint = None
+            firstPoint = (None,None)
+            secondPoint = (None,None)
 
+            #Checking outer ring for two points
             for i in zone_names_outer:
-                if((currentLine["pos_avg"][i] is not None) and (firstPoint is None)):
+                if((currentLine["pos_avg"][i] is not (None,None)) and (firstPoint is (None,None))):
                     firstPoint = currentLine["pos_avg"][i]
-                elif((currentLine["pos_avg"][i] is not None) and (secondPoint is None)):
+                elif((currentLine["pos_avg"][i] is not (None,None)) and (secondPoint is (None,None))):
                     secondPoint = currentLine["pos_avg"][i]
                     break
 
-
-            if(firstPoint is not None and secondPoint is None):
+            #A second point was not found in the outer ring, checking inner ring
+            if(firstPoint is not (None,None) and secondPoint is (None,None)):
                 for i in zone_names_inner:
-                    if(currentLine["pos_avg"][i] is not None):
+                    if(currentLine["pos_avg"][i] is not (None,None)):
                         secondPoint = currentLine["pos_avg"][i]
                         break
             
-
-            if(firstPoint is None or secondPoint is None):
+            #If either point is not found, not enough data to calculate centroid and angle, return None
+            if(firstPoint is (None,None) or secondPoint is (None,None)):
                 return (None, None)
             else:
                 centroid = ((firstPoint[0] + secondPoint[0]) / 2 , (firstPoint[1] + secondPoint[1]) / 2)
