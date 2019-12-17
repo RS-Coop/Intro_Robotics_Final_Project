@@ -220,13 +220,14 @@ class SwarmController:
     def is_line_centered(self):
         pass
 
+    # Returns (centroid, angle)
     def get_line_pose(self, line_color):
         currentLine = get_edge_pose(line_color)
 
         if currentLine == None:
             return None
         
-        # midPoint = 
+        return (None, None)
 
 
 
