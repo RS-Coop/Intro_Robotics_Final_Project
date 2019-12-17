@@ -58,7 +58,7 @@ class CVProcessor:
             output_data["qr"]["centroid"] = (0,0)
             output_data["qr"]["value"] = 0
 
-        colors, masks = self.color_filter(img)
+        colors, masks = self.color_filter(image)
         for i in range(len(masks)):
             band_avgs = self.get_band_averages(masks[i])
 
@@ -97,7 +97,29 @@ class CVProcessor:
     #TODO:
     #NOTE: Returns a dictionary of avgs
     def get_band_averages(self, mask):
+        for i in range(0):
+            pass
 
+        for i in range(0):
+            pass
+
+        for i in range(0):
+            pass
+
+        for i in range(0):
+            pass
+
+        for i in range(0):
+            pass
+
+        for i in range(0):
+            pass
+
+        for i in range(0):
+            pass
+
+        for i in range(0):
+            pass
 
     #Detect a QR code and determine centroid
     #DONE: Detect and calculate centroid if it exists
