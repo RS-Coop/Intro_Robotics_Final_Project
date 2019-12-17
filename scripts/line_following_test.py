@@ -15,6 +15,9 @@ class TestLineFollowing(unittest.TestCase):
 
     def setUp(self):
         self.swarmC = sc.SwarmController()
+        self.swarmC.CENTER = G.MAX_CENTER
+        self.swarmC.CENTER_X_ERROR = G.MAX_X_ERROR
+        self.swarmC.CENTER_Y_ERROR = G.MAX_Y_ERROR
         self.cv_processor = cvp.CVProcessor()
 
     ###
@@ -110,7 +113,7 @@ class TestLineFollowing(unittest.TestCase):
     def simulate_swarm_callback(self, swarm, img_name):
         img = cv.imread(img_name)
         output_data = self.cv_processor.process_image(img)
-
+        print("Output:", output_data)
         swarm.qr_data = output_data["qr"]
         swarm.edge_data = output_data["edges"]
 

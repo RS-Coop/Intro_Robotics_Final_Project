@@ -31,5 +31,6 @@ class Globals:
     BEBOP_CENTER = (320, 184)
 
     # Max photos center
-    MAX_CENTER = (320, 184)
-    MAX_ERROR = 50
+    MAX_CENTER = (987, 1512)
+    MAX_X_ERROR = 150
+    MAX_Y_ERROR = 300
