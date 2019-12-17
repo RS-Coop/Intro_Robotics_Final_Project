@@ -101,32 +101,145 @@ class CVProcessor:
     #NOTE: Returns a dictionary of avgs
     def get_band_averages(self, mask):
         band_avgs = {}
+        height = mask.shape[0]
+        width = mask.shape[1]
 
-        for i in range(0):
-            band_avgs.update({G.O_TOP:None})
+        sep_h = (height/3)/3
+        sep_w = (width/3)/3
 
-        for i in range(0):
-            band_avgs.update({G.O_BOTTOM:None})
+        sum_y = 0
+        sum_x = 0
+        num_pixels = 0
 
-        for i in range(0):
-            band_avgs.update({G.O_LEFT:None})
+        for row in range(G.BAND_SIZE):
+            for col in range(width):
+                if mask[row, col] == 255:
+                    sum_x += col
+                    sum_y += row
+                    num_pixels += 1
 
-        for i in range(0):
-            band_avgs.update({G.O_RIGHT:None})
+        if num_pixels > G.BAND_THRESHOLD:
+            band_avgs.update({G.O_TOP:(sum_x/num_pixels, sum_y/num_pixels)})
+        else:
+            band_avgs.update({G.O_TOP:(None,None)})
+    ###############################################################################
+        sum_y = 0
+        sum_x = 0
+        num_pixels = 0
 
-        for i in range(0):
-            band_avgs.update({G.I_TOP:None})
+        for row in range(height-G.BAND_SIZE, height):
+            for col in range(width):
+                if mask[row, col] == 255:
+                    sum_x += col
+                    sum_y += row
+                    num_pixels += 1
 
-        for i in range(0):
-            band_avgs.update({G.I_BOTTOM:None})
+        if num_pixels > G.BAND_THRESHOLD:
+            band_avgs.update({G.O_BOTTOM:(sum_x/num_pixels, sum_y/num_pixels)})
+        else:
+            band_avgs.update({G.O_BOTTOM:(None,None)})
+    ###############################################################################
+        sum_y = 0
+        sum_x = 0
+        num_pixels = 0
 
-        for i in range(0):
-            band_avgs.update({G.I_LEFT:None})
+        for row in range(height):
+            for col in range(G.BAND_SIZE):
+                if mask[row, col] == 255:
+                    sum_x += col
+                    sum_y += row
+                    num_pixels += 1
 
-        for i in range(0):
-            band_avgs.update({G.I_RIGHT:None})
+        if num_pixels > G.BAND_THRESHOLD:
+            band_avgs.update({G.O_LEFT:(sum_x/num_pixels, sum_y/num_pixels)})
+        else:
+            band_avgs.update({G.O_LEFT:(None,None)})
+    ###############################################################################
+        sum_y = 0
+        sum_x = 0
+        num_pixels = 0
 
-        return band_avgs
+        for row in range(height):
+            for col in range(width-G.BAND_SIZE, width):
+                if mask[row, col] == 255:
+                    sum_x += col
+                    sum_y += row
+                    num_pixels += 1
+
+        if num_pixels > G.BAND_THRESHOLD:
+            band_avgs.update({G.O_RIGHT:(sum_x/num_pixels, sum_y/num_pixels)})
+        else:
+            band_avgs.update({G.O_RIGHT:(None,None)})
+    ###############################################################################
+        sum_y = 0
+        sum_x = 0
+        num_pixels = 0
+
+        for row in range(sep_h+G.BAND_SIZE, sep_h+2*G.BAND_SIZE):
+            for col in range(width):
+                if mask[row, col] == 255:
+                    sum_x += col
+                    sum_y += row
+                    num_pixels += 1
+
+        if num_pixels > G.BAND_THRESHOLD:
+            band_avgs.update({G.I_TOP:(sum_x/num_pixels, sum_y/num_pixels)})
+        else:
+            band_avgs.update({G.I_TOP:(None,None)})
+    ###############################################################################
+        sum_y = 0
+        sum_x = 0
+        num_pixels = 0
+
+        for row in range(height-2*G.BAND_SIZE-sep_h, height-G.BAND_SIZE-sep_h):
+            for col in range(width):
+                if mask[row, col] == 255:
+                    sum_x += col
+                    sum_y += row
+                    num_pixels += 1
+
+        if num_pixels > G.BAND_THRESHOLD:
+            band_avgs.update({G.I_BOTTOM:(sum_x/num_pixels, sum_y/num_pixels)})
+        else:
+            band_avgs.update({G.I_BOTTOM:(None,None)})
+    ###############################################################################
+        sum_y = 0
+        sum_x = 0
+        num_pixels = 0
+
+        for row in range(height):
+            for col in range(sep_w+G.BAND_SIZE, sep_w+2*G.BAND_SIZE):
+                if mask[row, col] == 255:
+                    sum_x += col
+                    sum_y += row
+                    num_pixels += 1
+
+        if num_pixels > G.BAND_THRESHOLD:
+            band_avgs.update({G.I_LEFT:(sum_x/num_pixels, sum_y/num_pixels)})
+        else:
+            band_avgs.update({G.I_LEFT:(None,None)})
+    ###############################################################################
+        sum_y = 0
+        sum_x = 0
+        num_pixels = 0
+
+        for row in range(height):
+            for col in range(width-2*G.BAND_SIZE-sep_w, width-G.BAND_SIZE-sep_w):
+                if mask[row, col] == 255:
+                    sum_x += col
+                    sum_y += row
+                    num_pixels += 1
+
+        if num_pixels > G.BAND_THRESHOLD:
+            band_avgs.update({G.I_RIGHT:(sum_x/num_pixels, sum_y/num_pixels)})
+        else:
+            band_avgs.update({G.I_RIGHT:(None,None)})
+    ###############################################################################
+        for band in band_avgs.values():
+            if band != (None,None):
+                return band_avgs
+
+        return None
 
     #Detect a QR code and determine centroid
     #DONE: Detect and calculate centroid if it exists
