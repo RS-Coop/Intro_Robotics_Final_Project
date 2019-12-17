@@ -181,7 +181,7 @@ class SwarmController:
             # for edge in self.edge_data:
             #     if edge["color"] == self.current_edge_color:
             #         angle = edge["angle"]
-            
+
             # if np.abs(angle) > G.ANGLE_BOUND:
             #     cmd.drone_id = self.drones[0]
 
@@ -292,21 +292,38 @@ class SwarmController:
 
     def edge_callback(self, data):
         currentIndex = 0
-        for i in range(0, len(data.colors)):
+        for i in range(0, len(data.colors), 16):
 
             newDict = {
                         "color" : data.colors[i],
-                        "pos_avg" : {}
+                        "pos_avg" : {
+                                    'O_TOP' : None,
+                                    'O_BOTTOM' : None,
+                                    'O_LEFT' : None,
+                                    'O_RIGHT' : None,
+                                    'I_TOP' : None,
+                                    'I_BOTTOM' : None,
+                                    'I_LEFT' : None,
+                                    'I_RIGHT' : None
+                                    }
                       }
 
-            newDict["pos_avg"]["O_TOP"] = (data.pos_avg[currentIndex], data.pos_avg[currentIndex+1])
-            newDict["pos_avg"]["O_BOTTOM"] = (data.pos_avg[currentIndex+2], data.pos_avg[currentIndex+3])
-            newDict["pos_avg"]["O_LEFT"] = (data.pos_avg[currentIndex+4], data.pos_avg[currentIndex+5])
-            newDict["pos_avg"]["O_RIGHT"] = (data.pos_avg[currentIndex+6], data.pos_avg[currentIndex+7])
-            newDict["pos_avg"]["I_TOP"] = (data.pos_avg[currentIndex+8], data.pos_avg[currentIndex+9])
-            newDict["pos_avg"]["I_BOTTOM"] = (data.pos_avg[currentIndex+10], data.pos_avg[currentIndex+11])
-            newDict["pos_avg"]["I_LEFT"] = (data.pos_avg[currentIndex+12], data.pos_avg[currentIndex+13])
-            newDict["pos_avg"]["I_RIGHT"] = (data.pos_avg[currentIndex+14], data.pos_avg[currentIndex+15])
+            if (data.pos_avg[currentIndex], data.pos_avg[currentIndex+1]) == (0,0):
+                newDict["pos_avg"]["O_TOP"] = (data.pos_avg[currentIndex], data.pos_avg[currentIndex+1])
+            if (data.pos_avg[currentIndex+2], data.pos_avg[currentIndex+3]) == (0,0):
+                newDict["pos_avg"]["O_BOTTOM"] = (data.pos_avg[currentIndex+2], data.pos_avg[currentIndex+3])
+            if (data.pos_avg[currentIndex+4], data.pos_avg[currentIndex+5]) == (0,0):
+                newDict["pos_avg"]["O_LEFT"] = (data.pos_avg[currentIndex+4], data.pos_avg[currentIndex+5])
+            if (data.pos_avg[currentIndex+6], data.pos_avg[currentIndex+7]) == (0,0):
+                newDict["pos_avg"]["O_RIGHT"] = (data.pos_avg[currentIndex+6], data.pos_avg[currentIndex+7])
+            if (data.pos_avg[currentIndex+8], data.pos_avg[currentIndex+9]) == (0,0):
+                newDict["pos_avg"]["I_TOP"] = (data.pos_avg[currentIndex+8], data.pos_avg[currentIndex+9])
+            if (data.pos_avg[currentIndex+10], data.pos_avg[currentIndex+11]) == (0,0):
+                newDict["pos_avg"]["I_BOTTOM"] = (data.pos_avg[currentIndex+10], data.pos_avg[currentIndex+11])
+            if (data.pos_avg[currentIndex+12], data.pos_avg[currentIndex+13]) == (0,0):
+                newDict["pos_avg"]["I_LEFT"] = (data.pos_avg[currentIndex+12], data.pos_avg[currentIndex+13])
+            if (data.pos_avg[currentIndex+14], data.pos_avg[currentIndex+15]) == (0,0):
+                newDict["pos_avg"]["I_RIGHT"] = (data.pos_avg[currentIndex+14], data.pos_avg[currentIndex+15])
 
             self.edge_data.append(newDict)
             currentIndex+=16
