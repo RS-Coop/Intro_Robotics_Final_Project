@@ -5,6 +5,11 @@ from Intro_Robotics_Final_Project.msg import QR, EdgeList, DroneCommand
 
 #This class deals with controlling all drones
 class SwarmController:
+    # Region definitions for image
+    CENTER = G.BEBOP_CENTER
+    CENTER_X_ERROR = G.QR_ERROR
+    CENTER_Y_ERROR = G.QR_ERROR
+    
     #Drones in swarm (NOTE: Right now just 1)
     drones = ['/bebop']
     #QR Code data from img processor
@@ -90,10 +95,13 @@ class SwarmController:
     def center_qr(self):
         centroid = self.qr_data["centroid"]
 
-        x_err = G.BEBOP_CENTER[0]-centroid[0]
-        y_err = centroid[1]-G.BEBOP_CENTER[1]
-
-        if abs(x_err) > G.QR_ERROR or abs(y_err) > G.QR_ERROR:
+        x_err = self.CENTER[0]-centroid[0]
+        y_err = centroid[1]-self.CENTER[1]
+        
+        # print("XERR:", x_err, "YERR:", y_err)
+        # print("", abs(x_err), ">", self.CENTER_X_ERROR, "or", abs(y_err), ">", self.CENTER_Y_ERROR)
+        
+        if abs(x_err) > self.CENTER_X_ERROR or abs(y_err) > self.CENTER_Y_ERROR:
             cmd = DroneCommand()
             #Determine the drone cmd
             cmd.drone_id = self.drones[0] #Note this would need to be changed for multiple drones
