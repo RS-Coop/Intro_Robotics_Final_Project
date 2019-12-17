@@ -37,8 +37,10 @@ class CVProcessor:
                                     O_BOTTOM:
                                     O_LEFT :
                                     O_RIGHT:
-                                    ...
-                                    I_RIGHT
+                                    I_TOP :
+                                    I_BOTTOM:
+                                    I_LEFT :
+                                    I_RIGHT :
                                   },
                 },
                 ...

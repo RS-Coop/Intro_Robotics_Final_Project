@@ -90,7 +90,6 @@ class TestImageProcessing(unittest.TestCase):
         found = False
 
         for i in self.cv_processor.process_image(img)["edges"]:
-            print(i["color"])
             if i["color"] == "orange":
                 found = True
 
