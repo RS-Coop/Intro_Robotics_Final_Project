@@ -57,7 +57,7 @@ def get_band_averages(mask):
 
     for row in range(height):
         for col in range(5):
-            if mask[row, col] == 1:
+            if mask[row, col] == 255:
                 sum_x += col
                 sum_y += row
                 num_pixels += 1
@@ -73,7 +73,7 @@ def get_band_averages(mask):
 
     for row in range(height):
         for col in range(width-6, width):
-            if mask[row, col] == 1:
+            if mask[row, col] == 255:
                 sum_x += col
                 sum_y += row
                 num_pixels += 1
@@ -89,7 +89,7 @@ def get_band_averages(mask):
 
     for row in range(5):
         for col in range(width):
-            if mask[row, col] == 1:
+            if mask[row, col] == 255:
                 sum_x += col
                 sum_y += row
                 num_pixels += 1
@@ -105,7 +105,7 @@ def get_band_averages(mask):
 
     for row in range(height-6, height):
         for col in range(width):
-            if mask[row, col] == 1:
+            if mask[row, col] == 255:
                 sum_x += col
                 sum_y += row
                 num_pixels += 1
@@ -121,7 +121,7 @@ def get_band_averages(mask):
 
     for row in range(height):
         for col in range(5):
-            if mask[row, col] == 1:
+            if mask[row, col] == 255:
                 sum_x += col
                 sum_y += row
                 num_pixels += 1
@@ -137,7 +137,7 @@ def get_band_averages(mask):
 
     for row in range(height):
         for col in range(width-6, width):
-            if mask[row, col] == 1:
+            if mask[row, col] == 255:
                 sum_x += col
                 sum_y += row
                 num_pixels += 1
@@ -150,15 +150,15 @@ def get_band_averages(mask):
     return band_avgs
 
 if __name__=='__main__':
-    image = cv.imread('../test_images/sample_blue_line.jpg')
+    image = cv.imread('../test_images/orange_edge.jpg')
     cv.imshow('Image',image)
     cv.waitKey(0)
     cv.destroyAllWindows()
 
     #First filter for color
     hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)
-    lower = np.array([100,0,0])
-    upper = np.array([115,255,255])
+    lower = np.array([5,100,150])
+    upper = np.array([20,255,255])
     mask = cv.inRange(hsv, lower, upper)
     cv.imshow('Mask', mask)
     cv.waitKey(0)
