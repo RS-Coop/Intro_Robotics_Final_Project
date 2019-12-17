@@ -338,14 +338,14 @@ class SwarmController:
             newDict = {
                         "color" : data.colors[i],
                         "pos_avg" : {
-                                    'O_TOP' : None,
-                                    'O_BOTTOM' : None,
-                                    'O_LEFT' : None,
-                                    'O_RIGHT' : None,
-                                    'I_TOP' : None,
-                                    'I_BOTTOM' : None,
-                                    'I_LEFT' : None,
-                                    'I_RIGHT' : None
+                                    'O_TOP' : (None,None),
+                                    'O_BOTTOM' : (None,None),
+                                    'O_LEFT' : (None,None),
+                                    'O_RIGHT' : (None,None),
+                                    'I_TOP' : (None,None),
+                                    'I_BOTTOM' : (None,None),
+                                    'I_LEFT' : (None,None),
+                                    'I_RIGHT' : (None,None)
                                     }
                       }
 
