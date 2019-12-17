@@ -234,7 +234,11 @@ class CVProcessor:
         else:
             band_avgs.update({G.I_RIGHT:(None,None)})
     ###############################################################################
-        return band_avgs
+        for band in band_avgs.values():
+            if band != (None,None):
+                return band_avgs
+
+        return None
 
     #Detect a QR code and determine centroid
     #DONE: Detect and calculate centroid if it exists
