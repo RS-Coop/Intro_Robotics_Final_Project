@@ -65,6 +65,7 @@ class SwarmController:
 
     # Run based off state, if state is land, return true
     def run_state(self):
+        print("State:", self.current_state)
         if self.current_state == G.TAKEOFF:
             self.takeoff() #Center qr code
             return False
@@ -98,8 +99,8 @@ class SwarmController:
         x_err = self.CENTER[0]-centroid[0]
         y_err = centroid[1]-self.CENTER[1]
         
-        # print("XERR:", x_err, "YERR:", y_err)
-        # print("", abs(x_err), ">", self.CENTER_X_ERROR, "or", abs(y_err), ">", self.CENTER_Y_ERROR)
+        print("XERR:", x_err, "YERR:", y_err)
+        print("", abs(x_err), ">", self.CENTER_X_ERROR, "or", abs(y_err), ">", self.CENTER_Y_ERROR)
         
         if abs(x_err) > self.CENTER_X_ERROR or abs(y_err) > self.CENTER_Y_ERROR:
             cmd = DroneCommand()
@@ -228,13 +229,16 @@ class SwarmController:
 
     # This helper funciton will add all of the edge colors in the edges array to the graph
     def add_edges_to_graph(self, edges):
-        for edge in edges:
-            edgeFromGraph = self.get_edge_in_graph(edge, self.graph_edges, self.qr_data["value"])
-            # If there is no matching edge in the graph:
-            if(edgeFromGraph == None):
-                new_edge = {"color": edge["color"], "v1": self.qr_data["value"], "v2": None}
-                self.graph_edges.append(new_edge)
-                pass
+        try:
+            for edge in edges:
+                edgeFromGraph = self.get_edge_in_graph(edge, self.graph_edges, self.qr_data["value"])
+                # If there is no matching edge in the graph:
+                if(edgeFromGraph == None):
+                    new_edge = {"color": edge["color"], "v1": self.qr_data["value"], "v2": None}
+                    self.graph_edges.append(new_edge)
+                    pass
+        except:
+            print("WARN: UNEXPECTED ISSUE IN add_edges_to_graph")
 
     # Returns None if not found, return the graph edge otherwise
     def get_edge_in_graph(self, edge, graph, qrValue):
