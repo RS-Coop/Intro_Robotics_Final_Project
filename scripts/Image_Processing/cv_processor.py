@@ -33,10 +33,10 @@ class CVProcessor:
                 {
                     "color" : String, # (orange, purple)
                     "pos_avgs" : {
-                                    I_TOP :
-                                    I_BOTTOM:
+                                    O_TOP :
+                                    O_BOTTOM:
                                     ...
-                                    O_RIGHT
+                                    I_RIGHT
                                   },
                 },
                 ...
@@ -128,19 +128,15 @@ class CVProcessor:
     #Detect a QR code and determine centroid
     #DONE: Detect and calculate centroid if it exists
     def detect_QR_code(self, image):
-        try:
-            code = pyz.decode(image)
-            if len(code) != 0:
-                bb = code[0].rect
-                value = string(code[0].data.decode('utf-8'))
-                x = bb[0] + int(bb[2]/2)
-                y = bb[1] + int(bb[3]/2)
+        code = pyz.decode(image)
+        if len(code) != 0:
+            bb = code[0].rect
+            value = str(code[0].data.decode('utf-8'))
+            x = bb[0] + int(bb[2]/2)
+            y = bb[1] + int(bb[3]/2)
 
-                return value, (x, y)
-            return None, None
-        except:
-            print("An exception occurred")
-            return None, None
+            return value, (x, y)
+        return None, None
 
     '''
     #Takes an image that is the isolated line blob
