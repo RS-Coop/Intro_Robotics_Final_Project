@@ -177,18 +177,28 @@ class SwarmController:
         if self.qr_data["hasQR"] == False:
             
             cmd = DroneCommand()
-            for edge in self.edge_data:
-                if edge["color"] == self.current_edge_color:
-                    angle = edge["angle"]
-            
-            if np.abs(angle) > G.ANGLE_BOUND:
-                cmd.drone_id = self.drones[0]
 
-                #angular adjustment
+
+            # for edge in self.edge_data:
+            #     if edge["color"] == self.current_edge_color:
+            #         angle = edge["angle"]
+            
+            # if np.abs(angle) > G.ANGLE_BOUND:
+            #     cmd.drone_id = self.drones[0]
+
+            # If the line is not centered
+            if self.is_line_centered == False:
+                # center the line in the screen
+                pass
+            # If the line is not vertical
+            elif self.is_line_vertical == False:
+                # get the line to be vertical
                 cmd.cmd_type.append("angular")
                 cmd.intensity.append(0) #Will default to base intensity
                 cmd.direction.append(np.sign(angle))
-                #move forward
+            # If the line is vertical and centered
+            else:
+                # Move forward
                 cmd.cmd_type.append("x")
                 cmd.intensity.append(0) #Will default to base intensity
                 cmd.direction.append(1)
