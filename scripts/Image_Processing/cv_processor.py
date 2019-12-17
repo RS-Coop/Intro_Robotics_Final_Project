@@ -35,6 +35,8 @@ class CVProcessor:
                     "pos_avgs" : {
                                     O_TOP :
                                     O_BOTTOM:
+                                    O_LEFT :
+                                    O_RIGHT:
                                     ...
                                     I_RIGHT
                                   },
