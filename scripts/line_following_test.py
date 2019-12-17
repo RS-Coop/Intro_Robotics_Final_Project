@@ -77,7 +77,7 @@ class TestLineFollowing(unittest.TestCase):
         self.swarmC.run_state()
         self.assertEqual(self.swarmC.current_state, G.FOLLOW_LINE)
         self.assertEqual(self.swarmC.current_edge_color, G.BLUE)
-        self.assertEqual(self.swarmC.graph_edges, [{"color": G.BLUE, "v1": 1, "v2": None}])
+        self.assertEqual(self.swarmC.graph_edges, [{"color": G.BLUE, "v1": 2, "v2": None}])
 
     #### FOLLOW_LINE (qr code is visible and readable)
     # def test_follow_one_line_9(self):
@@ -85,7 +85,7 @@ class TestLineFollowing(unittest.TestCase):
         self.swarmC.run_state()
         self.assertEqual(self.swarmC.current_state, G.CENTER_QR)
         self.assertEqual(self.swarmC.current_edge_color, None)
-        self.assertEqual(self.swarmC.graph_edges, [{"color": G.BLUE, "v1": 1, "v2": 2}])
+        self.assertEqual(self.swarmC.graph_edges, [{"color": G.BLUE, "v1": 2, "v2": 1}])
 
     #### CENTER_QR (qr code is readable, but at top of image)
     # def test_follow_one_line_10(self):

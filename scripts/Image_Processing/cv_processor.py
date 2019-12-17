@@ -247,7 +247,7 @@ class CVProcessor:
         code = pyz.decode(image)
         if len(code) != 0:
             bb = code[0].rect
-            value = str(code[0].data.decode('utf-8'))
+            value = int(code[0].data.decode('utf-8'))
             x = bb[0] + int(bb[2]/2)
             y = bb[1] + int(bb[3]/2)
 
