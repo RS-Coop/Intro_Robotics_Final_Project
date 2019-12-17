@@ -61,6 +61,7 @@ class CVProcessor:
             output_data["qr"]["value"] = 0
 
         colors, masks = self.color_filter(image)
+        
         for i in range(len(masks)):
             band_avgs = self.get_band_averages(masks[i])
 
