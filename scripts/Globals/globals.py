@@ -20,6 +20,7 @@ class Globals:
     ORANGE = "orange"
     PURPLE = "purple"
     BLUE = "blue"
+
     # Color ranges
     LINE_COLORS = {
         ORANGE:[np.array([5,100,150]), np.array([15,255,255])],
@@ -31,9 +32,9 @@ class Globals:
     BEBOP_CENTER = (320, 184)
 
     # Max photos center
-    MAX_CENTER = (987, 1512)
-    MAX_X_ERROR = 150
-    MAX_Y_ERROR = 300
+    MAX_CENTER = (1512, 2016)
+    MAX_X_ERROR = 400
+    MAX_Y_ERROR = 500
 
     #Mask bands
     #Outer
