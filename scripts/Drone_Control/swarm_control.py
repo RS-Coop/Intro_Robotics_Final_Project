@@ -220,6 +220,16 @@ class SwarmController:
     def is_line_centered(self):
         pass
 
+    def get_line_pose(self, line_color):
+        currentLine = get_edge_pose(line_color)
+
+        if currentLine == None:
+            return None
+        
+        # midPoint = 
+
+
+
     # TODO
     # Has the drones take off!
     def takeoff(self):
