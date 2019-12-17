@@ -60,7 +60,6 @@ class TestImageProcessing(unittest.TestCase):
     def test_identify_upper_third_qr(self):
         pass
 
-
     # Identify a QR code is not centered in the image (only location)
     # Requires an image with a QR code in it not centered
     def test_identify_right_third_qr(self):
@@ -74,58 +73,43 @@ class TestImageProcessing(unittest.TestCase):
     #### Edge Identification
     # Identify a single edge coming out of a vertex
     # Requires an image of a centered QR code with one color tape coming out of it
+    def test_identify_one_blue_edge(self):
+        img = cv.imread(self.parent_dir+"/test_images/blue_edge.jpg")
+        # img = cv.resize(img, (640, 368))
+        found = False
+
+        for i in self.cv_processor.process_image(img)["edges"]:
+            if i["orange"]:
+                found = True
+
+        self.assertTrue(found)
+
+    def test_identify_one_orange_edge(self):
+        img = cv.imread(self.parent_dir+"/test_images/orange_edge.jpg")
+        # img = cv.resize(img, (640, 368))
+        found = False
+
+        for i in self.cv_processor.process_image(img)["edges"]:
+            if i["orange"]:
+                found = True
+
+        self.assertTrue(found)
+
+    def test_identify_one_purple_edge(self):
+        img = cv.imread(self.parent_dir+"/test_images/purple_edge.jpg")
+        # img = cv.resize(img, (640, 368))
+        found = False
+
+        for i in self.cv_processor.process_image(img)["edges"]:
+            if i["purple"]:
+                found = True
+
+        self.assertTrue(found)
+
     def test_identify_one_edge(self):
         img = cv.imread(self.parent_dir+"/test_images/1_edge.jpg")
         # img = cv.resize(img, (640, 368))
         self.assertEqual(len(self.cv_processor.process_image(img)["edges"]), 1)
-
-    # Identify the angle a single edge is coming out of a vertex
-    # Requires an image of a centered QR code with one color tape coming out of it
-    # Test edge at 90 degrees
-    # def test_identify_one_edge_135_degrees(self):
-    #     pass
-
-    # def test_identify_one_edge_90_degrees(self):
-    #     img = cv.imread(self.parent_dir+"/test_images/90_deg.jpg")
-    #     # img = cv.resize(img, (640, 368))
-
-    #     #This might work better as a range
-    #     self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], 90)
-
-    # def test_identify_one_edge_45_degrees(self):
-    #     img = cv.imread(self.parent_dir+"/test_images/45_deg.jpg")
-    #     # img = cv.resize(img, (640, 368))
-
-    #     #This might work better as a range
-    #     self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], 45)
-
-    # def test_identify_one_edge_0_degrees(self):
-    #     img = cv.imread(self.parent_dir+"/test_images/0_deg.jpg")
-    #     # img = cv.resize(img, (640, 368))
-
-    #     #This might work better as a range
-    #     self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], 0)
-
-    # def test_identify_one_edge_neg_45_degrees(self):
-    #     img = cv.imread(self.parent_dir+"/test_images/negative_45_deg.jpg")
-    #     # img = cv.resize(img, (640, 368))
-
-    #     #This might work better as a range
-    #     self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], -45)
-
-    # def test_identify_one_edge_neg_90_degrees(self):
-    #     img = cv.imread(self.parent_dir+"/test_images/negative_90_deg.jpg")
-    #     # img = cv.resize(img, (640, 368))
-
-    #     #This might work better as a range
-    #     self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], -95)
-
-    # def test_identify_one_edge_neg_135_degrees(self):
-    #     img = cv.imread(self.parent_dir+"/test_images/negative_135_deg.jpg")
-    #     # img = cv.resize(img, (640, 368))
-
-    #     #This might work better as a range
-    #     self.assertEqual(self.cv_processor.process_image(img)["edges"][0]["angle"], -135)
 
     # Identify 2 edges coming out of a vertex
     # Requires an image of a centered QR code with two colors of tape coming out of it
@@ -134,12 +118,13 @@ class TestImageProcessing(unittest.TestCase):
         # img = cv.resize(img, (640, 368))
         self.assertEqual(len(self.cv_processor.process_image(img)["edges"]), 2)
 
-    ###
-    ### Test decode
-    ### 
-    def test_decode_none_1(self):
-        img = None
-        self.assertEqual(self.cv_processor.detect_QR_code(img), (None, None))
+    '''
+    # ###
+    # ### Test decode
+    # ### 
+    # def test_decode_none_1(self):
+    #     img = None
+    #     self.assertEqual(self.cv_processor.detect_QR_code(img), (None, None))
 
     def test_one_line_line_following(self):
         # Starts on QR code
@@ -197,9 +182,7 @@ class TestImageProcessing(unittest.TestCase):
         self.assertEqual(output_data["qr"]["value"], 1)
         # Check centroid
         self.assertEqual(output_data["edges"][0]["centroid"], (0, 0))
-
-
-
+    '''
 
 class TestDroneController():
     def __init__():

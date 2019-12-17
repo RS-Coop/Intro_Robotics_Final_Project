@@ -76,7 +76,7 @@ class SwarmController:
             self.determine_next_line() #Choose a new line to follow
             return False
         #NOTE: Not yet being used
-        elif self.current_state == G.NAVIGATE:
+        elif self.current_state == G.NAVIGATE_TO_LINE:
             self.navigate_to_line()
             return False
         elif self.current_state == G.FOLLOW_LINE:
@@ -175,9 +175,8 @@ class SwarmController:
     #NOTE:
     def follow_line(self):
         if self.qr_data["hasQR"] == False:
-            
-            cmd = DroneCommand()
 
+            cmd = DroneCommand()
 
             # for edge in self.edge_data:
             #     if edge["color"] == self.current_edge_color:
@@ -216,7 +215,7 @@ class SwarmController:
     # Return true if the line is veritical in the image with a certain error
     def is_line_vertical(self):
         pass
-    
+
     # Return true if the line is centered in the image with a certain error
     def is_line_centered(self):
         pass
@@ -280,7 +279,7 @@ class SwarmController:
             if (g_edge["color"] == edge_color):
                 return g_edge
         return None
-        
+
 
 
 ################################################################################

@@ -48,3 +48,8 @@ class Globals:
     I_BOTTOM = 'inner bottom'
     I_LEFT = 'inner left'
     I_RIGHT = 'inner right'
+
+    #Band width in pixels
+    BAND_SIZE = 5
+    #THRESHOLD
+    BAND_THRESHOLD = 5
