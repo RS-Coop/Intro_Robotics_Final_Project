@@ -96,8 +96,8 @@ class SwarmController:
     def center_qr(self):
         centroid = self.qr_data["centroid"]
 
-        x_err = self.CENTER[0]-centroid[0]
-        y_err = centroid[1]-self.CENTER[1]
+        y_err = self.CENTER[0]-centroid[0] #pos means forward
+        x_err = self.CENTER[1]-centroid[1]  #pos means left
 
         print("XERR:", x_err, "YERR:", y_err)
         print("", abs(x_err), ">", self.CENTER_X_ERROR, "or", abs(y_err), ">", self.CENTER_Y_ERROR)
@@ -171,33 +171,35 @@ class SwarmController:
         pass
 
     #Follows line untill it reaches vertex, adjusts as neccesary
-    #TODO: Do this
-    #NOTE:
+    #TODO: What data do I have for moving, then fix movement commands
+    #NOTE: Not yet fully implemented
     def follow_line(self):
         if self.qr_data["hasQR"] == False:
 
             cmd = DroneCommand()
-
-            # for edge in self.edge_data:
-            #     if edge["color"] == self.current_edge_color:
-            #         angle = edge["angle"]
-
-            # if np.abs(angle) > G.ANGLE_BOUND:
-            #     cmd.drone_id = self.drones[0]
-
-            # If the line is not centered
+            #If the line is not centered
             if self.is_line_centered == False:
-                # center the line in the screen
-                pass
-            # If the line is not vertical
+                #Shift left or right to center line
+                centroid, angle = self.get_line_pose(self.current_edge_color)
+                #We should just care about x error
+                x_err = self.CENTER[1]-centroid[1] #pos means left
+
+                cmd.cmd_type.append("y")
+                cmd.intensity.append(0) #Will defualt to base intensity
+                cmd.direction.append(np.sign(x_err))
+
+            #If the line is not vertical
             elif self.is_line_vertical == False:
-                # get the line to be vertical
+                #Rotate to get the line vertical
+                centroid, angle = self.get_line_pose(self.current_edge_color)
+
                 cmd.cmd_type.append("angular")
                 cmd.intensity.append(0) #Will default to base intensity
-                cmd.direction.append(np.sign(angle))
-            # If the line is vertical and centered
+                cmd.direction.append() #Not sure about this agrument
+
+            #If the line is vertical and centered
             else:
-                # Move forward
+                #Move forward
                 cmd.cmd_type.append("x")
                 cmd.intensity.append(0) #Will default to base intensity
                 cmd.direction.append(1)
@@ -220,14 +222,14 @@ class SwarmController:
     def is_line_centered(self):
         pass
 
-    # Returns (centroid, angle)
+    # Returns centroid, angle
     def get_line_pose(self, line_color):
         currentLine = get_edge_pose(line_color)
         zone_names_outer = [ "O_TOP", "O_BOTTOM", "O_LEFT" , "O_RIGHT"]
         zone_names_inner = ["I_TOP", "I_BOTTOM", "I_LEFT", "I_RIGHT"]
 
         if currentLine == None:
-            return (None, None)
+            return None, None
         else:
             firstPoint = (None,None)
             secondPoint = (None,None)
@@ -256,9 +258,8 @@ class SwarmController:
                 y = np.abs(firstPoint[1] - secondPoint[1])
                 theta = np.arcsin( x / np.sqrt(x**2 + y**2))
                 return (centroid, theta)
-        
-        return (None, None)
 
+        return None, None
 
 
     # TODO
