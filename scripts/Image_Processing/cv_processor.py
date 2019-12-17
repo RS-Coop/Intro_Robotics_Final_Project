@@ -97,29 +97,33 @@ class CVProcessor:
     #TODO:
     #NOTE: Returns a dictionary of avgs
     def get_band_averages(self, mask):
-        for i in range(0):
-            pass
+        band_avgs = {}
 
         for i in range(0):
-            pass
+            band_avgs.update({G.O_TOP:None})
 
         for i in range(0):
-            pass
+            band_avgs.update({G.O_BOTTOM:None})
 
         for i in range(0):
-            pass
+            band_avgs.update({G.O_LEFT:None})
 
         for i in range(0):
-            pass
+            band_avgs.update({G.O_RIGHT:None})
 
         for i in range(0):
-            pass
+            band_avgs.update({G.I_TOP:None})
 
         for i in range(0):
-            pass
+            band_avgs.update({G.I_BOTTOM:None})
 
         for i in range(0):
-            pass
+            band_avgs.update({G.I_LEFT:None})
+
+        for i in range(0):
+            band_avgs.update({G.I_RIGHT:None})
+
+        return band_avgs
 
     #Detect a QR code and determine centroid
     #DONE: Detect and calculate centroid if it exists
@@ -128,9 +132,11 @@ class CVProcessor:
             code = pyz.decode(image)
             if len(code) != 0:
                 bb = code[0].rect
-                value = code[0].data.decode('utf-8')
+                value = string(code[0].data.decode('utf-8'))
+                x = bb[0] + int(bb[2]/2)
+                y = bb[1] + int(bb[3]/2)
 
-                return value, (bb[0],bb[1])
+                return value, (x, y)
             return None, None
         except:
             print("An exception occurred")
