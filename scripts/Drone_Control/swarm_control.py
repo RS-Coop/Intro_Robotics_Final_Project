@@ -9,7 +9,7 @@ class SwarmController:
     CENTER = G.BEBOP_CENTER
     CENTER_X_ERROR = G.QR_ERROR
     CENTER_Y_ERROR = G.QR_ERROR
-    
+
     #Drones in swarm (NOTE: Right now just 1)
     drones = ['/bebop']
     #QR Code data from img processor
@@ -98,10 +98,10 @@ class SwarmController:
 
         x_err = self.CENTER[0]-centroid[0]
         y_err = centroid[1]-self.CENTER[1]
-        
+
         print("XERR:", x_err, "YERR:", y_err)
         print("", abs(x_err), ">", self.CENTER_X_ERROR, "or", abs(y_err), ">", self.CENTER_Y_ERROR)
-        
+
         if abs(x_err) > self.CENTER_X_ERROR or abs(y_err) > self.CENTER_Y_ERROR:
             cmd = DroneCommand()
             #Determine the drone cmd
@@ -217,7 +217,7 @@ class SwarmController:
         # Make the drones take off here: TODO
         # Change state
         self.current_state = G.CENTER_QR
-    
+
     #Launches all drones in swarm
     #DONE: Launch all drones in drones list
     def launch_swarm(self):
@@ -284,12 +284,23 @@ class SwarmController:
     def edge_callback(self, data):
         currentIndex = 0
         for i in range(0, len(data.colors)):
-            self.edge_data.append({
-                    "color" : data.colors[i],
-                    "angle" : data.angle[i],
-                    "centroid" : (currentIndex, currentIndex+1)
-                })
-            currentIndex+=2
+
+            newDict = {
+                        "color" : data.colors[i],
+                        "pos_avg" : {}
+                      }
+
+            newDict["pos_avg"]["O_TOP"] = (data.pos_avg[currentIndex], data.pos_avg[currentIndex+1])
+            newDict["pos_avg"]["O_BOTTOM"] = (data.pos_avg[currentIndex+2], data.pos_avg[currentIndex+3])
+            newDict["pos_avg"]["O_LEFT"] = (data.pos_avg[currentIndex+4], data.pos_avg[currentIndex+5])
+            newDict["pos_avg"]["O_RIGHT"] = (data.pos_avg[currentIndex+6], data.pos_avg[currentIndex+7])
+            newDict["pos_avg"]["I_TOP"] = (data.pos_avg[currentIndex+8], data.pos_avg[currentIndex+9])
+            newDict["pos_avg"]["I_BOTTOM"] = (data.pos_avg[currentIndex+10], data.pos_avg[currentIndex+11])
+            newDict["pos_avg"]["I_LEFT"] = (data.pos_avg[currentIndex+12], data.pos_avg[currentIndex+13])
+            newDict["pos_avg"]["I_RIGHT"] = (data.pos_avg[currentIndex+14], data.pos_avg[currentIndex+15])
+
+            self.edge_data.append(newDict)
+            currentIndex+=16
 
 ################################################################################
 #Tests
