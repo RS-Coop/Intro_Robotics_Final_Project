@@ -103,7 +103,7 @@ class SwarmController:
                 self.move_onto_line() #Move into position over new line
                 return False
             elif self.current_state == G.LAND:
-                self.land_swarm() #Land the drones
+                self.land() #Land the drones
                 return True
             self.run_bool = False
 
@@ -113,10 +113,13 @@ class SwarmController:
 
     def take_off(self):
         if not self.has_launched:
-            self.launch_swarm()
+            self.takeoff_drone()
 
         if self.qr_data["centroid"] != (0, 0):
             self.current_state = G.SEARCH_QR
+
+    def land(self):
+        self.land_drone()
 
     def search_qr(self):
         if self.qr_data["hasQR"] == True:
@@ -142,20 +145,11 @@ class SwarmController:
             print("", abs(x_err), ">", self.CENTER_X_ERROR, "or", abs(y_err), ">", self.CENTER_Y_ERROR)
 
             if abs(x_err) > self.CENTER_X_ERROR or abs(y_err) > self.CENTER_Y_ERROR:
-                cmd = DroneCommand()
-                #Determine the drone cmd
-                cmd.drone_id = self.drones[0] #Note this would need to be changed for multiple drones
-                #x movement
-                cmd.cmd_type.append(G.X)
-                cmd.intensity.append(0) #Will default to base intensity
-                cmd.direction.append(np.sign(y_err))
-                #y movement
-                cmd.cmd_type.append(G.Y)
-                cmd.intensity.append(0.1) #Will default to base intensity
-                cmd.direction.append(np.sign(x_err))
-
-                #Issue drone commands
-                self.drone_command_pub.publish(cmd)
+                # If the centroid is in the top of the image, move forward
+                # If the centroid is in the bottom of the image, move backward
+                # If the qr code is to the left, move left
+                # If the qr code is to the right, move right
+                pass
 
             else:
                 self.current_state = G.DETERMINE_NEXT_LINE
@@ -187,23 +181,17 @@ class SwarmController:
     #NOTE:
     def move_onto_line(self):
         if self.qr_data["centroid"] != (0, 0):
-            cmd = DroneCommand()
             centroid, angle = self.get_line_pose(self.current_edge_color)
 
             # If the line to follow is not detected, kill
             if (centroid == None and angle == None):
                 self.current_state = G.KILL
-
+            
             #If the line is not vertical
             elif self.is_line_vertical == False:
                 print("line not vertical")
                 #Rotate to get the line vertical
-
-                cmd.cmd_type.append("angular")
-                cmd.intensity.append(0) #Will default to base intensity
-                #Do some stuff here to turn
-                x_err = self.CENTER[1] - centroid[0]
-                cmd.direction.append(np.sign(x_err)) #Not sure about this agrument
+                self.turn_drone_right()
 
             #If the line is not centered
             elif self.is_line_centered == False:
@@ -211,23 +199,16 @@ class SwarmController:
                 #Shift left or right to center line
                 #We should just care about x error
                 x_err = self.CENTER[0]-centroid[1] #pos means left
-
-                cmd.cmd_type.append(G.Y)
-                cmd.intensity.append(0.1) #Will defualt to base intensity
-                cmd.direction.append(np.sign(x_err))
+                if x_err > 0:
+                    self.move_drone_left()
+                elif x_err < 0:
+                    self.move_drone_right()
 
             #If the line is vertical and centered
             else:
                 print("line vertical and centered")
                 #Move forward
-                cmd.cmd_type.append(G.X)
-                cmd.intensity.append(0) #Will default to base intensity
-                cmd.direction.append(1)
-                # #Change state
-                # self.current_state = G.FOLLOW_LINE
-
-            self.drone_command_pub.publish(cmd)
-
+                self.move_drone_forward()
         else:
             self.current_state = G.FOLLOW_LINE
 
@@ -241,39 +222,34 @@ class SwarmController:
     #NOTE: Not yet fully implemented
     def follow_line(self):
         if self.qr_data["hasQR"] == False or self.qr_data["value"] == self.current_qr_code:
-            cmd = DroneCommand()
-
             centroid, angle = self.get_line_pose(self.current_edge_color)
 
             # If the line to follow is not detected, kill
             if (centroid == None and angle == None):
                 self.current_state = G.KILL
+            
             #If the line is not centered
             elif self.is_line_centered == False:
+                print("line not centered")
                 #Shift left or right to center line
                 #We should just care about x error
-                x_err = self.CENTER[1]-centroid[1] #pos means left
-
-                cmd.cmd_type.append(G.Y)
-                cmd.intensity.append(0.1) #Will defualt to base intensity
-                cmd.direction.append(np.sign(x_err))
+                x_err = self.CENTER[0]-centroid[1] #pos means left
+                if x_err > 0:
+                    self.move_drone_left()
+                elif x_err < 0:
+                    self.move_drone_right()
 
             #If the line is not vertical
             elif self.is_line_vertical == False:
+                print("line not vertical")
                 #Rotate to get the line vertical
-                cmd.cmd_type.append(G.THETA)
-                cmd.intensity.append(0.1) #Will default to base intensity
-                cmd.direction.append(np.sign(angle)) #Not sure about this agrument
+                self.turn_drone_right()
 
             #If the line is vertical and centered
             else:
+                print("line vertical and centered")
                 #Move forward
-                cmd.cmd_type.append(G.X)
-                cmd.intensity.append(0) #Will default to base intensity
-                cmd.direction.append(1)
-
-            self.drone_command_pub.publish(cmd)
-
+                self.move_drone_forward()
         else:
             #Add the end vertex to the edge
             current_edge = self.get_edge_by_color(self.current_edge_color)
@@ -282,6 +258,16 @@ class SwarmController:
             #Change state
             self.current_state = G.CENTER_QR
             self.current_qr_code = self.qr_data["value"]
+
+    def takeoff_drone(self):
+        cmd = DroneMovementCommand()
+        cmd.movement_command =  G.DO_TAKEOFF
+        self.drone_command_pub.publish(cmd)
+
+    def land_drone(self):
+        cmd = DroneMovementCommand()
+        cmd.movement_command =  G.DO_LAND
+        self.drone_command_pub.publish(cmd)
 
     def move_drone_forward(self):
         cmd = DroneMovementCommand()
@@ -312,6 +298,14 @@ class SwarmController:
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.TURN_LEFT
         self.drone_command_pub.publish(cmd)
+
+    #Failsafe
+    def failsafe(self):
+        cmd = DroneMovementCommand()
+        cmd.movement_command =  G.DO_EMERGENCY
+        self.drone_command_pub.publish(cmd)
+
+        print('Failed Safely')
 
     # Return true if the line is veritical in the image with a certain error
     def is_line_vertical(self):
@@ -379,43 +373,6 @@ class SwarmController:
                 return centroid, theta
 
         return None, None
-
-    #Launches all drones in swarm
-    #DONE: Launch all drones in drones list
-    def launch_swarm(self):
-        self.current_state = G.CENTER_QR
-        self.current_qr_code = self.qr_data["value"]
-
-        for drone in self.drones:
-            print(drone)
-            cmd = DroneCommand()
-            cmd.drone_id = drone
-            cmd.cmd_type.append(G.TAKEOFF)
-            self.drone_command_pub.publish(cmd)
-
-        print('Launched')
-        self.current_state = G.SEARCH_QR
-
-    #Lands all drones in swarm
-    #DONE: Land all drones in drones list
-    def land_swarm(self):
-        for drone in self.drones:
-            cmd = DroneCommand()
-            cmd.drone_id = drone
-            cmd.cmd_type.append(G.LAND)
-            self.drone_command_pub.publish(cmd)
-
-        print('Landed')
-
-    #Failsafe
-    def failsafe(self):
-        for drone in self.drones:
-            cmd = DroneCommand()
-            cmd.drone_id = drone
-            cmd.cmd_type.append(G.EMERGENCY)
-            self.drone_command_pub.publish(cmd)
-
-        print('Failed Safely')
 
     # This helper funciton will add all of the edge colors in the edges array to the graph
     def add_edges_to_graph(self, edges):

@@ -6,6 +6,7 @@ import os
 # from Image_Processing import cv_processor as cvp
 from Globals import Globals as G
 from Drone_Control import swarm_control as sc
+from Drone_Control import swarm_control_copy as scc
 from Image_Processing import cv_processor as cvp
 
 import cv2 as cv
@@ -14,7 +15,7 @@ class TestLineFollowing(unittest.TestCase):
     parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     def setUp(self):
-        self.swarmC = sc.SwarmController()
+        self.swarmC = scc.SwarmController()
         self.swarmC.CENTER = G.MAX_CENTER
         self.swarmC.CENTER_X_ERROR = G.MAX_X_ERROR
         self.swarmC.CENTER_Y_ERROR = G.MAX_Y_ERROR

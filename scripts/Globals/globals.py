@@ -61,18 +61,22 @@ class Globals:
     BAND_THRESHOLD = 5
 
     #Drone commands
-    EMERGENCY = 'emergency'
-    TAKEOFF = 'takeoff'
-    LAND = 'land'
-    X = 'x'
-    Y = 'y'
-    Z = 'z'
-    THETA = 'theta'
+    # EMERGENCY = 'emergency'
+    # TAKEOFF = 'takeoff'
+    # LAND = 'land'
+    # X = 'x'
+    # Y = 'y'
+    # Z = 'z'
+    # THETA = 'theta'
 
     # DRONE MOVEMENTS
+     
+    DO_LAND = 0
     GO_FORWARD = 1
     GO_BACKWARD = 2
     GO_RIGHT = 3
     GO_LEFT = 4
     TURN_RIGHT = 5
     TURN_LEFT = 6
+    DO_EMERGENCY = 7
+    DO_TAKEOFF = 8
