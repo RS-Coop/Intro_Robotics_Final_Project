@@ -168,8 +168,7 @@ class SwarmController:
     #TODO: Move the drone onto
     #NOTE:
     def move_onto_line(self):
-        
-        if self.qr_data["hasQR"] == True:
+        if self.qr_data["centroid"] != (0, 0):
             cmd = DroneCommand()
             centroid, angle = self.get_line_pose(self.current_edge_color)
 
