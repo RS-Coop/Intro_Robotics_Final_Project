@@ -6,9 +6,13 @@ from Intro_Robotics_Final_Project.msg import QR, EdgeList, DroneCommand
 #This class deals with controlling all drones
 class SwarmController:
     # Region definitions for image
+    # This is the center of the images being input to drone controller
     CENTER = G.BEBOP_CENTER
+    # Allowable error from center
     CENTER_X_ERROR = G.QR_ERROR
     CENTER_Y_ERROR = G.QR_ERROR
+    # acceptable angle error off 0
+    ANGLE_ERROR = G.DEFAULT_ANGLE_ERROR
 
     #Drones in swarm (NOTE: Right now just 1)
     drones = ['/bebop']
@@ -213,14 +217,25 @@ class SwarmController:
             self.current_state = G.CENTER_QR
 
     # Return true if the line is veritical in the image with a certain error
-    def is_line_vertical(self):
-        pass
+    def is_line_vertical(self, line_color):
+        ((c_x, c_y), a) = get_line_pose(line_color)
+
+        if abs(a) > self.ANGLE_ERROR:
+            return True
+        return False
 
     # Return true if the line is centered in the image with a certain error
-    def is_line_centered(self):
-        pass
+    def is_line_centered(self, line_color):
+        ((c_x, c_y), a) = get_line_pose(line_color)
 
-    # Returns (centroid, angle)
+        x_err = self.CENTER[0]-c_x
+        y_err = centroid[1]-self.CENTER[1]
+
+        if abs(x_err) > self.CENTER_X_ERROR:
+            return True
+        return False
+
+    # Returns ((centroidx, y), angle)
     def get_line_pose(self, line_color):
         currentLine = get_edge_pose(line_color)
 

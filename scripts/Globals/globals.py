@@ -31,6 +31,9 @@ class Globals:
     # Center of bebop center
     BEBOP_CENTER = (320, 184)
 
+
+    DEFAULT_ANGLE_ERROR = 10
+
     # Max photos center
     MAX_CENTER = (1512, 2016)
     MAX_X_ERROR = 400
