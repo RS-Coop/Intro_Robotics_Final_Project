@@ -12,11 +12,7 @@ class Globals:
     NAVIGATE_TO_LINE = 7
     KILL = 99
 
-    # Error for QR BB
-    QR_ERROR = 100
 
-    # Angle bound to determine if theta needs correcting
-    ANGLE_BOUND = 25
 
     # Line Colors
     ORANGE = "orange"
@@ -32,7 +28,12 @@ class Globals:
 
     # Center of bebop center
     BEBOP_CENTER = (320, 184)
+    # Error for QR BB
+    QR_ERROR_X = 100
+    QR_ERROR_Y = 200
 
+    # Angle bound to determine if theta needs correcting
+    ANGLE_BOUND = 25
 
     DEFAULT_ANGLE_ERROR = 10
 
