@@ -258,9 +258,15 @@ class SwarmController:
 
     # Returns ((centroidx, y), angle)
     def get_line_pose(self, line_color):
-        currentLine = self.get_edge_pose(line_color)
-        zone_names_outer = [ "O_TOP", "O_BOTTOM", "O_LEFT" , "O_RIGHT"]
-        zone_names_inner = ["I_TOP", "I_BOTTOM", "I_LEFT", "I_RIGHT"]
+        currentLine = None
+        
+        for i in range(0, len(self.edge_data)):
+            if(self.edge_data[i]['color'] == line_color):
+                currentLine = self.edge_data[i]
+   
+        # print(currentLine)
+        zone_names_outer = ["outer top", "outer bottom", "outer left", "outer right"]
+        zone_names_inner = ["inner top", "inner bottom", "inner left", "inner right"]
 
         if currentLine == None:
             return None, None
@@ -270,27 +276,33 @@ class SwarmController:
 
             #Checking outer ring for two points
             for i in zone_names_outer:
-                if((currentLine["pos_avg"][i] is not (None,None)) and (firstPoint is (None,None))):
-                    firstPoint = currentLine["pos_avg"][i]
-                elif((currentLine["pos_avg"][i] is not (None,None)) and (secondPoint is (None,None))):
-                    secondPoint = currentLine["pos_avg"][i]
+                # print(currentLine["pos_avgs"][i])
+                # print(currentLine["pos_avgs"][i] != (None, None))
+
+                if((currentLine["pos_avgs"][i] != (None, None)) and (firstPoint == (None,None))):
+                    firstPoint = currentLine["pos_avgs"][i]
+                    # print("firstPoint", i)
+                elif((currentLine["pos_avgs"][i] != (None,None)) and (secondPoint == (None,None))):
+                    secondPoint = currentLine["pos_avgs"][i]
+                    # print("secondPoint", i)
                     break
 
             #A second point was not found in the outer ring, checking inner ring
-            if(firstPoint is not (None,None) and secondPoint is (None,None)):
+            if(firstPoint != (None,None) and secondPoint == (None,None)):
                 for i in zone_names_inner:
-                    if(currentLine["pos_avg"][i] is not (None,None)):
-                        secondPoint = currentLine["pos_avg"][i]
+                    if(currentLine["pos_avgs"][i] != (None,None)):
+                        secondPoint = currentLine["pos_avgs"][i]
+                        # print("secondPoint", i)
                         break
             
             #If either point is not found, not enough data to calculate centroid and angle, return None
-            if(firstPoint is (None,None) or secondPoint is (None,None)):
+            if(firstPoint == (None,None) or secondPoint == (None,None)):
                 return (None, None)
             else:
                 centroid = ((firstPoint[0] + secondPoint[0]) / 2 , (firstPoint[1] + secondPoint[1]) / 2)
-                x = np.abs(firstPoint[0] - secondPoint[0])
-                y = np.abs(firstPoint[1] - secondPoint[1])
-                theta = np.arccos( y / np.sqrt(x**2 + y**2))
+                x = firstPoint[0] - secondPoint[0]
+                y = firstPoint[1] - secondPoint[1]
+                theta = np.arctan2( y , x)
                 return (centroid, theta)
 
         return None, None
