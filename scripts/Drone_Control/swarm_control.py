@@ -10,6 +10,9 @@ class SwarmController:
     CENTER_X_ERROR = G.QR_ERROR_X
     CENTER_Y_ERROR = G.QR_ERROR_Y
 
+    # Has the drone already launched?
+    has_launched = False
+
     #Drones in swarm (NOTE: Right now just 1)
     drones = ['/bebop']
     #QR Code data from img processor
@@ -73,7 +76,7 @@ class SwarmController:
             self.kill() #Center qr code
             return False
         elif self.current_state == G.TAKEOFF:
-            self.launch_swarm() #Center qr code
+            self.take_off() #Center qr code
             return False
         elif self.current_state == G.SEARCH_QR:
             self.search_qr() #Center qr code
@@ -101,6 +104,13 @@ class SwarmController:
     # Kill the drones: Land imedietly
     def kill(self):
         self.land_swarm()
+
+    def take_off(self)
+        if not has_launched:
+            self.launch_swarm()
+        
+        if self.qr_data["centroid"] != (0, 0):
+            self.current_state = G.SEARCH_QR
 
     def search_qr(self):
         if self.qr_data["hasQR"] == True:
