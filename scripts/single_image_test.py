@@ -15,7 +15,7 @@ class ImageTester():
         print(self.file)
 
     def run(self):
-        img = cv.imread('../test_images/two_line_following_7.jpg')
+        img = cv.imread('../test_images/two_line_following_10.jpg')
         output_data = self.cv_proc.process_image(img)
         print("Output:", output_data)
 

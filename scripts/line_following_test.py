@@ -30,7 +30,7 @@ class TestLineFollowing(unittest.TestCase):
     def test_follow_one_line_1(self):
         self.assertEqual(self.swarmC.current_state, G.TAKEOFF)
         self.assertEqual(self.swarmC.current_edge_color, None)
-    
+
         print("HERE")
         self.simulate_swarm_callback(self.swarmC, self.parent_dir+"/test_images/blue_minus_45.jpg")
         self.swarmC.run_state()
@@ -95,11 +95,13 @@ class TestLineFollowing(unittest.TestCase):
 
     #### START
     def test_follow_one_line_2(self):
-        # Setup
-        self.swarmC = sc.SwarmController()
-        self.swarmC.CENTER = G.MAX_CENTER
-        self.swarmC.CENTER_X_ERROR = G.MAX_X_ERROR
-        self.swarmC.CENTER_Y_ERROR = G.MAX_Y_ERROR
+        del self.swarmC
+        # self.swarmC = sc.SwarmController()
+        # self.swarmC.CENTER = G.MAX_CENTER
+        # self.swarmC.CENTER_X_ERROR = G.MAX_X_ERROR
+        # self.swarmC.CENTER_Y_ERROR = G.MAX_Y_ERROR
+        self.setUp()
+        self.swarmC.graph_edges = []
 
         self.assertEqual(self.swarmC.current_state, G.TAKEOFF)
         self.assertEqual(self.swarmC.current_edge_color, None)
@@ -148,8 +150,12 @@ class TestLineFollowing(unittest.TestCase):
     #### DETERMINE_NEXT_LINE
     # def test_follow_one_line_3(self):
         self.simulate_swarm_callback(self.swarmC, self.parent_dir+"/test_images/two_line_following_10.jpg")
+        print("#"*40)
+        print(self.swarmC.graph_edges)
         self.swarmC.run_state()
         self.assertEqual(self.swarmC.current_state, G.MOVE_ONTO_LINE)
+        print("#"*40)
+        print(self.swarmC.graph_edges)
         self.assertEqual(self.swarmC.current_edge_color, G.BLUE)
 
     #### DETERMINE_NEXT_LINE
