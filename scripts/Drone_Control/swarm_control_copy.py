@@ -221,9 +221,17 @@ class SwarmController:
                 print("line not centered")
                 #Shift left or right to center line
                 #We should just care about x error
-                x_err = self.CENTER[0]-centroid[1] #pos means left
+                y_err = self.CENTER[0]-centroid[1] #pos means forward
+                x_err = self.CENTER[1]-centroid[0]  #pos means left
+
+                # If the centroid is in the top of the image, move forward
+                if y_err > 0 and abs(y_err > self.CENTER_Y_ERROR):
+                    self.move_drone_forward()
+                # If the centroid is in the bottom of the image, move backward
+                elif y_err < 0 and abs(y_err > self.CENTER_Y_ERROR):
+                    self.move_drone_backwards()
                 # If the qr code is to the left, move left
-                if x_err > 0 and abs(x_err > self.CENTER_X_ERROR):
+                elif x_err > 0 and abs(x_err > self.CENTER_X_ERROR):
                     self.move_drone_left()
                 # If the qr code is to the right, move right
                 elif x_err < 0 and abs(x_err > self.CENTER_X_ERROR):
@@ -258,14 +266,19 @@ class SwarmController:
                 print("line not centered")
                 #Shift left or right to center line
                 #We should just care about x error
-                x_err = self.CENTER[0]-centroid[1] #pos means left
-
+                # If the centroid is in the top of the image, move forward
+                if y_err > 0 and abs(y_err > self.CENTER_Y_ERROR):
+                    self.move_drone_forward()
+                # If the centroid is in the bottom of the image, move backward
+                elif y_err < 0 and abs(y_err > self.CENTER_Y_ERROR):
+                    self.move_drone_backwards()
                 # If the qr code is to the left, move left
-                if x_err > 0 and abs(x_err > self.CENTER_X_ERROR):
+                elif x_err > 0 and abs(x_err > self.CENTER_X_ERROR):
                     self.move_drone_left()
                 # If the qr code is to the right, move right
                 elif x_err < 0 and abs(x_err > self.CENTER_X_ERROR):
                     self.move_drone_right()
+
 
             #If the line is not vertical
             elif self.is_line_vertical(self.current_edge_color) == False:
