@@ -22,7 +22,8 @@ class DroneController:
     frame_count = 0
 
     # Amount to move forward
-    linear_movement_amount = 0.5
+    linear_x_movement_amount = 0.5
+    linear_y_movement_amount = 0.2
     angle_rotate_amount = 0.3
 
     #Initializes object with pubs and subs for speciic namespace
@@ -162,22 +163,22 @@ class DroneController:
 
     def fly_drone_forward(self):
         movement = Twist()
-        movement.linear.x = self.linear_movement_amount
+        movement.linear.x = self.linear_x_movement_amount
         self.pilot_pub.publish(movement)
 
     def fly_drone_backward(self):
         movement = Twist()
-        movement.linear.x = -self.linear_movement_amount
+        movement.linear.x = -self.linear_x_movement_amount
         self.pilot_pub.publish(movement)
 
     def fly_drone_right(self):
         movement = Twist()
-        movement.linear.y = -self.linear_movement_amount
+        movement.linear.y = -self.linear_y_movement_amount
         self.pilot_pub.publish(movement)
 
     def fly_drone_left(self):
         movement = Twist()
-        movement.linear.y = self.linear_movement_amount
+        movement.linear.y = self.linear_y_movement_amount
         self.pilot_pub.publish(movement)
 
     def rotate_drone_right(self):
