@@ -117,14 +117,15 @@ class SwarmController:
             self.current_state = G.SEARCH_QR
 
     def search_qr(self):
-        if self.qr_data["hasQR"] == True:
-            
+        if self.qr_data["hasQR"] == True and self.current_edge_color != None:
             current_edge = self.get_edge_by_color(self.current_edge_color)
             self.update_v2(self.current_edge_color, self.graph_edges, current_edge["v1"], self.qr_data["value"])
             self.current_edge_color = None
             
             #Change state
             self.current_qr_code = self.qr_data["value"]
+            self.current_state = G.CENTER_QR
+        elif self.current_edge_color == None:
             self.current_state = G.CENTER_QR
         else:
             # Try to get a good view of the QR code to eliminate glare
