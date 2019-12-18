@@ -4,6 +4,7 @@ from geometry_msgs.msg import Twist
 from sensor_msgs.msg import JointState, Image
 from Intro_Robotics_Final_Project.msg import DroneCommand, TaggedImage
 from Globals import Globals as G
+import time
 
 #This class deals with interactions between a single drone
 '''
@@ -16,6 +17,9 @@ class DroneController:
 
     post_takeoff = Twist()
     post_takeoff.linear.z = -0.1
+    last_image_time = 0.0
+
+    frame_count = 0
 
     #Initializes object with pubs and subs for speciic namespace
     def __init__(self, namespace='/bebop'):
@@ -103,7 +107,7 @@ class DroneController:
 
         rospy.sleep(2.0)
 
-        self.pilot_pub.publish(self.post_takeoff)
+        # self.pilot_pub.publish(self.post_takeoff)
 
         print("Flying")
 
@@ -147,11 +151,25 @@ class DroneController:
     #DONE: Gather image data, tag it and then publish it
     #NOTE: Havent tested this yet
     def image_callback(self, data):
-        drone_image = TaggedImage()
-        drone_image.image = data
-        drone_image.drone_id = self.ID
+        if time.time()-self.last_image_time > 1:
+            print('Publishing Image')
+            drone_image = TaggedImage()
+            drone_image.image = data
+            drone_image.drone_id = self.ID
 
-        self.camera_image_pub.publish(drone_image)
+            self.camera_image_pub.publish(drone_image)
+            self.last_image_time = time.time()
+
+    # def image_callback(self, data):
+    #     self.frame_count += 1
+    #     if self.frame_count > 100:
+    #         print('Publishing Image')
+    #         drone_image = TaggedImage()
+    #         drone_image.image = data
+    #         drone_image.drone_id = self.ID
+    #
+    #         self.camera_image_pub.publish(drone_image)
+    #         self.frame_count = 0
 
 ################################################################################
 #Tests

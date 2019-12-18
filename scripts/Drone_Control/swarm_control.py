@@ -9,6 +9,7 @@ class SwarmController:
     CENTER = G.BEBOP_CENTER
     CENTER_X_ERROR = G.QR_ERROR_X
     CENTER_Y_ERROR = G.QR_ERROR_Y
+    callback_count = 0
 
     # Has the drone already launched?
     has_launched = False
@@ -71,6 +72,7 @@ class SwarmController:
     def run_state(self):
         print("State: ", self.current_state)
         print("QR: ", self.qr_data)
+        print("Callbacks", self.callback_count)
         # print("Current Line: ", self.current_edge_color)
         if self.current_state == G.KILL:
             self.kill() #Center qr code
@@ -108,7 +110,7 @@ class SwarmController:
     def take_off(self):
         if not self.has_launched:
             self.launch_swarm()
-        
+
         if self.qr_data["centroid"] != (0, 0):
             self.current_state = G.SEARCH_QR
 
@@ -436,6 +438,7 @@ class SwarmController:
         self.qr_data["hasQR"] = data.existing
         self.qr_data["centroid"] = data.centroid
         self.qr_data["value"] = data.value
+        self.callback_count += 1
 
     def edge_callback(self, data):
         currentIndex = 0
