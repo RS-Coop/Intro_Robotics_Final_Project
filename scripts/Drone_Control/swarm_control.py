@@ -249,7 +249,7 @@ class SwarmController:
 
         else:
             #Add the end vertex to the edge
-            current_edge = self.get_edge_pose(self.current_edge_color)
+            current_edge = self.get_edge_by_color(self.current_edge_color)
             self.update_v2(self.current_edge_color, self.graph_edges, current_edge["v1"], self.qr_data["value"])
             self.current_edge_color = None
             #Change state
@@ -278,7 +278,7 @@ class SwarmController:
 
     # Returns centroid, angle
     def get_line_pose(self, line_color):
-        currentLine = get_edge_pose(line_color)
+        currentLine = self.get_line_by_color(line_color)
 
         # print(currentLine)
         zone_names_outer = ["outer top", "outer bottom", "outer left", "outer right"]
@@ -391,10 +391,17 @@ class SwarmController:
         return None
 
     #
-    def get_edge_pose(self, edge_color):
+    def get_edge_by_color(self, edge_color):
         for g_edge in self.graph_edges:
             if (g_edge["color"] == edge_color):
                 return g_edge
+        return None
+
+    #
+    def get_line_by_color(self, line_color):
+        for i in range(0, len(self.edge_data)):
+            if(self.edge_data[i]['color'] == line_color):
+                currentLine = self.edge_data[i]
         return None
 
 

@@ -342,7 +342,7 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC.current_edge_color = G.ORANGE
         thisSwarmC.current_state = G.MOVE_ONTO_LINE
         # Determine next line
-        thisSwarmC.update_v2(thisSwarmC.current_edge_color, thisSwarmC.graph_edges, thisSwarmC.get_edge_pose(thisSwarmC.current_edge_color)["v1"], thisSwarmC.qr_data["value"])
+        thisSwarmC.update_v2(thisSwarmC.current_edge_color, thisSwarmC.graph_edges, thisSwarmC.get_edge_by_color(thisSwarmC.current_edge_color)["v1"], thisSwarmC.qr_data["value"])
         # Check resulting state and values
         
         self.assertEqual(thisSwarmC.graph_edges, [{"color": G.ORANGE, "v1": 1, "v2": 2}])
@@ -357,7 +357,7 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC.current_edge_color = G.ORANGE
         thisSwarmC.current_state = G.MOVE_ONTO_LINE
         # Determine next line
-        thisSwarmC.update_v2(thisSwarmC.current_edge_color, thisSwarmC.graph_edges, thisSwarmC.get_edge_pose(thisSwarmC.current_edge_color)["v1"], thisSwarmC.qr_data["value"])
+        thisSwarmC.update_v2(thisSwarmC.current_edge_color, thisSwarmC.graph_edges, thisSwarmC.get_edge_by_color(thisSwarmC.current_edge_color)["v1"], thisSwarmC.qr_data["value"])
         # Check resulting state and values
         
         self.assertEqual(thisSwarmC.graph_edges, [{"color": G.ORANGE, "v1": 1, "v2": 2}, {"color": G.PURPLE, "v1": 1, "v2": None}])
