@@ -224,7 +224,7 @@ class SwarmController:
 
     # Returns centroid, angle
     def get_line_pose(self, line_color):
-        currentLine = get_edge_pose(line_color)
+        currentLine = self.get_edge_pose(line_color)
         zone_names_outer = [ "O_TOP", "O_BOTTOM", "O_LEFT" , "O_RIGHT"]
         zone_names_inner = ["I_TOP", "I_BOTTOM", "I_LEFT", "I_RIGHT"]
 
@@ -256,7 +256,7 @@ class SwarmController:
                 centroid = ((firstPoint[0] + secondPoint[0]) / 2 , (firstPoint[1] + secondPoint[1]) / 2)
                 x = np.abs(firstPoint[0] - secondPoint[0])
                 y = np.abs(firstPoint[1] - secondPoint[1])
-                theta = np.arcsin( x / np.sqrt(x**2 + y**2))
+                theta = np.arccos( y / np.sqrt(x**2 + y**2))
                 return (centroid, theta)
 
         return None, None
