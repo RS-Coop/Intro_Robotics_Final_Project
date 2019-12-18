@@ -150,24 +150,44 @@ class SwarmController:
     def move_onto_line(self):
         if self.qr_data["hasQR"] == True:
             cmd = DroneCommand()
-            # for edge in self.edge_data:
-            #     if edge["color"] == self.current_edge_color:
-            #         angle = edge["angle"]
-            #         break
+            
+            #If the line is not vertical
+            if self.is_line_vertical == False:
+                #Rotate to get the line vertical
+                centroid, angle = self.get_line_pose(self.current_edge_color)
 
-            # if angle > 10:
-            #     #angular adjustment
-            #     cmd.cmd_type.append("angular")
-            #     cmd.intensity.append(0) #Will default to base intensity
-            #     cmd.direction.append(np.sign(angle))
+                cmd.cmd_type.append("angular")
+                cmd.intensity.append(0) #Will default to base intensity
+                cmd.direction.append() #Not sure about this agrument
+            #If the line is not centered
+            elif self.is_line_centered == False:
+                #Shift left or right to center line
+                centroid, angle = self.get_line_pose(self.current_edge_color)
+                #We should just care about x error
+                x_err = self.CENTER[1]-centroid[1] #pos means left
 
-            # else:
-            #     cmd.cmd_type.append("x")
-            #     cmd.intensity.append(1) #Will default to base intensity
-            #     cmd.direction.append(1)
+                cmd.cmd_type.append("y")
+                cmd.intensity.append(0) #Will defualt to base intensity
+                cmd.direction.append(np.sign(x_err))
+
+            #If the line is vertical and centered
+            else:
+                #Move forward
+                cmd.cmd_type.append("x")
+                cmd.intensity.append(0) #Will default to base intensity
+                cmd.direction.append(1)
+                #Change state
+                self.current_state = G.CENTER_QR
+
+            self.drone_command_pub.publish(cmd)
 
         else:
-            self.current_state = G.FOLLOW_LINE
+            #Add the end vertex to the edge
+            current_edge = self.get_edge_pose(self.current_edge_color)
+            self.update_v2(self.current_edge_color, self.graph_edges, current_edge["v1"], self.qr_data["value"])
+            self.current_edge_color = None
+            #Change state
+            self.current_state = G.CENTER_QR
 
     #Dispatches drone from a vertex to a edge
     #TODO: Select an edge leaving the vertex and go there
@@ -179,7 +199,6 @@ class SwarmController:
     #NOTE: Not yet fully implemented
     def follow_line(self):
         if self.qr_data["hasQR"] == False:
-
             cmd = DroneCommand()
             #If the line is not centered
             if self.is_line_centered == False:
