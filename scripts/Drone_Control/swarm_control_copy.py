@@ -204,6 +204,7 @@ class SwarmController:
     def move_onto_line(self):
         if self.qr_data["centroid"] != (0, 0):
             centroid, angle = self.get_line_pose(self.current_edge_color)
+            #angle -= 90
             print("Centroid: ", centroid, ", Angle: ", angle)
 
             # If the line to follow is not detected, kill
@@ -216,7 +217,7 @@ class SwarmController:
                 #Rotate to get the line vertical
                 if angle > 0 and abs(angle) > self.ANGLE_ERROR:
                     self.turn_drone_left()
-                elif angle < 0 and abs(angle) > self.ANGLE_ERROR::
+                elif angle < 0 and abs(angle) > self.ANGLE_ERROR:
                     self.turn_drone_right()
 
             #If the line is not centered
@@ -259,6 +260,7 @@ class SwarmController:
     def follow_line(self):
         if self.qr_data["centroid"] == (0, 0) or self.qr_data["value"] == self.current_qr_code:
             centroid, angle = self.get_line_pose(self.current_edge_color)
+            #angle -= 90
 
             # If the line to follow is not detected, kill
             if (centroid == None and angle == None):
@@ -290,7 +292,7 @@ class SwarmController:
                 # Angle greater than zero, turn left
                 if angle > 0 and abs(angle) > self.ANGLE_ERROR:
                     self.turn_drone_left()
-                elif angle < 0 and abs(angle) > self.ANGLE_ERROR::
+                elif angle < 0 and abs(angle) > self.ANGLE_ERROR:
                     self.turn_drone_right()
 
             #If the line is vertical and centered
@@ -367,7 +369,7 @@ class SwarmController:
     def is_line_vertical(self, line_color):
         centroid, angle = self.get_line_pose(line_color)
 
-        if abs(angle) > self.ANGLE_ERROR:
+        if abs(angle) < self.ANGLE_ERROR:
             return True
 
         return False
@@ -491,6 +493,7 @@ class SwarmController:
 
     def edge_callback(self, data):
         currentIndex = 0
+        self.edge_data = []
         for i in range(0, len(data.colors), 16):
 
             newDict = {
