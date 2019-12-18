@@ -48,6 +48,8 @@ class SwarmController:
     current_edge_color = None
     current_qr_code = None
 
+    run_bool = False
+
     def __init__(self, namespace='/swarm'):
         #Publishers
         self.drone_command_pub = rospy.Publisher(namespace+'/drone_command', DroneCommand, queue_size=1)
@@ -70,38 +72,40 @@ class SwarmController:
 
     # Run based off state, if state is land, return true
     def run_state(self):
-        print("State: ", self.current_state)
-        print("QR: ", self.qr_data)
-        print("Callbacks", self.callback_count)
-        # print("Current Line: ", self.current_edge_color)
-        if self.current_state == G.KILL:
-            self.kill() #Center qr code
-            return False
-        elif self.current_state == G.TAKEOFF:
-            self.take_off() #Center qr code
-            return False
-        elif self.current_state == G.SEARCH_QR:
-            self.search_qr() #Center qr code
-            return False
-        elif self.current_state == G.CENTER_QR:
-            self.center_qr() #Center qr code
-            return False
-        elif self.current_state == G.DETERMINE_NEXT_LINE:
-            self.determine_next_line() #Choose a new line to follow
-            return False
-        #NOTE: Not yet being used
-        elif self.current_state == G.NAVIGATE_TO_LINE:
-            self.navigate_to_line()
-            return False
-        elif self.current_state == G.FOLLOW_LINE:
-            self.follow_line() #Follow current edge
-            return False
-        elif self.current_state == G.MOVE_ONTO_LINE:
-            self.move_onto_line() #Move into position over new line
-            return False
-        elif self.current_state == G.LAND:
-            self.land_swarm() #Land the drones
-            return True
+        if self.run_bool:
+            print("State: ", self.current_state)
+            print("QR: ", self.qr_data)
+            print("Callbacks", self.callback_count)
+            # print("Current Line: ", self.current_edge_color)
+            if self.current_state == G.KILL:
+                self.kill() #Center qr code
+                return False
+            elif self.current_state == G.TAKEOFF:
+                self.take_off() #Center qr code
+                return False
+            elif self.current_state == G.SEARCH_QR:
+                self.search_qr() #Center qr code
+                return False
+            elif self.current_state == G.CENTER_QR:
+                self.center_qr() #Center qr code
+                return False
+            elif self.current_state == G.DETERMINE_NEXT_LINE:
+                self.determine_next_line() #Choose a new line to follow
+                return False
+            #NOTE: Not yet being used
+            elif self.current_state == G.NAVIGATE_TO_LINE:
+                self.navigate_to_line()
+                return False
+            elif self.current_state == G.FOLLOW_LINE:
+                self.follow_line() #Follow current edge
+                return False
+            elif self.current_state == G.MOVE_ONTO_LINE:
+                self.move_onto_line() #Move into position over new line
+                return False
+            elif self.current_state == G.LAND:
+                self.land_swarm() #Land the drones
+                return True
+            self.run_bool = False
 
     # Kill the drones: Land imedietly
     def kill(self):
@@ -439,6 +443,7 @@ class SwarmController:
         self.qr_data["centroid"] = data.centroid
         self.qr_data["value"] = data.value
         self.callback_count += 1
+        self.run_bool = True
 
     def edge_callback(self, data):
         currentIndex = 0
@@ -477,6 +482,7 @@ class SwarmController:
 
             self.edge_data.append(newDict)
             currentIndex+=16
+        self.run_bool = True
 
 ################################################################################
 #Tests
