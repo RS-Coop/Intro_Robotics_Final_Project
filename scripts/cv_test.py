@@ -114,12 +114,15 @@ class TestImageProcessing(unittest.TestCase):
     # Identify 2 edges coming out of a vertex
     # Requires an image of a centered QR code with two colors of tape coming out of it
     def test_identify_two_edges(self):
-        img = cv.imread(self.parent_dir+"/test_images/2_edge.jpg")
+        img = cv.imread(self.parent_dir+"/test_images/two_line_following_1.jpg")
         # img = cv.resize(img, (640, 368))
         self.assertEqual(len(self.cv_processor.process_image(img)["edges"]), 2)
     
     def test_QR_blob(self):
         img = cv.imread(self.parent_dir+"/test_images/one_line_following_7.jpg")
+        self.assertEqual(self.cv_processor.process_image(img)["qr"]["hasQR"], False)
+        self.assertNotEqual(self.cv_processor.process_image(img)["qr"]["centroid"], False)
+        img = cv.imread(self.parent_dir+"/test_images/one_line_following_6.jpg")
         self.assertEqual(self.cv_processor.process_image(img)["qr"]["hasQR"], False)
         self.assertNotEqual(self.cv_processor.process_image(img)["qr"]["centroid"], False)
 
