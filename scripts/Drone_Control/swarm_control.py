@@ -74,6 +74,9 @@ class SwarmController:
         elif self.current_state == G.TAKEOFF:
             self.launch_swarm() #Center qr code
             return False
+        elif self.current_state == G.SEARCH_QR:
+            self.search_qr() #Center qr code
+            return False
         elif self.current_state == G.CENTER_QR:
             self.center_qr() #Center qr code
             return False
@@ -97,6 +100,14 @@ class SwarmController:
     # Kill the drones: Land imedietly
     def kill(self):
         self.land_swarm()
+
+    def search_qr(self):
+        if self.qr_data["hasQR"] == True:
+            current_qr_code = self.qr_data["value"]
+            self.current_state = G.CENTER_QR
+        else:
+            # Try to get a good view of the QR code to eliminate glare
+            pass
 
     #Centers the drone over the QR code
     #DONE: Based on the centroid move the drone
@@ -336,7 +347,7 @@ class SwarmController:
             self.drone_command_pub.publish(cmd)
 
         print('Launched')
-        self.current_state = G.CENTER_QR
+        self.current_state = G.SEARCH_QR
 
     #Lands all drones in swarm
     #DONE: Land all drones in drones list
