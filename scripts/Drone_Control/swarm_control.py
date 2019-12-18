@@ -51,7 +51,7 @@ class SwarmController:
         self.qr_sub = rospy.Subscriber(namespace+'/qr_code', QR, self.qr_callback)
         self.edges_sub = rospy.Subscriber(namespace+'/edges', EdgeList, self.edge_callback)
 
-        # sleep(1.0)
+        rospy.sleep(3.0)
 
 ################################################################################
 #Main methods and publishing methods
@@ -66,7 +66,7 @@ class SwarmController:
 
     # Run based off state, if state is land, return true
     def run_state(self):
-        print("State:", self.current_state)
+        # print("State:", self.current_state)
         if self.current_state == G.TAKEOFF:
             self.launch_swarm() #Center qr code
             return False
@@ -102,8 +102,8 @@ class SwarmController:
             x_err = self.CENTER[0]-centroid[0] #pos means forward
             y_err = self.CENTER[1]-centroid[1]  #pos means left
 
-            print("XERR:", x_err, "YERR:", y_err)
-            print("", abs(x_err), ">", self.CENTER_X_ERROR, "or", abs(y_err), ">", self.CENTER_Y_ERROR)
+            # print("XERR:", x_err, "YERR:", y_err)
+            # print("", abs(x_err), ">", self.CENTER_X_ERROR, "or", abs(y_err), ">", self.CENTER_Y_ERROR)
 
             if abs(x_err) > self.CENTER_X_ERROR or abs(y_err) > self.CENTER_Y_ERROR:
                 cmd = DroneCommand()
@@ -129,12 +129,14 @@ class SwarmController:
     def determine_next_line(self):
         # Add the currently visible lines to the graph
         self.add_edges_to_graph(self.edge_data)
+        # print("Graph:", self.graph_edges)
 
         # If there is an unexplored edge out of the current vertex, switch to line following state
         for edge in self.edge_data:
             # Get the current edge in graph_edges
-            existingEdge = self.get_edge_in_graph(edge["color"], self.graph_edges, self.qr_data["value"])
+            existingEdge = self.get_edge_in_graph(edge["color"], self.graph_edges, self.current_qr_code)
             # If the current edge started at the current QR (has it for v1 instaed of v2) then explore it
+            # print(existingEdge)
             if existingEdge != None and existingEdge["v2"] == None:
                 self.current_edge_color = existingEdge["color"]
                 self.current_state = G.MOVE_ONTO_LINE
@@ -152,6 +154,7 @@ class SwarmController:
 
             #If the line is not vertical
             if self.is_line_vertical == False:
+                print("line not vertical")
                 #Rotate to get the line vertical
                 centroid, angle = self.get_line_pose(self.current_edge_color)
 
@@ -163,6 +166,7 @@ class SwarmController:
 
             #If the line is not centered
             elif self.is_line_centered == False:
+                print("line not centered")
                 #Shift left or right to center line
                 centroid, angle = self.get_line_pose(self.current_edge_color)
                 #We should just care about x error
@@ -174,12 +178,13 @@ class SwarmController:
 
             #If the line is vertical and centered
             else:
+                print("line vertical and centered")
                 #Move forward
                 cmd.cmd_type.append("x")
                 cmd.intensity.append(0) #Will default to base intensity
                 cmd.direction.append(1)
-                #Change state
-                self.current_state = G.CENTER_QR
+                # #Change state
+                # self.current_state = G.FOLLOW_LINE
 
             self.drone_command_pub.publish(cmd)
 
@@ -196,7 +201,6 @@ class SwarmController:
     #NOTE: Not yet fully implemented
     def follow_line(self):
         if self.qr_data["hasQR"] == False:
-            self.current_qr_code = None
             cmd = DroneCommand()
             #If the line is not centered
             if self.is_line_centered == False:
@@ -310,14 +314,17 @@ class SwarmController:
     #DONE: Launch all drones in drones list
     def launch_swarm(self):
         self.current_state = G.CENTER_QR
+        self.current_qr_code = self.qr_data["value"]
 
         for drone in self.drones:
+            print(drone)
             cmd = DroneCommand()
             cmd.drone_id = drone
             cmd.cmd_type.append(G.TAKEOFF)
             self.drone_command_pub.publish(cmd)
 
-        rospy.sleep(2.0)
+        print('Launched')
+        self.current_state = G.CENTER_QR
 
     #Lands all drones in swarm
     #DONE: Land all drones in drones list
@@ -328,6 +335,8 @@ class SwarmController:
             cmd.cmd_type.append(G.LAND)
             self.drone_command_pub.publish(cmd)
 
+        print('Landed')
+
     #Failsafe
     def failsafe(self):
         for drone in self.drones:
@@ -336,18 +345,20 @@ class SwarmController:
             cmd.cmd_type.append(G.EMERGENCY)
             self.drone_command_pub.publish(cmd)
 
+        print('Failed Safely')
+
     # This helper funciton will add all of the edge colors in the edges array to the graph
     def add_edges_to_graph(self, edges):
         try:
             for edge in edges:
-                edgeFromGraph = self.get_edge_in_graph(edge["color"], self.graph_edges, self.qr_data["value"])
+                edgeFromGraph = self.get_edge_in_graph(edge["color"], self.graph_edges, self.current_qr_code)
                 # If there is no matching edge in the graph:
                 if(edgeFromGraph == None):
-                    # if self.qr_data["value"] != 0:
-                    #     new_edge = {"color": edge["color"], "v1": self.qr_data["value"], "v2": None}
+                    # if self.current_qr_code != 0:
+                    #     new_edge = {"color": edge["color"], "v1": self.current_qr_code, "v2": None}
                     # else:
                     #     new_edge = {"color": edge["color"], "v1": self.current_qr_code, "v2": None}
-                    new_edge = {"color": edge["color"], "v1": self.qr_data["value"], "v2": None}
+                    new_edge = {"color": edge["color"], "v1": self.current_qr_code, "v2": None}
                     self.graph_edges.append(new_edge)
                     pass
         except:
@@ -402,22 +413,22 @@ class SwarmController:
                                     }
                       }
 
-            if (data.pos_avg[currentIndex], data.pos_avg[currentIndex+1]) == (0,0):
-                newDict["pos_avg"]["O_TOP"] = (data.pos_avg[currentIndex], data.pos_avg[currentIndex+1])
-            if (data.pos_avg[currentIndex+2], data.pos_avg[currentIndex+3]) == (0,0):
-                newDict["pos_avg"]["O_BOTTOM"] = (data.pos_avg[currentIndex+2], data.pos_avg[currentIndex+3])
-            if (data.pos_avg[currentIndex+4], data.pos_avg[currentIndex+5]) == (0,0):
-                newDict["pos_avg"]["O_LEFT"] = (data.pos_avg[currentIndex+4], data.pos_avg[currentIndex+5])
-            if (data.pos_avg[currentIndex+6], data.pos_avg[currentIndex+7]) == (0,0):
-                newDict["pos_avg"]["O_RIGHT"] = (data.pos_avg[currentIndex+6], data.pos_avg[currentIndex+7])
-            if (data.pos_avg[currentIndex+8], data.pos_avg[currentIndex+9]) == (0,0):
-                newDict["pos_avg"]["I_TOP"] = (data.pos_avg[currentIndex+8], data.pos_avg[currentIndex+9])
-            if (data.pos_avg[currentIndex+10], data.pos_avg[currentIndex+11]) == (0,0):
-                newDict["pos_avg"]["I_BOTTOM"] = (data.pos_avg[currentIndex+10], data.pos_avg[currentIndex+11])
-            if (data.pos_avg[currentIndex+12], data.pos_avg[currentIndex+13]) == (0,0):
-                newDict["pos_avg"]["I_LEFT"] = (data.pos_avg[currentIndex+12], data.pos_avg[currentIndex+13])
-            if (data.pos_avg[currentIndex+14], data.pos_avg[currentIndex+15]) == (0,0):
-                newDict["pos_avg"]["I_RIGHT"] = (data.pos_avg[currentIndex+14], data.pos_avg[currentIndex+15])
+            if (data.pos_avgs[currentIndex], data.pos_avgs[currentIndex+1]) == (0,0):
+                newDict["pos_avg"]["O_TOP"] = (data.pos_avgs[currentIndex], data.pos_avgs[currentIndex+1])
+            if (data.pos_avgs[currentIndex+2], data.pos_avgs[currentIndex+3]) == (0,0):
+                newDict["pos_avg"]["O_BOTTOM"] = (data.pos_avgs[currentIndex+2], data.pos_avgs[currentIndex+3])
+            if (data.pos_avgs[currentIndex+4], data.pos_avgs[currentIndex+5]) == (0,0):
+                newDict["pos_avg"]["O_LEFT"] = (data.pos_avgs[currentIndex+4], data.pos_avgs[currentIndex+5])
+            if (data.pos_avgs[currentIndex+6], data.pos_avgs[currentIndex+7]) == (0,0):
+                newDict["pos_avg"]["O_RIGHT"] = (data.pos_avgs[currentIndex+6], data.pos_avgs[currentIndex+7])
+            if (data.pos_avgs[currentIndex+8], data.pos_avgs[currentIndex+9]) == (0,0):
+                newDict["pos_avg"]["I_TOP"] = (data.pos_avgs[currentIndex+8], data.pos_avgs[currentIndex+9])
+            if (data.pos_avgs[currentIndex+10], data.pos_avgs[currentIndex+11]) == (0,0):
+                newDict["pos_avg"]["I_BOTTOM"] = (data.pos_avgs[currentIndex+10], data.pos_avgs[currentIndex+11])
+            if (data.pos_avgs[currentIndex+12], data.pos_avgs[currentIndex+13]) == (0,0):
+                newDict["pos_avg"]["I_LEFT"] = (data.pos_avgs[currentIndex+12], data.pos_avgs[currentIndex+13])
+            if (data.pos_avgs[currentIndex+14], data.pos_avgs[currentIndex+15]) == (0,0):
+                newDict["pos_avg"]["I_RIGHT"] = (data.pos_avgs[currentIndex+14], data.pos_avgs[currentIndex+15])
 
             self.edge_data.append(newDict)
             currentIndex+=16

@@ -9,7 +9,7 @@ rospy.init_node('Swarm')
 swarm = SwarmController()
 
 #Handler for rospy shutdown
-rospy.on_shutdown(swarm.failsafe())
+rospy.on_shutdown(swarm.failsafe)
 
 print("Swarm ready")
 
