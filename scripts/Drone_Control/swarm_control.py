@@ -129,12 +129,14 @@ class SwarmController:
     def determine_next_line(self):
         # Add the currently visible lines to the graph
         self.add_edges_to_graph(self.edge_data)
+        print("Graph:", self.graph_edges)
 
         # If there is an unexplored edge out of the current vertex, switch to line following state
         for edge in self.edge_data:
             # Get the current edge in graph_edges
-            existingEdge = self.get_edge_in_graph(edge["color"], self.graph_edges, self.qr_data["value"])
+            existingEdge = self.get_edge_in_graph(edge["color"], self.graph_edges, self.current_qr_code)
             # If the current edge started at the current QR (has it for v1 instaed of v2) then explore it
+            print(existingEdge)
             if existingEdge != None and existingEdge["v2"] == None:
                 self.current_edge_color = existingEdge["color"]
                 self.current_state = G.MOVE_ONTO_LINE
@@ -196,7 +198,6 @@ class SwarmController:
     #NOTE: Not yet fully implemented
     def follow_line(self):
         if self.qr_data["hasQR"] == False:
-            self.current_qr_code = None
             cmd = DroneCommand()
             #If the line is not centered
             if self.is_line_centered == False:
@@ -339,15 +340,15 @@ class SwarmController:
     # This helper funciton will add all of the edge colors in the edges array to the graph
     def add_edges_to_graph(self, edges):
         try:
-            for edge in edges:
-                edgeFromGraph = self.get_edge_in_graph(edge["color"], self.graph_edges, self.qr_data["value"])
+            for edge in edges:  
+                edgeFromGraph = self.get_edge_in_graph(edge["color"], self.graph_edges, self.current_qr_code)
                 # If there is no matching edge in the graph:
                 if(edgeFromGraph == None):
-                    # if self.qr_data["value"] != 0:
-                    #     new_edge = {"color": edge["color"], "v1": self.qr_data["value"], "v2": None}
+                    # if self.current_qr_code != 0:
+                    #     new_edge = {"color": edge["color"], "v1": self.current_qr_code, "v2": None}
                     # else:
                     #     new_edge = {"color": edge["color"], "v1": self.current_qr_code, "v2": None}
-                    new_edge = {"color": edge["color"], "v1": self.qr_data["value"], "v2": None}
+                    new_edge = {"color": edge["color"], "v1": self.current_qr_code, "v2": None}
                     self.graph_edges.append(new_edge)
                     pass
         except:
