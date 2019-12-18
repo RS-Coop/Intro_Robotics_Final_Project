@@ -350,6 +350,7 @@ class SwarmController:
                 g_edge["v2"] = qrValue
         return None
 
+    # 
     def get_edge_pose(self, edge_color):
         for g_edge in self.graph_edges:
             if (g_edge["color"] == edge_color):
