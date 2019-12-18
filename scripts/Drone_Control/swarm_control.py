@@ -119,8 +119,8 @@ class SwarmController:
             current_qr_code = self.qr_data["value"]
             centroid = self.qr_data["centroid"]
 
-            y_err = self.CENTER[0]-centroid[0] #pos means forward
-            x_err = self.CENTER[1]-centroid[1]  #pos means left
+            y_err = self.CENTER[0]-centroid[1] #pos means forward
+            x_err = self.CENTER[1]-centroid[0]  #pos means left
 
             print("XERR:", x_err, "YERR:", y_err)
             print("", abs(x_err), ">", self.CENTER_X_ERROR, "or", abs(y_err), ">", self.CENTER_Y_ERROR)
@@ -186,7 +186,7 @@ class SwarmController:
                 cmd.cmd_type.append("angular")
                 cmd.intensity.append(0) #Will default to base intensity
                 #Do some stuff here to turn
-                x_err = self.CENTER[0] - centroid[0]
+                x_err = self.CENTER[1] - centroid[0]
                 cmd.direction.append(np.sign(x_err)) #Not sure about this agrument
 
             #If the line is not centered
@@ -194,7 +194,7 @@ class SwarmController:
                 print("line not centered")
                 #Shift left or right to center line
                 #We should just care about x error
-                x_err = self.CENTER[1]-centroid[1] #pos means left
+                x_err = self.CENTER[0]-centroid[1] #pos means left
 
                 cmd.cmd_type.append(G.Y)
                 cmd.intensity.append(0.1) #Will defualt to base intensity
