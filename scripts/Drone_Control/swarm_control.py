@@ -295,9 +295,9 @@ class SwarmController:
                 return None, None
             else:
                 centroid = ((firstPoint[0] + secondPoint[0]) / 2 , (firstPoint[1] + secondPoint[1]) / 2)
-                x = firstPoint[0] - secondPoint[0]
-                y = firstPoint[1] - secondPoint[1]
-                theta = np.arctan2(y , x)
+                x = secondPoint[0] - firstPoint[0]
+                y = secondPoint[1] - firstPoint[1] 
+                theta = np.degrees(np.arctan2(x , y))
                 return centroid, theta
 
         return None, None
