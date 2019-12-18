@@ -42,6 +42,7 @@ class SwarmController:
     current_state = G.TAKEOFF
     #Color of current edge being followed
     current_edge_color = None
+    current_qr_code = None
 
     def __init__(self, namespace='/swarm'):
         #Publishers
@@ -94,32 +95,34 @@ class SwarmController:
     #TODO: Test this
     #NOTE: This will be within some range of error, right now 10 pixels
     def center_qr(self):
-        centroid = self.qr_data["centroid"]
+        if self.qr_data["hasQR"] == True:
+            current_qr_code = self.qr_data["value"]
+            centroid = self.qr_data["centroid"]
 
-        x_err = self.CENTER[0]-centroid[0] #pos means forward
-        y_err = self.CENTER[1]-centroid[1]  #pos means left
+            x_err = self.CENTER[0]-centroid[0] #pos means forward
+            y_err = self.CENTER[1]-centroid[1]  #pos means left
 
-        print("XERR:", x_err, "YERR:", y_err)
-        print("", abs(x_err), ">", self.CENTER_X_ERROR, "or", abs(y_err), ">", self.CENTER_Y_ERROR)
+            print("XERR:", x_err, "YERR:", y_err)
+            print("", abs(x_err), ">", self.CENTER_X_ERROR, "or", abs(y_err), ">", self.CENTER_Y_ERROR)
 
-        if abs(x_err) > self.CENTER_X_ERROR or abs(y_err) > self.CENTER_Y_ERROR:
-            cmd = DroneCommand()
-            #Determine the drone cmd
-            cmd.drone_id = self.drones[0] #Note this would need to be changed for multiple drones
-            #x movement
-            cmd.cmd_type.append(G.X)
-            cmd.intensity.append(0) #Will default to base intensity
-            cmd.direction.append(np.sign(x_err))
-            #y movement
-            cmd.cmd_type.append(G.Y)
-            cmd.intensity.append(0) #Will default to base intensity
-            cmd.direction.append(np.sign(y_err))
+            if abs(x_err) > self.CENTER_X_ERROR or abs(y_err) > self.CENTER_Y_ERROR:
+                cmd = DroneCommand()
+                #Determine the drone cmd
+                cmd.drone_id = self.drones[0] #Note this would need to be changed for multiple drones
+                #x movement
+                cmd.cmd_type.append(G.X)
+                cmd.intensity.append(0) #Will default to base intensity
+                cmd.direction.append(np.sign(x_err))
+                #y movement
+                cmd.cmd_type.append(G.Y)
+                cmd.intensity.append(0) #Will default to base intensity
+                cmd.direction.append(np.sign(y_err))
 
-            #Issue drone commands
-            self.drone_command_pub.publish(cmd)
+                #Issue drone commands
+                self.drone_command_pub.publish(cmd)
 
-        else:
-            self.current_state = G.DETERMINE_NEXT_LINE
+            else:
+                self.current_state = G.DETERMINE_NEXT_LINE
 
     #Determines next line to follow out of the vertex
     #TODO:
@@ -193,7 +196,7 @@ class SwarmController:
     #NOTE: Not yet fully implemented
     def follow_line(self):
         if self.qr_data["hasQR"] == False:
-
+            self.current_qr_code = None
             cmd = DroneCommand()
             #If the line is not centered
             if self.is_line_centered == False:
@@ -231,6 +234,7 @@ class SwarmController:
             self.current_edge_color = None
             #Change state
             self.current_state = G.CENTER_QR
+            self.current_qr_code = self.qr_data["value"]
 
     # Return true if the line is veritical in the image with a certain error
     def is_line_vertical(self):
@@ -255,11 +259,11 @@ class SwarmController:
     # Returns centroid, angle
     def get_line_pose(self, line_color):
         currentLine = None
-        
+
         for i in range(0, len(self.edge_data)):
             if(self.edge_data[i]['color'] == line_color):
                 currentLine = self.edge_data[i]
-   
+
         # print(currentLine)
         zone_names_outer = ["outer top", "outer bottom", "outer left", "outer right"]
         zone_names_inner = ["inner top", "inner bottom", "inner left", "inner right"]
@@ -289,14 +293,14 @@ class SwarmController:
                         secondPoint = currentLine["pos_avgs"][i]
                         # print("secondPoint", i)
                         break
-            
+
             #If either point is not found, not enough data to calculate centroid and angle, return None
             if(firstPoint == (None,None) or secondPoint == (None,None)):
                 return None, None
             else:
                 centroid = ((firstPoint[0] + secondPoint[0]) / 2 , (firstPoint[1] + secondPoint[1]) / 2)
                 x = secondPoint[0] - firstPoint[0]
-                y = secondPoint[1] - firstPoint[1] 
+                y = secondPoint[1] - firstPoint[1]
                 theta = np.degrees(np.arctan2(x , y))
                 return centroid, theta
 
@@ -339,6 +343,10 @@ class SwarmController:
                 edgeFromGraph = self.get_edge_in_graph(edge["color"], self.graph_edges, self.qr_data["value"])
                 # If there is no matching edge in the graph:
                 if(edgeFromGraph == None):
+                    # if self.qr_data["value"] != 0:
+                    #     new_edge = {"color": edge["color"], "v1": self.qr_data["value"], "v2": None}
+                    # else:
+                    #     new_edge = {"color": edge["color"], "v1": self.current_qr_code, "v2": None}
                     new_edge = {"color": edge["color"], "v1": self.qr_data["value"], "v2": None}
                     self.graph_edges.append(new_edge)
                     pass
