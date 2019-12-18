@@ -23,7 +23,7 @@ class DroneController:
 
     # Amount to move forward
     linear_movement_amount = 0.3
-    angle_rotate_amount = 10
+    angle_rotate_amount = 0.3
 
     #Initializes object with pubs and subs for speciic namespace
     def __init__(self, namespace='/bebop'):
@@ -172,12 +172,12 @@ class DroneController:
 
     def fly_drone_right(self):
         movement = Twist()
-        movement.linear.y = self.linear_movement_amount
+        movement.linear.y = -self.linear_movement_amount
         self.pilot_pub.publish(movement)
 
     def fly_drone_left(self):
         movement = Twist()
-        movement.linear.y = -self.linear_movement_amount
+        movement.linear.y = self.linear_movement_amount
         self.pilot_pub.publish(movement)
 
     def rotate_drone_right(self):
@@ -218,7 +218,7 @@ class DroneController:
     ##### SUBSCRIBE CALLBACKS
     def drone_command_callback(self, data):
         movementCommand = data.command
-        
+
         self.run_movement_command(movementCommand)
 
     # def image_callback(self, data):

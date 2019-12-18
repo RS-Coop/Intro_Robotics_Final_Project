@@ -273,7 +273,7 @@ class SwarmController:
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.GO_FORWARD
         self.drone_command_pub.publish(cmd)
-        
+
     def move_drone_backwards(self):
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.GO_BACKWARD
@@ -283,7 +283,7 @@ class SwarmController:
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.GO_FORWARD
         self.drone_command_pub.publish(cmd)
-        
+
     def move_drone_left(self):
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.GO_BACKWARD
@@ -293,7 +293,7 @@ class SwarmController:
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.TURN_RIGHT
         self.drone_command_pub.publish(cmd)
-    
+
     def turn_drone_left(self):
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.TURN_LEFT
