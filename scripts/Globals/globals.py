@@ -13,10 +13,10 @@ class Globals:
     KILL = 99
 
     # Error for QR BB
-    QR_ERROR = 10
+    QR_ERROR = 100
 
     # Angle bound to determine if theta needs correcting
-    ANGLE_BOUND = 15
+    ANGLE_BOUND = 25
 
     # Line Colors
     ORANGE = "orange"

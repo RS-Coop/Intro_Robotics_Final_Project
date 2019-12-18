@@ -68,6 +68,7 @@ class SwarmController:
     def run_state(self):
         print("State: ", self.current_state)
         print("QR: ", self.qr_data)
+        # print("Current Line: ", self.current_edge_color)
         if self.current_state == G.KILL:
             self.kill() #Center qr code
             return False
@@ -158,6 +159,7 @@ class SwarmController:
             # print(existingEdge)
             if existingEdge != None and existingEdge["v2"] == None:
                 self.current_edge_color = existingEdge["color"]
+                print("Current edge color: ", self.current_edge_color)
                 self.current_state = G.MOVE_ONTO_LINE
                 return
         # If there are no unexplored edges out of the current vertex, and
@@ -175,12 +177,12 @@ class SwarmController:
             # If the line to follow is not detected, kill
             if (centroid == None and angle == None):
                 self.current_state = G.KILL
-                
+
             #If the line is not vertical
             elif self.is_line_vertical == False:
                 print("line not vertical")
                 #Rotate to get the line vertical
-                
+
 
                 cmd.cmd_type.append("angular")
                 cmd.intensity.append(0) #Will default to base intensity
@@ -289,6 +291,7 @@ class SwarmController:
     # Returns centroid, angle
     def get_line_pose(self, line_color):
         currentLine = self.get_line_by_color(line_color)
+        print("Line pose: ", currentLine)
 
         # print(currentLine)
         zone_names_outer = ["outer top", "outer bottom", "outer left", "outer right"]
