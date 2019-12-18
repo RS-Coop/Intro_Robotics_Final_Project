@@ -30,6 +30,11 @@ class TestLineFollowing(unittest.TestCase):
     def test_follow_one_line_1(self):
         self.assertEqual(self.swarmC.current_state, G.TAKEOFF)
         self.assertEqual(self.swarmC.current_edge_color, None)
+    
+        print("HERE")
+        self.simulate_swarm_callback(self.swarmC, self.parent_dir+"/test_images/two_line_following_1.jpg")
+        self.swarmC.run_state()
+        print("DONE")
 
     #### TAKEOFF
     # def test_follow_one_line_2(self):
@@ -50,6 +55,7 @@ class TestLineFollowing(unittest.TestCase):
         self.swarmC.run_state()
         self.assertEqual(self.swarmC.current_state, G.MOVE_ONTO_LINE)
         self.assertEqual(self.swarmC.current_edge_color, G.BLUE)
+
         '''
     #### MOVE_ONTO_LINE (qr code is still readable, but at bottom of image)
     # def test_follow_one_line_5(self):
@@ -57,7 +63,7 @@ class TestLineFollowing(unittest.TestCase):
         self.swarmC.run_state()
         self.assertEqual(self.swarmC.current_state, G.MOVE_ONTO_LINE)
         self.assertEqual(self.swarmC.current_edge_color, G.BLUE)
-'''
+        '''
 
     #### MOVE_ONTO_LINE (qr code is visible but not readabledeparting)
     # def test_follow_one_line_6(self):

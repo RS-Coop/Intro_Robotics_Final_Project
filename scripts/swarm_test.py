@@ -330,11 +330,13 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC = sc.SwarmController()
         # Set curr_state
         thisSwarmC.qr_data = {"hasQR" : False, "centroid" : (0, 0), "value" : 2}
-        thisSwarmC.edge_data = [{'color': 'blue', 'pos_avgs': {'outer right': (None, None), 'outer top': (1464, 1), 'outer left': (None, None), 'inner left': (None, None), 'inner right': (None, None), 'inner top': (1465, 434), 'outer bottom': (None, None), 'inner bottom': (None, None)}}]
+        thisSwarmC.edge_data = [{'color': 'orange', 'pos_avgs': {'outer right': (None, None), 'outer top': (None, None), 'outer left': (None, None), 'inner left': (None, None), 'inner right': (None, None), 'inner top': (None, None), 'outer bottom': (1594, 4029), 'inner bottom': (1607, 3575)}}, {'color': 'blue', 'pos_avgs': {'outer right': (None, None), 'outer top': (None, None), 'outer left': (1, 2116), 'inner left': (343, 2111), 'inner right': (None, None), 'inner top': (None, None), 'outer bottom': (None, None), 'inner bottom': (None, None)}}]
+        #thisSwarmC.edge_data = [{'color': 'orange', 'pos_avgs': {'outer right': (None, None), 'outer top': (1336, 1), 'outer left': (None, None), 'inner left': (None, None), 'inner right': (None, None), 'inner top': (1323, 455), 'outer bottom': (None, None), 'inner bottom': (None, None)}}, {'color': 'blue', 'pos_avgs': {'outer right': (3020, 3183), 'outer top': (None, None), 'outer left': (None, None), 'inner left': (None, None), 'inner right': (2680, 3190), 'inner top': (None, None), 'outer bottom': (None, None), 'inner bottom': (None, None)}}]
         thisSwarmC.graph_edges = [{"color": G.ORANGE, "v1": 1, "v2": None}, {"color": G.PURPLE, "v1": 1, "v2": None}]
         thisSwarmC.current_edge_color = G.BLUE
         thisSwarmC.current_state = G.FOLLOW_LINE
-        print("Pose:", thisSwarmC.get_line_pose('blue'))
+        print("Blue Pose:", thisSwarmC.get_line_pose('blue'))
+        print("Orange Pose:", thisSwarmC.get_line_pose('orange'))
         pass
 
 if __name__ == '__main__':
