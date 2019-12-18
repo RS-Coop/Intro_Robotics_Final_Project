@@ -28,6 +28,7 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC.graph_edges = []
         thisSwarmC.current_edge_color = None
         thisSwarmC.current_state = G.DETERMINE_NEXT_LINE
+        thisSwarmC.current_qr_code = 1
         # Determine next line
         thisSwarmC.determine_next_line()
         # Check resulting state and values
@@ -44,6 +45,7 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC.graph_edges = [{"color": G.ORANGE, "v1": 1, "v2": 2}]
         thisSwarmC.current_edge_color = None
         thisSwarmC.current_state = G.DETERMINE_NEXT_LINE
+        thisSwarmC.current_qr_code = 2
         # Determine next line
         thisSwarmC.determine_next_line()
         # Check resulting state and values
@@ -60,12 +62,30 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC.graph_edges = [{"color": G.ORANGE, "v1": 1, "v2": 2}]
         thisSwarmC.current_edge_color = None
         thisSwarmC.current_state = G.DETERMINE_NEXT_LINE
+        thisSwarmC.current_qr_code = 2
         # Determine next line
         thisSwarmC.determine_next_line()
         # Check resulting state and values
         self.assertEqual(thisSwarmC.graph_edges, [{"color": G.ORANGE, "v1": 1, "v2": 2}])
         self.assertEqual(thisSwarmC.current_edge_color, None)
         self.assertEqual(thisSwarmC.current_state, G.LAND)
+
+    def test_determine_line_no_qr_code(self):
+        # Instantiate swarm controller
+        thisSwarmC = sc.SwarmController()
+        # Set curr_state
+        thisSwarmC.qr_data = {"hasQR" : False, "centroid" : (0, 0), "value" : 0}
+        thisSwarmC.edge_data = [{"color" : G.ORANGE, "angle" : 90, "centroid" : (0, 0)}, {"color" : G.BLUE, "angle" : 90, "centroid" : (0, 0)}]
+        thisSwarmC.graph_edges = [{"color": G.ORANGE, "v1": 1, "v2": 2}]
+        thisSwarmC.current_qr_code = 2
+        thisSwarmC.current_edge_color = None
+        thisSwarmC.current_state = G.DETERMINE_NEXT_LINE
+        # Determine next line
+        thisSwarmC.determine_next_line()
+        # Check resulting state and values
+        self.assertEqual(thisSwarmC.graph_edges, [{"color": G.ORANGE, "v1": 1, "v2": 2}, {"color": G.BLUE, "v1": 2, "v2": None}])
+        self.assertEqual(thisSwarmC.current_edge_color, G.BLUE)
+        self.assertEqual(thisSwarmC.current_state, G.MOVE_ONTO_LINE)
 
     ###
     ### tests for center_qr
@@ -291,6 +311,25 @@ class TestSwarm(unittest.TestCase):
         self.assertEqual(self.swarm_controller.get_edge_in_graph(edge, graph, qrValue), None)
 
     ###
+    ### tests for add_edges_to_graph helper function
+    ###
+    def test_add_edges_to_graph_1(self):
+        # Instantiate swarm controller
+        thisSwarmC = sc.SwarmController()
+        # Set curr_state
+        thisSwarmC.qr_data = {"hasQR" : False, "centroid" : (0, 0), "value" : 0}
+        thisSwarmC.edge_data = [{"color" : G.ORANGE, "angle" : 90, "centroid" : (0, 0)}, {"color" : G.BLUE, "angle" : 90, "centroid" : (0, 0)}]
+        thisSwarmC.graph_edges = [{"color": G.ORANGE, "v1": 1, "v2": 2}]
+        thisSwarmC.current_qr_code = 2
+        thisSwarmC.current_edge_color = None
+        thisSwarmC.current_state = G.DETERMINE_NEXT_LINE
+        # Determine next line
+        thisSwarmC.add_edges_to_graph(thisSwarmC.edge_data)
+        # Check resulting state and values
+        self.assertEqual(thisSwarmC.graph_edges, [{"color": G.ORANGE, "v1": 1, "v2": 2}, {"color": G.BLUE, "v1": 2, "v2": None}])
+        # self.assertEqual(thisSwarmC.current_edge_color, G.BLUE)
+        # self.assertEqual(thisSwarmC.current_state, G.MOVE_ONTO_LINE)
+    ###
     ### tests for update_v2 helper function
     ###
     def test_update_v2_1(self):
@@ -330,8 +369,10 @@ class TestSwarm(unittest.TestCase):
         thisSwarmC = sc.SwarmController()
         # Set curr_state
         thisSwarmC.qr_data = {"hasQR" : False, "centroid" : (0, 0), "value" : 2}
-        thisSwarmC.edge_data = [{'color': 'orange', 'pos_avgs': {'outer right': (None, None), 'outer top': (None, None), 'outer left': (None, None), 'inner left': (None, None), 'inner right': (None, None), 'inner top': (None, None), 'outer bottom': (1594, 4029), 'inner bottom': (1607, 3575)}}, {'color': 'blue', 'pos_avgs': {'outer right': (None, None), 'outer top': (None, None), 'outer left': (1, 2116), 'inner left': (343, 2111), 'inner right': (None, None), 'inner top': (None, None), 'outer bottom': (None, None), 'inner bottom': (None, None)}}]
+        #thisSwarmC.edge_data = [{'color': 'orange', 'pos_avgs': {'outer right': (None, None), 'outer top': (None, None), 'outer left': (None, None), 'inner left': (None, None), 'inner right': (None, None), 'inner top': (None, None), 'outer bottom': (1594, 4029), 'inner bottom': (1607, 3575)}}, {'color': 'blue', 'pos_avgs': {'outer right': (None, None), 'outer top': (None, None), 'outer left': (1, 2116), 'inner left': (343, 2111), 'inner right': (None, None), 'inner top': (None, None), 'outer bottom': (None, None), 'inner bottom': (None, None)}}]
         #thisSwarmC.edge_data = [{'color': 'orange', 'pos_avgs': {'outer right': (None, None), 'outer top': (1336, 1), 'outer left': (None, None), 'inner left': (None, None), 'inner right': (None, None), 'inner top': (1323, 455), 'outer bottom': (None, None), 'inner bottom': (None, None)}}, {'color': 'blue', 'pos_avgs': {'outer right': (3020, 3183), 'outer top': (None, None), 'outer left': (None, None), 'inner left': (None, None), 'inner right': (2680, 3190), 'inner top': (None, None), 'outer bottom': (None, None), 'inner bottom': (None, None)}}]
+        #thisSwarmC.edge_data = [{'color': 'blue', 'pos_avgs': {'outer right': (3020, 775), 'outer top': (None, None), 'outer left': (2, 3359), 'inner left': (342, 3077), 'inner right': (2680, 1075), 'inner top': (None, None), 'outer bottom': (None, None), 'inner bottom': (None, None)}}]
+        thisSwarmC.edge_data = [{'color': 'blue', 'pos_avgs': {'outer right': (None, None), 'outer top': (671, 1), 'outer left': (None, None), 'inner left': (None, None), 'inner right': (None, None), 'inner top': (954, 342), 'outer bottom': (3255, 3020), 'inner bottom': (2955, 2680)}}]
         thisSwarmC.graph_edges = [{"color": G.ORANGE, "v1": 1, "v2": None}, {"color": G.PURPLE, "v1": 1, "v2": None}]
         thisSwarmC.current_edge_color = G.BLUE
         thisSwarmC.current_state = G.FOLLOW_LINE
