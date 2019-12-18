@@ -304,22 +304,22 @@ class SwarmController:
             secondPoint = (None, None)
 
             for i in zone_names_outer:
-                # print(currentLine["pos_avgs"][i])
-                # print(currentLine["pos_avgs"][i] != (None, None))
+                # print(currentLine["pos_avgs""][i])
+                # print(currentLine["pos_avgs""][i] != (None, None))
 
-                if((currentLine["pos_avgs"][i] != (None, None)) and (firstPoint == (None,None))):
-                    firstPoint = currentLine["pos_avgs"][i]
+                if((currentLine["pos_avgs""][i] != (None, None)) and (firstPoint == (None,None))):
+                    firstPoint = currentLine["pos_avgs""][i]
                     # print("firstPoint", i)
-                elif((currentLine["pos_avgs"][i] != (None,None)) and (secondPoint == (None,None))):
-                    secondPoint = currentLine["pos_avgs"][i]
+                elif((currentLine["pos_avgs""][i] != (None,None)) and (secondPoint == (None,None))):
+                    secondPoint = currentLine["pos_avgs""][i]
                     # print("secondPoint", i)
                     break
 
             #A second point was not found in the outer ring, checking inner ring
             if(firstPoint != (None,None) and secondPoint == (None,None)):
                 for i in zone_names_inner:
-                    if(currentLine["pos_avgs"][i] != (None,None)):
-                        secondPoint = currentLine["pos_avgs"][i]
+                    if(currentLine["pos_avgs""][i] != (None,None)):
+                        secondPoint = currentLine["pos_avgs""][i]
                         # print("secondPoint", i)
                         break
 
@@ -434,7 +434,7 @@ class SwarmController:
 
             newDict = {
                         "color" : data.colors[i],
-                        "pos_avg" : {
+                        "pos_avgs" : {
                                     'O_TOP' : (None,None),
                                     'O_BOTTOM' : (None,None),
                                     'O_LEFT' : (None,None),
@@ -446,22 +446,22 @@ class SwarmController:
                                     }
                       }
 
-            if (data.pos_avgs[currentIndex], data.pos_avgs[currentIndex+1]) == (0,0):
-                newDict["pos_avg"]["O_TOP"] = (data.pos_avgs[currentIndex], data.pos_avgs[currentIndex+1])
-            if (data.pos_avgs[currentIndex+2], data.pos_avgs[currentIndex+3]) == (0,0):
-                newDict["pos_avg"]["O_BOTTOM"] = (data.pos_avgs[currentIndex+2], data.pos_avgs[currentIndex+3])
-            if (data.pos_avgs[currentIndex+4], data.pos_avgs[currentIndex+5]) == (0,0):
-                newDict["pos_avg"]["O_LEFT"] = (data.pos_avgs[currentIndex+4], data.pos_avgs[currentIndex+5])
-            if (data.pos_avgs[currentIndex+6], data.pos_avgs[currentIndex+7]) == (0,0):
-                newDict["pos_avg"]["O_RIGHT"] = (data.pos_avgs[currentIndex+6], data.pos_avgs[currentIndex+7])
-            if (data.pos_avgs[currentIndex+8], data.pos_avgs[currentIndex+9]) == (0,0):
-                newDict["pos_avg"]["I_TOP"] = (data.pos_avgs[currentIndex+8], data.pos_avgs[currentIndex+9])
-            if (data.pos_avgs[currentIndex+10], data.pos_avgs[currentIndex+11]) == (0,0):
-                newDict["pos_avg"]["I_BOTTOM"] = (data.pos_avgs[currentIndex+10], data.pos_avgs[currentIndex+11])
-            if (data.pos_avgs[currentIndex+12], data.pos_avgs[currentIndex+13]) == (0,0):
-                newDict["pos_avg"]["I_LEFT"] = (data.pos_avgs[currentIndex+12], data.pos_avgs[currentIndex+13])
-            if (data.pos_avgs[currentIndex+14], data.pos_avgs[currentIndex+15]) == (0,0):
-                newDict["pos_avg"]["I_RIGHT"] = (data.pos_avgs[currentIndex+14], data.pos_avgs[currentIndex+15])
+            if (data.pos_avgs[currentIndex], data.pos_avgs[currentIndex+1]) != (0,0):
+                newDict["pos_avgs"]["O_TOP"] = (data.pos_avgs[currentIndex], data.pos_avgs[currentIndex+1])
+            if (data.pos_avgs[currentIndex+2], data.pos_avgs[currentIndex+3]) != (0,0):
+                newDict["pos_avgs"]["O_BOTTOM"] = (data.pos_avgs[currentIndex+2], data.pos_avgs[currentIndex+3])
+            if (data.pos_avgs[currentIndex+4], data.pos_avgs[currentIndex+5]) != (0,0):
+                newDict["pos_avgs"]["O_LEFT"] = (data.pos_avgs[currentIndex+4], data.pos_avgs[currentIndex+5])
+            if (data.pos_avgs[currentIndex+6], data.pos_avgs[currentIndex+7]) != (0,0):
+                newDict["pos_avgs"]["O_RIGHT"] = (data.pos_avgs[currentIndex+6], data.pos_avgs[currentIndex+7])
+            if (data.pos_avgs[currentIndex+8], data.pos_avgs[currentIndex+9]) != (0,0):
+                newDict["pos_avgs"]["I_TOP"] = (data.pos_avgs[currentIndex+8], data.pos_avgs[currentIndex+9])
+            if (data.pos_avgs[currentIndex+10], data.pos_avgs[currentIndex+11]) != (0,0):
+                newDict["pos_avgs"]["I_BOTTOM"] = (data.pos_avgs[currentIndex+10], data.pos_avgs[currentIndex+11])
+            if (data.pos_avgs[currentIndex+12], data.pos_avgs[currentIndex+13]) != (0,0):
+                newDict["pos_avgs"]["I_LEFT"] = (data.pos_avgs[currentIndex+12], data.pos_avgs[currentIndex+13])
+            if (data.pos_avgs[currentIndex+14], data.pos_avgs[currentIndex+15]) != (0,0):
+                newDict["pos_avgs"]["I_RIGHT"] = (data.pos_avgs[currentIndex+14], data.pos_avgs[currentIndex+15])
 
             self.edge_data.append(newDict)
             currentIndex+=16
