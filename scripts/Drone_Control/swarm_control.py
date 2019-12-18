@@ -293,8 +293,8 @@ class SwarmController:
         print("Line pose: ", currentLine)
 
         # print(currentLine)
-        zone_names_outer = ["outer top", "outer bottom", "outer left", "outer right"]
-        zone_names_inner = ["inner top", "inner bottom", "inner left", "inner right"]
+        zone_names_outer = [G.O_TOP, G.O_BOTTOM, G.O_LEFT, G.O_RIGHT]
+        zone_names_inner = [G.I_TOP, G.I_BOTTOM, G.I_LEFT, G.I_RIGHT]
 
         if currentLine == None:
             return None, None
