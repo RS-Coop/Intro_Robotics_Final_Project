@@ -155,7 +155,7 @@ class DroneController:
             self.rotate_drone_left()
         elif movementCommand == G.DO_EMERGENCY:
             self.failsafe()
-        elif movementCommand == GD.DO_LAND:
+        elif movementCommand == G.DO_LAND:
             self.land()
         elif movementCommand == G.DO_TAKEOFF:
             self.takeoff()
@@ -217,7 +217,7 @@ class DroneController:
 
     ##### SUBSCRIBE CALLBACKS
     def drone_command_callback(self, data):
-        movementCommand = data.command
+        movementCommand = data.movement_command
 
         self.run_movement_command(movementCommand)
 

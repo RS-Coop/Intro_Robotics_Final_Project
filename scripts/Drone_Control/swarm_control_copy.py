@@ -100,12 +100,12 @@ class SwarmController:
             self.move_onto_line() #Move into position over new line
             return False
         elif self.current_state == G.LAND:
-            self.land() #Land the drones
+            self.land_drone() #Land the drones
             return True
 
     # Kill the drones: Land immediately
     def kill(self):
-        self.land_swarm()
+        self.land_drone()
 
     def take_off(self):
         if not self.has_launched:
@@ -113,9 +113,6 @@ class SwarmController:
 
         if self.qr_data["centroid"] != (0, 0):
             self.current_state = G.SEARCH_QR
-
-    def land(self):
-        self.land_drone()
 
     def search_qr(self):
         if self.qr_data["hasQR"] == True:
@@ -259,41 +256,49 @@ class SwarmController:
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.DO_TAKEOFF
         self.drone_command_pub.publish(cmd)
+        rospy.sleep(1.0)
 
     def land_drone(self):
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.DO_LAND
         self.drone_command_pub.publish(cmd)
+        rospy.sleep(1.0)
 
     def move_drone_forward(self):
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.GO_FORWARD
         self.drone_command_pub.publish(cmd)
+        rospy.sleep(1.0)
 
     def move_drone_backwards(self):
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.GO_BACKWARD
         self.drone_command_pub.publish(cmd)
+        rospy.sleep(1.0)
 
     def move_drone_right(self):
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.GO_RIGHT
         self.drone_command_pub.publish(cmd)
+        rospy.sleep(1.0)
 
     def move_drone_left(self):
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.GO_LEFT
         self.drone_command_pub.publish(cmd)
+        rospy.sleep(1.0)
 
     def turn_drone_right(self):
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.TURN_RIGHT
         self.drone_command_pub.publish(cmd)
+        rospy.sleep(1.0)
 
     def turn_drone_left(self):
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.TURN_LEFT
         self.drone_command_pub.publish(cmd)
+        rospy.sleep(1.0)
 
     #Failsafe
     def failsafe(self):
