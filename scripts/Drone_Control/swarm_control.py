@@ -48,8 +48,8 @@ class SwarmController:
         #Publishers
         self.drone_command_pub = rospy.Publisher(namespace+'/drone_command', DroneCommand, queue_size=1)
         #Subscribers
-        self.qr_sub = rospy.Subscriber(namespace+'/qr_code', QR, self.qr_callback)
-        self.edges_sub = rospy.Subscriber(namespace+'/edges', EdgeList, self.edge_callback)
+        self.qr_sub = rospy.Subscriber('/swarm/qr_code', QR, self.qr_callback)
+        self.edges_sub = rospy.Subscriber('/swarm/edges', EdgeList, self.edge_callback)
 
         rospy.sleep(3.0)
 
@@ -66,7 +66,8 @@ class SwarmController:
 
     # Run based off state, if state is land, return true
     def run_state(self):
-        # print("State:", self.current_state)
+        print("State: ", self.current_state)
+        print("QR: ", self.qr_data)
         if self.current_state == G.TAKEOFF:
             self.launch_swarm() #Center qr code
             return False
@@ -115,7 +116,7 @@ class SwarmController:
                 cmd.direction.append(np.sign(x_err))
                 #y movement
                 cmd.cmd_type.append(G.Y)
-                cmd.intensity.append(0) #Will default to base intensity
+                cmd.intensity.append(0.1) #Will default to base intensity
                 cmd.direction.append(np.sign(y_err))
 
                 #Issue drone commands
@@ -172,15 +173,15 @@ class SwarmController:
                 #We should just care about x error
                 x_err = self.CENTER[1]-centroid[1] #pos means left
 
-                cmd.cmd_type.append("y")
-                cmd.intensity.append(0.2) #Will defualt to base intensity
+                cmd.cmd_type.append(G.Y)
+                cmd.intensity.append(0.1) #Will defualt to base intensity
                 cmd.direction.append(np.sign(x_err))
 
             #If the line is vertical and centered
             else:
                 print("line vertical and centered")
                 #Move forward
-                cmd.cmd_type.append("x")
+                cmd.cmd_type.append(G.X)
                 cmd.intensity.append(0) #Will default to base intensity
                 cmd.direction.append(1)
                 # #Change state
@@ -210,7 +211,7 @@ class SwarmController:
                 x_err = self.CENTER[1]-centroid[1] #pos means left
 
                 cmd.cmd_type.append(G.Y)
-                cmd.intensity.append(0) #Will defualt to base intensity
+                cmd.intensity.append(0.1) #Will defualt to base intensity
                 cmd.direction.append(np.sign(x_err))
 
             #If the line is not vertical
@@ -392,7 +393,7 @@ class SwarmController:
 
     def qr_callback(self, data):
         self.qr_data["hasQR"] = data.existing
-        self.qr_data["hasQR"] = data.centroid
+        self.qr_data["centroid"] = data.centroid
         self.qr_data["value"] = data.value
 
     def edge_callback(self, data):

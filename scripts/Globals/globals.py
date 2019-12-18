@@ -2,12 +2,12 @@ import numpy as np
 
 class Globals:
     # State definitions
-    TAKEOFF = -1
-    CENTER_QR = 0
-    DETERMINE_NEXT_LINE = 1
-    NAVIGATE_TO_LINE = 2
-    FOLLOW_LINE = 3
-    MOVE_ONTO_LINE = 4
+    TAKEOFF = 0
+    CENTER_QR = 1
+    DETERMINE_NEXT_LINE = 2
+    NAVIGATE_TO_LINE = 6
+    FOLLOW_LINE = 4
+    MOVE_ONTO_LINE = 3
     LAND = 5
 
     # Error for QR BB
