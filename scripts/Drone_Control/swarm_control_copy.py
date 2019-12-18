@@ -107,7 +107,7 @@ class SwarmController:
                 return True
             self.run_bool = False
 
-    # Kill the drones: Land imedietly
+    # Kill the drones: Land immediately
     def kill(self):
         self.land_swarm()
 
@@ -186,7 +186,7 @@ class SwarmController:
             # If the line to follow is not detected, kill
             if (centroid == None and angle == None):
                 self.current_state = G.KILL
-            
+
             #If the line is not vertical
             elif self.is_line_vertical == False:
                 print("line not vertical")
@@ -227,7 +227,7 @@ class SwarmController:
             # If the line to follow is not detected, kill
             if (centroid == None and angle == None):
                 self.current_state = G.KILL
-            
+
             #If the line is not centered
             elif self.is_line_centered == False:
                 print("line not centered")
@@ -281,12 +281,12 @@ class SwarmController:
 
     def move_drone_right(self):
         cmd = DroneMovementCommand()
-        cmd.movement_command =  G.GO_FORWARD
+        cmd.movement_command =  G.GO_RIGHT
         self.drone_command_pub.publish(cmd)
 
     def move_drone_left(self):
         cmd = DroneMovementCommand()
-        cmd.movement_command =  G.GO_BACKWARD
+        cmd.movement_command =  G.GO_LEFT
         self.drone_command_pub.publish(cmd)
 
     def turn_drone_right(self):
