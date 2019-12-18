@@ -140,11 +140,17 @@ class SwarmController:
 
             if abs(x_err) > self.CENTER_X_ERROR or abs(y_err) > self.CENTER_Y_ERROR:
                 # If the centroid is in the top of the image, move forward
+                if y_err > 0 and abs(x_err > self.CENTER_X_ERROR):
+                    self.move_drone_forward()
                 # If the centroid is in the bottom of the image, move backward
+                elif y_err < 0 and abs(x_err > self.CENTER_X_ERROR:
+                    self.move_drone_backwards()
                 # If the qr code is to the left, move left
+                elif x_err > 0 and abs(x_err > self.CENTER_X_ERROR::
+                    self.move_drone_left()
                 # If the qr code is to the right, move right
-                pass
-
+                elif x_err < 0 and abs(x_err > self.CENTER_X_ERROR::
+                    self.move_drone_right()
             else:
                 self.current_state = G.DETERMINE_NEXT_LINE
 
