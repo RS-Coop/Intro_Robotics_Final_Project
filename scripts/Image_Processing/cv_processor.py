@@ -79,6 +79,8 @@ class CVProcessor:
 
     def process_ros_image(self, ros_img):
         img = self.bridge.imgmsg_to_cv2(ros_img, desired_encoding="bgr8")
+        # print(img.shape)
+        img = np.array(img, dtype=np.uint8)
         output_data = self.process_image(img)
         return output_data
 

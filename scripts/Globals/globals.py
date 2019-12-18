@@ -27,10 +27,10 @@ class Globals:
     }
 
     # Center of bebop center
-    BEBOP_CENTER = (320, 184)
+    BEBOP_CENTER = (240, 428)
     # Error for QR BB
     QR_ERROR_X = 100
-    QR_ERROR_Y = 200
+    QR_ERROR_Y = 50
 
     # Angle bound to determine if theta needs correcting
     ANGLE_BOUND = 25
