@@ -56,3 +56,12 @@ class Globals:
     BAND_SIZE = 5
     #THRESHOLD
     BAND_THRESHOLD = 5
+
+    #Drone commands
+    EMERGENCY = 'emergency'
+    TAKEOFF = 'takeoff'
+    LAND = 'land'
+    X = 'x'
+    Y = 'y'
+    Z = 'z'
+    THETA = 'theta'
