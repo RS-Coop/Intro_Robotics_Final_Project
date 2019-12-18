@@ -326,14 +326,16 @@ class TestSwarm(unittest.TestCase):
     ###
     ### tests for get_edge_in_graph helper function
     ###
-    def get_line_pose(self):
+    def test_get_line_pose(self):
         thisSwarmC = sc.SwarmController()
         # Set curr_state
-        thisSwarmC.qr_data = {"hasQR" : True, "centroid" : (0, 0), "value" : 2}
-        thisSwarmC.edge_data = [{"color" : G.ORANGE, "angle" : 90, "centroid" : (0, 0)}]
+        thisSwarmC.qr_data = {"hasQR" : False, "centroid" : (0, 0), "value" : 2}
+        thisSwarmC.edge_data = [{'color': 'blue', 'pos_avgs': {'outer right': (None, None), 'outer top': (1464, 1), 'outer left': (None, None), 'inner left': (None, None), 'inner right': (None, None), 'inner top': (1465, 434), 'outer bottom': (None, None), 'inner bottom': (None, None)}}]
         thisSwarmC.graph_edges = [{"color": G.ORANGE, "v1": 1, "v2": None}, {"color": G.PURPLE, "v1": 1, "v2": None}]
-        thisSwarmC.current_edge_color = G.ORANGE
-        thisSwarmC.current_state = G.MOVE_ONTO_LINE
+        thisSwarmC.current_edge_color = G.BLUE
+        thisSwarmC.current_state = G.FOLLOW_LINE
+        print("Pose:", thisSwarmC.get_line_pose('blue'))
+        pass
 
 if __name__ == '__main__':
     rospy.init_node('Test_Node')
