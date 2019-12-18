@@ -118,6 +118,12 @@ class SwarmController:
 
     def search_qr(self):
         if self.qr_data["hasQR"] == True:
+            
+            current_edge = self.get_edge_by_color(self.current_edge_color)
+            self.update_v2(self.current_edge_color, self.graph_edges, current_edge["v1"], self.qr_data["value"])
+            self.current_edge_color = None
+            
+            #Change state
             self.current_qr_code = self.qr_data["value"]
             self.current_state = G.CENTER_QR
         else:
@@ -204,6 +210,7 @@ class SwarmController:
     def move_onto_line(self):
         if self.qr_data["centroid"] != (0, 0):
             centroid, angle = self.get_line_pose(self.current_edge_color)
+            angle -= 90
             print("Centroid: ", centroid, ", Angle: ", angle)
 
             # If the line to follow is not detected, kill
@@ -299,13 +306,8 @@ class SwarmController:
                 #Move forward
                 self.move_drone_forward()
         else:
-            #Add the end vertex to the edge
-            current_edge = self.get_edge_by_color(self.current_edge_color)
-            self.update_v2(self.current_edge_color, self.graph_edges, current_edge["v1"], self.qr_data["value"])
-            self.current_edge_color = None
             #Change state
             self.current_state = G.SEARCH_QR
-            self.current_qr_code = self.qr_data["value"]
 
     def takeoff_drone(self):
         cmd = DroneMovementCommand()
@@ -491,6 +493,7 @@ class SwarmController:
 
     def edge_callback(self, data):
         currentIndex = 0
+        self.edge_data = []
         for i in range(0, len(data.colors), 16):
 
             newDict = {
