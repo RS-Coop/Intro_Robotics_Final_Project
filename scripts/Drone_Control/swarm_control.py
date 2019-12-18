@@ -119,8 +119,8 @@ class SwarmController:
             current_qr_code = self.qr_data["value"]
             centroid = self.qr_data["centroid"]
 
-            y_err = self.CENTER[0]-centroid[0] #pos means forward
-            x_err = self.CENTER[1]-centroid[1]  #pos means left
+            y_err = self.CENTER[0]-centroid[1] #pos means forward
+            x_err = self.CENTER[1]-centroid[0]  #pos means left
 
             print("XERR:", x_err, "YERR:", y_err)
             print("", abs(x_err), ">", self.CENTER_X_ERROR, "or", abs(y_err), ">", self.CENTER_Y_ERROR)
@@ -186,7 +186,7 @@ class SwarmController:
                 cmd.cmd_type.append("angular")
                 cmd.intensity.append(0) #Will default to base intensity
                 #Do some stuff here to turn
-                x_err = self.CENTER[0] - centroid[0]
+                x_err = self.CENTER[1] - centroid[0]
                 cmd.direction.append(np.sign(x_err)) #Not sure about this agrument
 
             #If the line is not centered
@@ -194,7 +194,7 @@ class SwarmController:
                 print("line not centered")
                 #Shift left or right to center line
                 #We should just care about x error
-                x_err = self.CENTER[1]-centroid[1] #pos means left
+                x_err = self.CENTER[0]-centroid[1] #pos means left
 
                 cmd.cmd_type.append(G.Y)
                 cmd.intensity.append(0.1) #Will defualt to base intensity
@@ -434,33 +434,33 @@ class SwarmController:
             newDict = {
                         "color" : data.colors[i],
                         "pos_avgs" : {
-                                    G.O_ : (None,None),
-                                    'O_BOTTOM' : (None,None),
-                                    'O_LEFT' : (None,None),
-                                    'O_RIGHT' : (None,None),
-                                    'I_TOP' : (None,None),
-                                    'I_BOTTOM' : (None,None),
-                                    'I_LEFT' : (None,None),
-                                    'I_RIGHT' : (None,None)
+                                    G.O_TOP : (None,None),
+                                    G.O_BOTTOM : (None,None),
+                                    G.O_LEFT : (None,None),
+                                    G.O_RIGHT : (None,None),
+                                    G.I_TOP : (None,None),
+                                    G.I_BOTTOM : (None,None),
+                                    G.I_LEFT : (None,None),
+                                    G.I_RIGHT : (None,None)
                                     }
                       }
 
             if (data.pos_avgs[currentIndex], data.pos_avgs[currentIndex+1]) != (0,0):
                 newDict["pos_avgs"][G.O_TOP] = (data.pos_avgs[currentIndex], data.pos_avgs[currentIndex+1])
             if (data.pos_avgs[currentIndex+2], data.pos_avgs[currentIndex+3]) != (0,0):
-                newDict["pos_avgs"]["O_BOTTOM"] = (data.pos_avgs[currentIndex+2], data.pos_avgs[currentIndex+3])
+                newDict["pos_avgs"][G.O_BOTTOM] = (data.pos_avgs[currentIndex+2], data.pos_avgs[currentIndex+3])
             if (data.pos_avgs[currentIndex+4], data.pos_avgs[currentIndex+5]) != (0,0):
-                newDict["pos_avgs"]["O_LEFT"] = (data.pos_avgs[currentIndex+4], data.pos_avgs[currentIndex+5])
+                newDict["pos_avgs"][G.O_LEFT] = (data.pos_avgs[currentIndex+4], data.pos_avgs[currentIndex+5])
             if (data.pos_avgs[currentIndex+6], data.pos_avgs[currentIndex+7]) != (0,0):
-                newDict["pos_avgs"]["O_RIGHT"] = (data.pos_avgs[currentIndex+6], data.pos_avgs[currentIndex+7])
+                newDict["pos_avgs"][G.O_RIGHT] = (data.pos_avgs[currentIndex+6], data.pos_avgs[currentIndex+7])
             if (data.pos_avgs[currentIndex+8], data.pos_avgs[currentIndex+9]) != (0,0):
-                newDict["pos_avgs"]["I_TOP"] = (data.pos_avgs[currentIndex+8], data.pos_avgs[currentIndex+9])
+                newDict["pos_avgs"][G.I_TOP] = (data.pos_avgs[currentIndex+8], data.pos_avgs[currentIndex+9])
             if (data.pos_avgs[currentIndex+10], data.pos_avgs[currentIndex+11]) != (0,0):
-                newDict["pos_avgs"]["I_BOTTOM"] = (data.pos_avgs[currentIndex+10], data.pos_avgs[currentIndex+11])
+                newDict["pos_avgs"][G.I_BOTTOM] = (data.pos_avgs[currentIndex+10], data.pos_avgs[currentIndex+11])
             if (data.pos_avgs[currentIndex+12], data.pos_avgs[currentIndex+13]) != (0,0):
-                newDict["pos_avgs"]["I_LEFT"] = (data.pos_avgs[currentIndex+12], data.pos_avgs[currentIndex+13])
+                newDict["pos_avgs"][G.I_LEFT] = (data.pos_avgs[currentIndex+12], data.pos_avgs[currentIndex+13])
             if (data.pos_avgs[currentIndex+14], data.pos_avgs[currentIndex+15]) != (0,0):
-                newDict["pos_avgs"]["I_RIGHT"] = (data.pos_avgs[currentIndex+14], data.pos_avgs[currentIndex+15])
+                newDict["pos_avgs"][G.I_RIGHT] = (data.pos_avgs[currentIndex+14], data.pos_avgs[currentIndex+15])
 
             self.edge_data.append(newDict)
             currentIndex+=16
