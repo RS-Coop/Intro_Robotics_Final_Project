@@ -301,7 +301,7 @@ class SwarmController:
             cmd.cmd_type.append(G.TAKEOFF)
             self.drone_command_pub.publish(cmd)
 
-        sleep(2.0)
+        rospy.sleep(2.0)
 
     #Lands all drones in swarm
     #DONE: Land all drones in drones list
@@ -347,7 +347,7 @@ class SwarmController:
                 g_edge["v2"] = qrValue
         return None
 
-    # 
+    #
     def get_edge_pose(self, edge_color):
         for g_edge in self.graph_edges:
             if (g_edge["color"] == edge_color):
