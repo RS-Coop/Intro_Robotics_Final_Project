@@ -68,6 +68,7 @@ class SwarmController:
     def run_state(self):
         print("State: ", self.current_state)
         print("QR: ", self.qr_data)
+        # print("Current Line: ", self.current_edge_color)
         if self.current_state == G.KILL:
             self.kill() #Center qr code
             return False
@@ -158,6 +159,7 @@ class SwarmController:
             # print(existingEdge)
             if existingEdge != None and existingEdge["v2"] == None:
                 self.current_edge_color = existingEdge["color"]
+                print("Current edge color: ", self.current_edge_color)
                 self.current_state = G.MOVE_ONTO_LINE
                 return
         # If there are no unexplored edges out of the current vertex, and
@@ -175,12 +177,12 @@ class SwarmController:
             # If the line to follow is not detected, kill
             if (centroid == None and angle == None):
                 self.current_state = G.KILL
-                
+
             #If the line is not vertical
             elif self.is_line_vertical == False:
                 print("line not vertical")
                 #Rotate to get the line vertical
-                
+
 
                 cmd.cmd_type.append("angular")
                 cmd.intensity.append(0) #Will default to base intensity
@@ -289,6 +291,7 @@ class SwarmController:
     # Returns centroid, angle
     def get_line_pose(self, line_color):
         currentLine = self.get_line_by_color(line_color)
+        print("Line pose: ", currentLine)
 
         # print(currentLine)
         zone_names_outer = ["outer top", "outer bottom", "outer left", "outer right"]
@@ -301,22 +304,22 @@ class SwarmController:
             secondPoint = (None, None)
 
             for i in zone_names_outer:
-                # print(currentLine["pos_avgs"][i])
-                # print(currentLine["pos_avgs"][i] != (None, None))
+                # print(currentLine["pos_avgs""][i])
+                # print(currentLine["pos_avgs""][i] != (None, None))
 
-                if((currentLine["pos_avgs"][i] != (None, None)) and (firstPoint == (None,None))):
-                    firstPoint = currentLine["pos_avgs"][i]
+                if((currentLine["pos_avgs""][i] != (None, None)) and (firstPoint == (None,None))):
+                    firstPoint = currentLine["pos_avgs""][i]
                     # print("firstPoint", i)
-                elif((currentLine["pos_avgs"][i] != (None,None)) and (secondPoint == (None,None))):
-                    secondPoint = currentLine["pos_avgs"][i]
+                elif((currentLine["pos_avgs""][i] != (None,None)) and (secondPoint == (None,None))):
+                    secondPoint = currentLine["pos_avgs""][i]
                     # print("secondPoint", i)
                     break
 
             #A second point was not found in the outer ring, checking inner ring
             if(firstPoint != (None,None) and secondPoint == (None,None)):
                 for i in zone_names_inner:
-                    if(currentLine["pos_avgs"][i] != (None,None)):
-                        secondPoint = currentLine["pos_avgs"][i]
+                    if(currentLine["pos_avgs""][i] != (None,None)):
+                        secondPoint = currentLine["pos_avgs""][i]
                         # print("secondPoint", i)
                         break
 
@@ -443,21 +446,21 @@ class SwarmController:
                                     }
                       }
 
-            if (data.pos_avgs[currentIndex], data.pos_avgs[currentIndex+1]) == (0,0):
+            if (data.pos_avgs[currentIndex], data.pos_avgs[currentIndex+1]) != (0,0):
                 newDict["pos_avgs"]["O_TOP"] = (data.pos_avgs[currentIndex], data.pos_avgs[currentIndex+1])
-            if (data.pos_avgs[currentIndex+2], data.pos_avgs[currentIndex+3]) == (0,0):
+            if (data.pos_avgs[currentIndex+2], data.pos_avgs[currentIndex+3]) != (0,0):
                 newDict["pos_avgs"]["O_BOTTOM"] = (data.pos_avgs[currentIndex+2], data.pos_avgs[currentIndex+3])
-            if (data.pos_avgs[currentIndex+4], data.pos_avgs[currentIndex+5]) == (0,0):
+            if (data.pos_avgs[currentIndex+4], data.pos_avgs[currentIndex+5]) != (0,0):
                 newDict["pos_avgs"]["O_LEFT"] = (data.pos_avgs[currentIndex+4], data.pos_avgs[currentIndex+5])
-            if (data.pos_avgs[currentIndex+6], data.pos_avgs[currentIndex+7]) == (0,0):
+            if (data.pos_avgs[currentIndex+6], data.pos_avgs[currentIndex+7]) != (0,0):
                 newDict["pos_avgs"]["O_RIGHT"] = (data.pos_avgs[currentIndex+6], data.pos_avgs[currentIndex+7])
-            if (data.pos_avgs[currentIndex+8], data.pos_avgs[currentIndex+9]) == (0,0):
+            if (data.pos_avgs[currentIndex+8], data.pos_avgs[currentIndex+9]) != (0,0):
                 newDict["pos_avgs"]["I_TOP"] = (data.pos_avgs[currentIndex+8], data.pos_avgs[currentIndex+9])
-            if (data.pos_avgs[currentIndex+10], data.pos_avgs[currentIndex+11]) == (0,0):
+            if (data.pos_avgs[currentIndex+10], data.pos_avgs[currentIndex+11]) != (0,0):
                 newDict["pos_avgs"]["I_BOTTOM"] = (data.pos_avgs[currentIndex+10], data.pos_avgs[currentIndex+11])
-            if (data.pos_avgs[currentIndex+12], data.pos_avgs[currentIndex+13]) == (0,0):
+            if (data.pos_avgs[currentIndex+12], data.pos_avgs[currentIndex+13]) != (0,0):
                 newDict["pos_avgs"]["I_LEFT"] = (data.pos_avgs[currentIndex+12], data.pos_avgs[currentIndex+13])
-            if (data.pos_avgs[currentIndex+14], data.pos_avgs[currentIndex+15]) == (0,0):
+            if (data.pos_avgs[currentIndex+14], data.pos_avgs[currentIndex+15]) != (0,0):
                 newDict["pos_avgs"]["I_RIGHT"] = (data.pos_avgs[currentIndex+14], data.pos_avgs[currentIndex+15])
 
             self.edge_data.append(newDict)
