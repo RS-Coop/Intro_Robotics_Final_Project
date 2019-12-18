@@ -71,10 +71,10 @@ class SwarmController:
 
     # Run based off state, if state is land, return true
     def run_state(self):
-        # print("State: ", self.current_state)
-        # print("QR: ", self.qr_data)
-        # print("Callbacks", self.callback_count)
-        # print("Current Line: ", self.current_edge_color)
+        print("State: ", self.current_state)
+        print("QR: ", self.qr_data)
+        print("Callbacks", self.callback_count)
+        print("Current Line: ", self.current_edge_color)
         if self.current_state == G.KILL:
             self.kill() #Center qr code
             return False
@@ -121,7 +121,27 @@ class SwarmController:
             self.current_state = G.CENTER_QR
         else:
             # Try to get a good view of the QR code to eliminate glare
-            pass
+            centroid = self.qr_data["centroid"]
+
+            y_err = self.CENTER[0]-centroid[1] #pos means forward
+            x_err = self.CENTER[1]-centroid[0]  #pos means left
+
+            # print("XERR:", x_err, "YERR:", y_err)
+            # print("", abs(x_err), ">", self.CENTER_X_ERROR, "or", abs(y_err), ">", self.CENTER_Y_ERROR)
+
+            if abs(x_err) > self.CENTER_X_ERROR or abs(y_err) > self.CENTER_Y_ERROR:
+                # If the centroid is in the top of the image, move forward
+                if y_err > 0 and abs(y_err > self.CENTER_Y_ERROR):
+                    self.move_drone_forward()
+                # If the centroid is in the bottom of the image, move backward
+                elif y_err < 0 and abs(y_err > self.CENTER_Y_ERROR):
+                    self.move_drone_backwards()
+                # If the qr code is to the left, move left
+                elif x_err > 0 and abs(x_err > self.CENTER_X_ERROR):
+                    self.move_drone_left()
+                # If the qr code is to the right, move right
+                elif x_err < 0 and abs(x_err > self.CENTER_X_ERROR):
+                    self.move_drone_right()
 
     #Centers the drone over the QR code
     #DONE: Based on the centroid move the drone
