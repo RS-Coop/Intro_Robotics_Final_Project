@@ -116,7 +116,7 @@ class SwarmController:
 
     def search_qr(self):
         if self.qr_data["hasQR"] == True:
-            current_qr_code = self.qr_data["value"]
+            self.current_qr_code = self.qr_data["value"]
             self.current_state = G.CENTER_QR
         else:
             # Try to get a good view of the QR code to eliminate glare
