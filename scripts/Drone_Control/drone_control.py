@@ -15,7 +15,7 @@ class DroneController:
     pre_land.linear.z = -1 #Can maybe increase this
 
     post_takeoff = Twist()
-    post_takeoff.linear.z = -0.5
+    post_takeoff.linear.z = -0.1
 
     #Initializes object with pubs and subs for speciic namespace
     def __init__(self, namespace='/bebop'):
@@ -35,7 +35,7 @@ class DroneController:
         # self.camera_joint_sub = rospy.Subscriber(namespace + '/joint_states', JointState, self.camera_joint_callback)
         self.camera_image_sub = rospy.Subscriber(namespace + '/image_raw', Image, self.image_callback)
 
-        rospy.sleep(3.0)
+        rospy.sleep(2.0)
 
 ################################################################################
 #Main methods and publisher methods
@@ -70,7 +70,7 @@ class DroneController:
 
         else:
             movement = Twist()
-            default_intensity = 0.5
+            default_intensity = 0.2
 
             for i in range(len(command.cmd_type)):
                 if command.intensity[i] != 0:
