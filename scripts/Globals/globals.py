@@ -38,7 +38,7 @@ class Globals:
     DEFAULT_ANGLE_ERROR = 10
 
     # Max photos center
-    MAX_CENTER = (1512, 2016)
+    MAX_CENTER = (2016, 1512)
     MAX_X_ERROR = 400
     MAX_Y_ERROR = 500
 
