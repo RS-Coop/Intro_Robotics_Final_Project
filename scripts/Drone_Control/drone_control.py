@@ -3,6 +3,7 @@ from std_msgs.msg import Empty
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import JointState, Image
 from Intro_Robotics_Final_Project.msg import DroneCommand, TaggedImage
+from Globals import Globals as G
 
 #This class deals with interactions between a single drone
 '''
@@ -12,6 +13,9 @@ the intensity for drone movements. But note that intensity is limited to -1,1
 class DroneController:
     pre_land = Twist()
     pre_land.linear.z = -1 #Can maybe increase this
+
+    post_takeoff = Twist()
+    post_takeoff.linear.z = -0.5
 
     #Initializes object with pubs and subs for speciic namespace
     def __init__(self, namespace='/bebop'):
@@ -31,7 +35,7 @@ class DroneController:
         # self.camera_joint_sub = rospy.Subscriber(namespace + '/joint_states', JointState, self.camera_joint_callback)
         self.camera_image_sub = rospy.Subscriber(namespace + '/image_raw', Image, self.image_callback)
 
-        rospy.sleep(1.0)
+        rospy.sleep(3.0)
 
 ################################################################################
 #Main methods and publisher methods
@@ -48,6 +52,7 @@ class DroneController:
     def move_drone_callback(self, command):
         if command.drone_id == self.ID:
             self.move_drone(command)
+            print(self.ID,': command recieved->',command.cmd_type[0])
 
     #Move drone
     #DONE:
@@ -56,7 +61,6 @@ class DroneController:
         #Command is movement type
         if command.cmd_type[0] == G.EMERGENCY:
             self.failsafe()
-
 
         elif command.cmd_type[0] == G.LAND:
             self.land()
@@ -91,10 +95,17 @@ class DroneController:
     #DONE
     def takeoff(self):
         self.calibrate_pub.publish(Empty())
+        self.move_camera()
 
         rospy.sleep(2.0)
 
         self.takeoff_pub.publish(Empty())
+
+        rospy.sleep(2.0)
+
+        self.pilot_pub.publish(self.post_takeoff)
+
+        print("Flying")
 
     #Tells drone to land
     #DONE: Lowers drone a little bit before landing
@@ -111,7 +122,8 @@ class DroneController:
     def move_camera(self, joint_data=None):
         if joint_data == None:
             joint_data = Twist()
-            joint_data.angular.z = 80
+            joint_data.angular.y = -90.0
+            joint_data.angular.z = 0.0
             self.camera_joint_pub.publish(joint_data)
 
     #Stop moving the drone and land

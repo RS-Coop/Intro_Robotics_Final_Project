@@ -10,7 +10,7 @@ rospy.init_node('Drone1')
 drone = DroneController()
 
 #Handler for rospy shutdown
-rospy.on_shutdown(drone.failsafe)
+rospy.on_shutdown(drone.land)
 
 print("Ready to fly.")
 
