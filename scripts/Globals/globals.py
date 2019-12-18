@@ -9,6 +9,7 @@ class Globals:
     FOLLOW_LINE = 4
     MOVE_ONTO_LINE = 3
     LAND = 5
+    KILL = 99
 
     # Error for QR BB
     QR_ERROR = 10

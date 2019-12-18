@@ -68,7 +68,10 @@ class SwarmController:
     def run_state(self):
         print("State: ", self.current_state)
         print("QR: ", self.qr_data)
-        if self.current_state == G.TAKEOFF:
+        if self.current_state == G.KILL:
+            self.kill() #Center qr code
+            return False
+        elif self.current_state == G.TAKEOFF:
             self.launch_swarm() #Center qr code
             return False
         elif self.current_state == G.CENTER_QR:
@@ -90,6 +93,10 @@ class SwarmController:
         elif self.current_state == G.LAND:
             self.land_swarm() #Land the drones
             return True
+
+    # Kill the drones: Land imedietly
+    def kill(self):
+        self.land_swarm()
 
     #Centers the drone over the QR code
     #DONE: Based on the centroid move the drone
@@ -150,14 +157,20 @@ class SwarmController:
     #TODO: Move the drone onto
     #NOTE:
     def move_onto_line(self):
+        
         if self.qr_data["hasQR"] == True:
             cmd = DroneCommand()
+            centroid, angle = self.get_line_pose(self.current_edge_color)
 
+            # If the line to follow is not detected, kill
+            if (centroid == None and angle == None):
+                self.current_state = G.KILL
+                
             #If the line is not vertical
-            if self.is_line_vertical == False:
+            elif self.is_line_vertical == False:
                 print("line not vertical")
                 #Rotate to get the line vertical
-                centroid, angle = self.get_line_pose(self.current_edge_color)
+                
 
                 cmd.cmd_type.append("angular")
                 cmd.intensity.append(0) #Will default to base intensity
@@ -169,7 +182,6 @@ class SwarmController:
             elif self.is_line_centered == False:
                 print("line not centered")
                 #Shift left or right to center line
-                centroid, angle = self.get_line_pose(self.current_edge_color)
                 #We should just care about x error
                 x_err = self.CENTER[1]-centroid[1] #pos means left
 
@@ -203,10 +215,15 @@ class SwarmController:
     def follow_line(self):
         if self.qr_data["hasQR"] == False:
             cmd = DroneCommand()
+
+            centroid, angle = self.get_line_pose(self.current_edge_color)
+
+            # If the line to follow is not detected, kill
+            if (centroid == None and angle == None):
+                self.current_state = G.KILL
             #If the line is not centered
-            if self.is_line_centered == False:
+            elif self.is_line_centered == False:
                 #Shift left or right to center line
-                centroid, angle = self.get_line_pose(self.current_edge_color)
                 #We should just care about x error
                 x_err = self.CENTER[1]-centroid[1] #pos means left
 
@@ -217,8 +234,6 @@ class SwarmController:
             #If the line is not vertical
             elif self.is_line_vertical == False:
                 #Rotate to get the line vertical
-                centroid, angle = self.get_line_pose(self.current_edge_color)
-
                 cmd.cmd_type.append(G.THETA)
                 cmd.intensity.append(0.1) #Will default to base intensity
                 cmd.direction.append(np.sign(angle)) #Not sure about this agrument
@@ -263,11 +278,7 @@ class SwarmController:
 
     # Returns centroid, angle
     def get_line_pose(self, line_color):
-        currentLine = None
-
-        for i in range(0, len(self.edge_data)):
-            if(self.edge_data[i]['color'] == line_color):
-                currentLine = self.edge_data[i]
+        currentLine = get_edge_pose(line_color)
 
         # print(currentLine)
         zone_names_outer = ["outer top", "outer bottom", "outer left", "outer right"]
