@@ -188,21 +188,23 @@ class SwarmController:
                 self.current_state = G.KILL
 
             #If the line is not vertical
-            # elif self.is_line_vertical == False:
-            #     print("line not vertical")
-            #     #Rotate to get the line vertical
-            #     self.turn_drone_right()
-            #
-            # #If the line is not centered
-            # elif self.is_line_centered == False:
-            #     print("line not centered")
-            #     #Shift left or right to center line
-            #     #We should just care about x error
-            #     x_err = self.CENTER[0]-centroid[1] #pos means left
-            #     if x_err > 0:
-            #         self.move_drone_left()
-            #     elif x_err < 0:
-            #         self.move_drone_right()
+            elif self.is_line_vertical == False:
+                print("line not vertical")
+                #Rotate to get the line vertical
+                self.turn_drone_right()
+            
+            #If the line is not centered
+            elif self.is_line_centered == False:
+                print("line not centered")
+                #Shift left or right to center line
+                #We should just care about x error
+                x_err = self.CENTER[0]-centroid[1] #pos means left
+                # If the qr code is to the left, move left
+                if x_err > 0 and abs(x_err > self.CENTER_X_ERROR):
+                    self.move_drone_left()
+                # If the qr code is to the right, move right
+                elif x_err < 0 and abs(x_err > self.CENTER_X_ERROR):
+                    self.move_drone_right()
 
             #If the line is vertical and centered
             else:
@@ -228,22 +230,24 @@ class SwarmController:
             if (centroid == None and angle == None):
                 self.current_state = G.KILL
 
-            #If the line is not centered
-            # elif self.is_line_centered == False:
-            #     print("line not centered")
-            #     #Shift left or right to center line
-            #     #We should just care about x error
-            #     x_err = self.CENTER[0]-centroid[1] #pos means left
-            #     if x_err > 0:
-            #         self.move_drone_left()
-            #     elif x_err < 0:
-            #         self.move_drone_right()
-            #
-            # #If the line is not vertical
-            # elif self.is_line_vertical == False:
-            #     print("line not vertical")
-            #     #Rotate to get the line vertical
-            #     self.turn_drone_right()
+            # If the line is not centered
+            elif self.is_line_centered == False:
+                print("line not centered")
+                #Shift left or right to center line
+                #We should just care about x error
+                x_err = self.CENTER[0]-centroid[1] #pos means left
+                # If the qr code is to the left, move left
+                if x_err > 0 and abs(x_err > self.CENTER_X_ERROR):
+                    self.move_drone_left()
+                # If the qr code is to the right, move right
+                elif x_err < 0 and abs(x_err > self.CENTER_X_ERROR):
+                    self.move_drone_right()
+            
+            #If the line is not vertical
+            elif self.is_line_vertical == False:
+                print("line not vertical")
+                #Rotate to get the line vertical
+                self.turn_drone_right()
 
             #If the line is vertical and centered
             else:
