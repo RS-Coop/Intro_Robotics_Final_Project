@@ -207,6 +207,13 @@ class TestLineFollowing(unittest.TestCase):
         self.assertEqual(self.swarmC.current_state, G.CENTER_QR)
         self.assertEqual(self.swarmC.current_edge_color, None)
 
+    #### FOLLOW_LINE (qr code is readable,and centered)
+    # def test_follow_one_line_10(self):
+        self.simulate_swarm_callback(self.swarmC, self.parent_dir+"/test_images/two_line_following_14.jpg")
+        self.swarmC.run_state()
+        self.assertEqual(self.swarmC.current_state, G.DETERMINE_NEXT_LINE)
+        self.assertEqual(self.swarmC.current_edge_color, None)
+
     #### CENTER_QR (qr code is readable,and centered)
     # def test_follow_one_line_10(self):
         self.simulate_swarm_callback(self.swarmC, self.parent_dir+"/test_images/two_line_following_13.jpg")
