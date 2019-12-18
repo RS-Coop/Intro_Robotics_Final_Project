@@ -3,4 +3,4 @@
 string drone_id
 
 # int movement command
-int8[] movement_command
+int8 movement_command

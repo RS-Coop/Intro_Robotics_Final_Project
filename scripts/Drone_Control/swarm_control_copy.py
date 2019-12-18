@@ -65,8 +65,9 @@ class SwarmController:
     #NOTE: Navigate to line not implemented
     def run_node(self):
         while not rospy.is_shutdown():
-            if self.run_state():
-                break
+            # if self.run_state():
+            #     break
+            pass
 
     # Run based off state, if state is land, return true
     def run_state(self):
@@ -100,12 +101,12 @@ class SwarmController:
             self.move_onto_line() #Move into position over new line
             return False
         elif self.current_state == G.LAND:
-            self.land() #Land the drones
+            self.land_drone() #Land the drones
             return True
 
     # Kill the drones: Land immediately
     def kill(self):
-        self.land_swarm()
+        self.land_drone()
 
     def take_off(self):
         if not self.has_launched:
@@ -113,9 +114,6 @@ class SwarmController:
             self.has_launched = True
         if self.qr_data["centroid"] != (0, 0):
             self.current_state = G.SEARCH_QR
-
-    def land(self):
-        self.land_drone()
 
     def search_qr(self):
         if self.qr_data["hasQR"] == True:
@@ -190,21 +188,21 @@ class SwarmController:
                 self.current_state = G.KILL
 
             #If the line is not vertical
-            elif self.is_line_vertical == False:
-                print("line not vertical")
-                #Rotate to get the line vertical
-                self.turn_drone_right()
-
-            #If the line is not centered
-            elif self.is_line_centered == False:
-                print("line not centered")
-                #Shift left or right to center line
-                #We should just care about x error
-                x_err = self.CENTER[0]-centroid[1] #pos means left
-                if x_err > 0:
-                    self.move_drone_left()
-                elif x_err < 0:
-                    self.move_drone_right()
+            # elif self.is_line_vertical == False:
+            #     print("line not vertical")
+            #     #Rotate to get the line vertical
+            #     self.turn_drone_right()
+            #
+            # #If the line is not centered
+            # elif self.is_line_centered == False:
+            #     print("line not centered")
+            #     #Shift left or right to center line
+            #     #We should just care about x error
+            #     x_err = self.CENTER[0]-centroid[1] #pos means left
+            #     if x_err > 0:
+            #         self.move_drone_left()
+            #     elif x_err < 0:
+            #         self.move_drone_right()
 
             #If the line is vertical and centered
             else:
@@ -231,21 +229,21 @@ class SwarmController:
                 self.current_state = G.KILL
 
             #If the line is not centered
-            elif self.is_line_centered == False:
-                print("line not centered")
-                #Shift left or right to center line
-                #We should just care about x error
-                x_err = self.CENTER[0]-centroid[1] #pos means left
-                if x_err > 0:
-                    self.move_drone_left()
-                elif x_err < 0:
-                    self.move_drone_right()
-
-            #If the line is not vertical
-            elif self.is_line_vertical == False:
-                print("line not vertical")
-                #Rotate to get the line vertical
-                self.turn_drone_right()
+            # elif self.is_line_centered == False:
+            #     print("line not centered")
+            #     #Shift left or right to center line
+            #     #We should just care about x error
+            #     x_err = self.CENTER[0]-centroid[1] #pos means left
+            #     if x_err > 0:
+            #         self.move_drone_left()
+            #     elif x_err < 0:
+            #         self.move_drone_right()
+            #
+            # #If the line is not vertical
+            # elif self.is_line_vertical == False:
+            #     print("line not vertical")
+            #     #Rotate to get the line vertical
+            #     self.turn_drone_right()
 
             #If the line is vertical and centered
             else:
@@ -265,41 +263,49 @@ class SwarmController:
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.DO_TAKEOFF
         self.drone_command_pub.publish(cmd)
+        rospy.sleep(1.0)
 
     def land_drone(self):
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.DO_LAND
         self.drone_command_pub.publish(cmd)
+        rospy.sleep(1.0)
 
     def move_drone_forward(self):
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.GO_FORWARD
         self.drone_command_pub.publish(cmd)
+        rospy.sleep(1.0)
 
     def move_drone_backwards(self):
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.GO_BACKWARD
         self.drone_command_pub.publish(cmd)
+        rospy.sleep(1.0)
 
     def move_drone_right(self):
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.GO_RIGHT
         self.drone_command_pub.publish(cmd)
+        rospy.sleep(1.0)
 
     def move_drone_left(self):
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.GO_LEFT
         self.drone_command_pub.publish(cmd)
+        rospy.sleep(1.0)
 
     def turn_drone_right(self):
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.TURN_RIGHT
         self.drone_command_pub.publish(cmd)
+        rospy.sleep(1.0)
 
     def turn_drone_left(self):
         cmd = DroneMovementCommand()
         cmd.movement_command =  G.TURN_LEFT
         self.drone_command_pub.publish(cmd)
+        rospy.sleep(1.0)
 
     #Failsafe
     def failsafe(self):
@@ -433,6 +439,8 @@ class SwarmController:
         self.qr_data["value"] = data.value
         self.callback_count += 1
 
+        self.run_state()
+
     def edge_callback(self, data):
         currentIndex = 0
         for i in range(0, len(data.colors), 16):
@@ -470,6 +478,7 @@ class SwarmController:
 
             self.edge_data.append(newDict)
             currentIndex+=16
+        self.run_state()
 
 ################################################################################
 #Tests
