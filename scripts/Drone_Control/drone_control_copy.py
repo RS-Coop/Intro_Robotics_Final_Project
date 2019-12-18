@@ -22,7 +22,7 @@ class DroneController:
     frame_count = 0
 
     # Amount to move forward
-    linear_movement_amount = 0.3
+    linear_movement_amount = 0.5
     angle_rotate_amount = 0.3
 
     #Initializes object with pubs and subs for speciic namespace
@@ -206,7 +206,7 @@ class DroneController:
     #DONE: Gather image data, tag it and then publish it
     #NOTE: Havent tested this yet
     def image_callback(self, data):
-        if time.time()-self.last_image_time > 0.2:
+        if time.time()-self.last_image_time > 1.5:
             print('Publishing Image')
             drone_image = TaggedImage()
             drone_image.image = data

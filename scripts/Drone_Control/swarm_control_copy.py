@@ -111,7 +111,7 @@ class SwarmController:
     def take_off(self):
         if not self.has_launched:
             self.takeoff_drone()
-
+            self.has_launched = True
         if self.qr_data["centroid"] != (0, 0):
             self.current_state = G.SEARCH_QR
 
