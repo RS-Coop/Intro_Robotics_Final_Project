@@ -54,27 +54,38 @@ class DroneController:
     #NOTE: Need to re-test this
     def move_drone(self, command):
         #Command is movement type
-        movement = Twist()
-        default_intensity = 0.5
+        if command.cmd_type[0] == G.EMERGENCY:
+            self.failsafe()
 
-        for i in range(len(command.cmd_type)):
-            if command.intensity[i] != 0:
-                default_intensity = command.intensity[i]
 
-            if command.cmd_type[i] == 'x':
-                movement.linear.x = default_intensity * command.direction[i]
+        elif command.cmd_type[0] == G.LAND:
+            self.land()
 
-            elif command.cmd_type[i] == 'y':
-                movement.linear.y = default_intensity * command.direction[i]
+        elif command.cmd_type[0] == G.TAKEOFF:
+            self.takeoff()
 
-            elif command.cmd_type[i] == 'z':
-                movement.linear.z = default_intensity * command.direction[i]
+        else:
+            movement = Twist()
+            default_intensity = 0.5
 
-            elif command.cmd_type[i] == 'angular':
-                # +==CCW, -==CW, i.e. follows unit circle
-                movement.angular.z = default_intensity * command.direction[i]
+            for i in range(len(command.cmd_type)):
+                if command.intensity[i] != 0:
+                    default_intensity = command.intensity[i]
 
-        self.pilot_pub.publish(movement)
+                if command.cmd_type[i] == G.X:
+                    movement.linear.x = default_intensity * command.direction[i]
+
+                elif command.cmd_type[i] == G.Y:
+                    movement.linear.y = default_intensity * command.direction[i]
+
+                elif command.cmd_type[i] == G.Z:
+                    movement.linear.z = default_intensity * command.direction[i]
+
+                elif command.cmd_type[i] == G.THETA:
+                    # +==CCW, -==CW, i.e. follows unit circle
+                    movement.angular.z = default_intensity * command.direction[i]
+
+            self.pilot_pub.publish(movement)
 
     #Tells drone to takeoff
     #DONE
@@ -145,7 +156,7 @@ class DroneController:
         self.takeoff()
         rospy.sleep(2.0)
         command = DroneCommand()
-        command.cmd_type.append('z')
+        command.cmd_type.append(G.Z)
         command.drone_id = self.ID
         command.intensity.append(0)
         command.direction.append(-1)
@@ -161,7 +172,7 @@ class DroneController:
         self.takeoff()
         rospy.sleep(2.0)
         command = DroneCommand()
-        command.cmd_type.append('x')
+        command.cmd_type.append(G.X)
         command.drone_id = self.ID
         command.intensity.append(0)
         command.direction.append(1)
@@ -178,7 +189,7 @@ class DroneController:
         self.move_camera()
 
         command = DroneCommand()
-        command.cmd_type.append('x')
+        command.cmd_type.append(G.X)
         command.drone_id = self.ID
         command.intensity.append(0.3)
         command.direction.append(1)
@@ -186,7 +197,7 @@ class DroneController:
         self.move_drone(command)
         rospy.sleep(10.0)
 
-        command.cmd_type.append('angular')
+        command.cmd_type.append(G.THETA)
         command.drone_id = self.ID
         command.intensity.append(0)
         command.direction.append(1)
