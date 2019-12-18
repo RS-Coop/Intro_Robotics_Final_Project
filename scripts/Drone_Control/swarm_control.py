@@ -105,8 +105,8 @@ class SwarmController:
     def kill(self):
         self.land_swarm()
 
-    def take_off(self)
-        if not has_launched:
+    def take_off(self):
+        if not self.has_launched:
             self.launch_swarm()
         
         if self.qr_data["centroid"] != (0, 0):
@@ -234,7 +234,7 @@ class SwarmController:
     #TODO: What data do I have for moving, then fix movement commands
     #NOTE: Not yet fully implemented
     def follow_line(self):
-        if self.qr_data["hasQR"] == False or qr_data["value"] == self.current_qr_code:
+        if self.qr_data["hasQR"] == False or self.qr_data["value"] == self.current_qr_code:
             cmd = DroneCommand()
 
             centroid, angle = self.get_line_pose(self.current_edge_color)
