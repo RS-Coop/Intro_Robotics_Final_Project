@@ -92,11 +92,13 @@ class TestLineFollowing(unittest.TestCase):
         self.assertEqual(self.swarmC.current_edge_color, G.BLUE)
         self.assertEqual(self.swarmC.graph_edges, [{"color": G.BLUE, "v1": 2, "v2": None}])
 
+    
     ###
     ###
     ### Test follow one line2
     ###
     ###
+    '''
 
     #### START
     def test_follow_one_line_2(self):
@@ -197,6 +199,8 @@ class TestLineFollowing(unittest.TestCase):
         self.swarmC.run_state()
         self.assertEqual(self.swarmC.current_state, G.LAND)
         self.assertEqual(self.swarmC.current_edge_color, None)
+    '''
+
 
     ###
     ###

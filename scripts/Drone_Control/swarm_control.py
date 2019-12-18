@@ -402,6 +402,7 @@ class SwarmController:
         for i in range(0, len(self.edge_data)):
             if(self.edge_data[i]['color'] == line_color):
                 currentLine = self.edge_data[i]
+                return(currentLine)
         return None
 
 
