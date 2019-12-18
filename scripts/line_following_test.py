@@ -32,7 +32,7 @@ class TestLineFollowing(unittest.TestCase):
         self.assertEqual(self.swarmC.current_edge_color, None)
     
         print("HERE")
-        self.simulate_swarm_callback(self.swarmC, self.parent_dir+"/test_images/two_line_following_1.jpg")
+        self.simulate_swarm_callback(self.swarmC, self.parent_dir+"/test_images/blue_minus_45.jpg")
         self.swarmC.run_state()
         print("DONE")
 
