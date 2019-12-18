@@ -269,7 +269,11 @@ class SwarmController:
             elif self.is_line_vertical == False:
                 print("line not vertical")
                 #Rotate to get the line vertical
-                self.turn_drone_right()
+                # Angle greater than zero, turn left
+                if angle > 0:
+                    self.turn_drone_left()
+                elif angle < 0:
+                    self.turn_drone_right()
 
             #If the line is vertical and centered
             else:
