@@ -20,12 +20,14 @@ class Globals:
     ORANGE = "orange"
     PURPLE = "purple"
     BLUE = "blue"
+    WHITE = "white"
 
     # Color ranges
     LINE_COLORS = {
         ORANGE:[np.array([5,100,150]), np.array([20,255,255])],
         PURPLE:[np.array([275,100,150]), np.array([285,255,255])],
-        BLUE:[np.array([100,50,50]), np.array([115,255,255])]
+        BLUE:[np.array([100,50,50]), np.array([115,255,255])],
+        WHITE:[np.array([0,0,235]), np.array([255,20,255])]
     }
 
     # Center of bebop center

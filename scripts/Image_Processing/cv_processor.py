@@ -254,6 +254,23 @@ class CVProcessor:
             y = bb[1] + int(bb[3]/2)
 
             return value, (x, y)
+        else:
+            hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)
+            mask = cv.inRange(hsv, G.LINE_COLORS["white"][0], G.LINE_COLORS["white"][1])
+            x_sum = 0
+            y_sum = 0
+            counter = 0
+
+            for i in range(0, len(mask)):
+                for j in range(0, len(mask[i])):
+                    if(mask[i][j] == 255):
+                        x_sum = x_sum + j
+                        y_sum = y_sum + i
+                        counter = counter + 1
+
+            if(counter > 4000):
+                return None, (x_sum / counter , y_sum / counter)
+                
         return None, None
 
     '''
