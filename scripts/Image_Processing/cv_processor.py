@@ -58,7 +58,7 @@ class CVProcessor:
             output_data["qr"]["centroid"] = bb
             output_data["qr"]["value"] = value
         elif(bb != None):
-            output_data["qr"]["hasQR"] = True
+            output_data["qr"]["hasQR"] = False
             output_data["qr"]["centroid"] = bb
             output_data["qr"]["value"] = None
         else:
@@ -272,7 +272,7 @@ class CVProcessor:
                         y_sum = y_sum + i
                         counter = counter + 1
 
-            if(counter > 4000):
+            if(counter > 5000):
                 return None, (x_sum / counter , y_sum / counter)
 
         return None, None

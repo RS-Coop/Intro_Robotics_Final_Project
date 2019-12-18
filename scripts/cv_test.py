@@ -117,6 +117,11 @@ class TestImageProcessing(unittest.TestCase):
         img = cv.imread(self.parent_dir+"/test_images/2_edge.jpg")
         # img = cv.resize(img, (640, 368))
         self.assertEqual(len(self.cv_processor.process_image(img)["edges"]), 2)
+    
+    def test_QR_blob(self):
+        img = cv.imread(self.parent_dir+"/test_images/one_line_following_7.jpg")
+        self.assertEqual(self.cv_processor.process_image(img)["qr"]["hasQR"], False)
+        self.assertNotEqual(self.cv_processor.process_image(img)["qr"]["centroid"], False)
 
     '''
     # ###
