@@ -67,12 +67,13 @@ class SwarmController:
     #NOTE: Navigate to line not implemented
     def run_node(self):
         while not rospy.is_shutdown():
-            if self.run_state():
-                break
+            # if self.run_state():
+            #     break
+            pass
 
     # Run based off state, if state is land, return true
     def run_state(self):
-        if self.run_bool:
+        if self.run_bool == True:
             print("State: ", self.current_state)
             print("QR: ", self.qr_data)
             print("Callbacks", self.callback_count)
@@ -189,42 +190,40 @@ class SwarmController:
         if self.qr_data["centroid"] != (0, 0):
             cmd = DroneCommand()
             centroid, angle = self.get_line_pose(self.current_edge_color)
-
+            #
             # If the line to follow is not detected, kill
             if (centroid == None and angle == None):
                 self.current_state = G.KILL
-
-            #If the line is not vertical
-            elif self.is_line_vertical == False:
-                print("line not vertical")
-                #Rotate to get the line vertical
-
-                cmd.cmd_type.append("angular")
-                cmd.intensity.append(0) #Will default to base intensity
-                #Do some stuff here to turn
-                x_err = self.CENTER[1] - centroid[0]
-                cmd.direction.append(np.sign(x_err)) #Not sure about this agrument
-
-            #If the line is not centered
-            elif self.is_line_centered == False:
-                print("line not centered")
-                #Shift left or right to center line
-                #We should just care about x error
-                x_err = self.CENTER[0]-centroid[1] #pos means left
-
-                cmd.cmd_type.append(G.Y)
-                cmd.intensity.append(0.1) #Will defualt to base intensity
-                cmd.direction.append(np.sign(x_err))
+            #
+            # #If the line is not vertical
+            # elif self.is_line_vertical == False:
+            #     print("line not vertical")
+            #     #Rotate to get the line vertical
+            #
+            #     cmd.cmd_type.append("angular")
+            #     cmd.intensity.append(0) #Will default to base intensity
+            #     #Do some stuff here to turn
+            #     x_err = self.CENTER[1] - centroid[0]
+            #     cmd.direction.append(np.sign(x_err)) #Not sure about this agrument
+            #
+            # #If the line is not centered
+            # elif self.is_line_centered == False:
+            #     print("line not centered")
+            #     #Shift left or right to center line
+            #     #We should just care about x error
+            #     x_err = self.CENTER[0]-centroid[1] #pos means left
+            #
+            #     cmd.cmd_type.append(G.Y)
+            #     cmd.intensity.append(0.1) #Will defualt to base intensity
+            #     cmd.direction.append(np.sign(x_err))
 
             #If the line is vertical and centered
             else:
                 print("line vertical and centered")
                 #Move forward
                 cmd.cmd_type.append(G.X)
-                cmd.intensity.append(0) #Will default to base intensity
+                cmd.intensity.append(0.5) #Will default to base intensity
                 cmd.direction.append(1)
-                # #Change state
-                # self.current_state = G.FOLLOW_LINE
 
             self.drone_command_pub.publish(cmd)
 
@@ -249,27 +248,27 @@ class SwarmController:
             if (centroid == None and angle == None):
                 self.current_state = G.KILL
             #If the line is not centered
-            elif self.is_line_centered == False:
-                #Shift left or right to center line
-                #We should just care about x error
-                x_err = self.CENTER[1]-centroid[1] #pos means left
-
-                cmd.cmd_type.append(G.Y)
-                cmd.intensity.append(0.1) #Will defualt to base intensity
-                cmd.direction.append(np.sign(x_err))
-
-            #If the line is not vertical
-            elif self.is_line_vertical == False:
-                #Rotate to get the line vertical
-                cmd.cmd_type.append(G.THETA)
-                cmd.intensity.append(0.1) #Will default to base intensity
-                cmd.direction.append(np.sign(angle)) #Not sure about this agrument
+            # elif self.is_line_centered == False:
+            #     #Shift left or right to center line
+            #     #We should just care about x error
+            #     x_err = self.CENTER[1]-centroid[1] #pos means left
+            #
+            #     cmd.cmd_type.append(G.Y)
+            #     cmd.intensity.append(0.1) #Will defualt to base intensity
+            #     cmd.direction.append(np.sign(x_err))
+            #
+            # #If the line is not vertical
+            # elif self.is_line_vertical == False:
+            #     #Rotate to get the line vertical
+            #     cmd.cmd_type.append(G.THETA)
+            #     cmd.intensity.append(0.1) #Will default to base intensity
+            #     cmd.direction.append(np.sign(angle)) #Not sure about this agrument
 
             #If the line is vertical and centered
             else:
                 #Move forward
                 cmd.cmd_type.append(G.X)
-                cmd.intensity.append(0) #Will default to base intensity
+                cmd.intensity.append(0.3) #Will default to base intensity
                 cmd.direction.append(1)
 
             self.drone_command_pub.publish(cmd)
@@ -444,6 +443,7 @@ class SwarmController:
         self.qr_data["value"] = data.value
         self.callback_count += 1
         self.run_bool = True
+        self.run_state()
 
     def edge_callback(self, data):
         currentIndex = 0
@@ -483,6 +483,7 @@ class SwarmController:
             self.edge_data.append(newDict)
             currentIndex+=16
         self.run_bool = True
+        self.run_state()
 
 ################################################################################
 #Tests
