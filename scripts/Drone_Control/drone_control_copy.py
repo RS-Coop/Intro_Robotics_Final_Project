@@ -206,7 +206,7 @@ class DroneController:
     #DONE: Gather image data, tag it and then publish it
     #NOTE: Havent tested this yet
     def image_callback(self, data):
-        if time.time()-self.last_image_time > 1:
+        if time.time()-self.last_image_time > 0.2:
             print('Publishing Image')
             drone_image = TaggedImage()
             drone_image.image = data
@@ -218,6 +218,7 @@ class DroneController:
     ##### SUBSCRIBE CALLBACKS
     def drone_command_callback(self, data):
         movementCommand = data.movement_command
+        print("Recieved Command: ", movementCommand)
 
         self.run_movement_command(movementCommand)
 

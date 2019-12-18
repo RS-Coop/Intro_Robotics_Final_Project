@@ -65,8 +65,9 @@ class SwarmController:
     #NOTE: Navigate to line not implemented
     def run_node(self):
         while not rospy.is_shutdown():
-            if self.run_state():
-                break
+            # if self.run_state():
+            #     break
+            pass
 
     # Run based off state, if state is land, return true
     def run_state(self):
@@ -432,6 +433,8 @@ class SwarmController:
         self.qr_data["value"] = data.value
         self.callback_count += 1
 
+        self.run_state()
+
     def edge_callback(self, data):
         currentIndex = 0
         for i in range(0, len(data.colors), 16):
@@ -469,6 +472,7 @@ class SwarmController:
 
             self.edge_data.append(newDict)
             currentIndex+=16
+        self.run_state()
 
 ################################################################################
 #Tests
