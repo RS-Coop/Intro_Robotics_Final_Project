@@ -57,6 +57,10 @@ class CVProcessor:
             output_data["qr"]["hasQR"] = True
             output_data["qr"]["centroid"] = bb
             output_data["qr"]["value"] = value
+        elif(bb != None):
+            output_data["qr"]["hasQR"] = True
+            output_data["qr"]["centroid"] = bb
+            output_data["qr"]["value"] = None
         else:
             output_data["qr"]["hasQR"] = False
             output_data["qr"]["centroid"] = (0,0)
@@ -256,7 +260,7 @@ class CVProcessor:
             return value, (x, y)
         else:
             hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)
-            mask = cv.inRange(hsv, G.LINE_COLORS["white"][0], G.LINE_COLORS["white"][1])
+            mask = cv.inRange(hsv, np.array([0,0,235]), np.array([255,20,255]))
             x_sum = 0
             y_sum = 0
             counter = 0
@@ -270,7 +274,7 @@ class CVProcessor:
 
             if(counter > 4000):
                 return None, (x_sum / counter , y_sum / counter)
-                
+
         return None, None
 
     '''
