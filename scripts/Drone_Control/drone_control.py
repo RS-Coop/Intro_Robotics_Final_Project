@@ -35,7 +35,7 @@ class DroneController:
         # self.camera_joint_sub = rospy.Subscriber(namespace + '/joint_states', JointState, self.camera_joint_callback)
         self.camera_image_sub = rospy.Subscriber(namespace + '/image_raw', Image, self.image_callback)
 
-        rospy.sleep(3.0)
+        rospy.sleep(2.0)
 
 ################################################################################
 #Main methods and publisher methods

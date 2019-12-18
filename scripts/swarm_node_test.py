@@ -12,6 +12,9 @@ swarm = SwarmController('test') #Different namespace so wont fly drone
 #Should not be necessary as we wont be flying
 rospy.on_shutdown(swarm.failsafe)
 
-#Do some testing here
+print("Swarm ready")
+
+#Runs loop
 swarm.run_node()
-#Can look at messages being published on rostopic
+
+print("Swarm landed")

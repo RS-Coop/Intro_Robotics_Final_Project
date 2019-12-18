@@ -17,7 +17,7 @@ class ImageProcessor:
         #Subscribers
         self.image_sub = rospy.Subscriber('/swarm/drone_image', TaggedImage, self.image_callback)
 
-        rospy.sleep(1.0)
+        rospy.sleep(2.0)
 
 ################################################################################
 #Main loop

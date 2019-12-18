@@ -51,7 +51,7 @@ class SwarmController:
         self.qr_sub = rospy.Subscriber('/swarm/qr_code', QR, self.qr_callback)
         self.edges_sub = rospy.Subscriber('/swarm/edges', EdgeList, self.edge_callback)
 
-        rospy.sleep(3.0)
+        rospy.sleep(2.0)
 
 ################################################################################
 #Main methods and publishing methods
