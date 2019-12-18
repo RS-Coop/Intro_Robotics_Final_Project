@@ -71,9 +71,9 @@ class SwarmController:
 
     # Run based off state, if state is land, return true
     def run_state(self):
-        print("State: ", self.current_state)
-        print("QR: ", self.qr_data)
-        print("Callbacks", self.callback_count)
+        # print("State: ", self.current_state)
+        # print("QR: ", self.qr_data)
+        # print("Callbacks", self.callback_count)
         # print("Current Line: ", self.current_edge_color)
         if self.current_state == G.KILL:
             self.kill() #Center qr code
@@ -135,8 +135,8 @@ class SwarmController:
             y_err = self.CENTER[0]-centroid[1] #pos means forward
             x_err = self.CENTER[1]-centroid[0]  #pos means left
 
-            print("XERR:", x_err, "YERR:", y_err)
-            print("", abs(x_err), ">", self.CENTER_X_ERROR, "or", abs(y_err), ">", self.CENTER_Y_ERROR)
+            # print("XERR:", x_err, "YERR:", y_err)
+            # print("", abs(x_err), ">", self.CENTER_X_ERROR, "or", abs(y_err), ">", self.CENTER_Y_ERROR)
 
             if abs(x_err) > self.CENTER_X_ERROR or abs(y_err) > self.CENTER_Y_ERROR:
                 # If the centroid is in the top of the image, move forward
@@ -182,6 +182,7 @@ class SwarmController:
     def move_onto_line(self):
         if self.qr_data["centroid"] != (0, 0):
             centroid, angle = self.get_line_pose(self.current_edge_color)
+            print("Centroid: ", centroid, ", Angle: ", angle)
 
             # If the line to follow is not detected, kill
             if (centroid == None and angle == None):
@@ -223,7 +224,7 @@ class SwarmController:
     #TODO: What data do I have for moving, then fix movement commands
     #NOTE: Not yet fully implemented
     def follow_line(self):
-        if self.qr_data["hasQR"] == False or self.qr_data["value"] == self.current_qr_code:
+        if self.qr_data["centroid"] == (0, 0) or self.qr_data["value"] == self.current_qr_code:
             centroid, angle = self.get_line_pose(self.current_edge_color)
 
             # If the line to follow is not detected, kill
@@ -261,7 +262,7 @@ class SwarmController:
             self.update_v2(self.current_edge_color, self.graph_edges, current_edge["v1"], self.qr_data["value"])
             self.current_edge_color = None
             #Change state
-            self.current_state = G.CENTER_QR
+            self.current_state = G.SEARCH_QR
             self.current_qr_code = self.qr_data["value"]
 
     def takeoff_drone(self):
