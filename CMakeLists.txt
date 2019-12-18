@@ -54,6 +54,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
   FILES
   DroneCommand.msg
+  DroneMovementCommand.msg
   EdgeList.msg
   QR.msg
   TaggedImage.msg
