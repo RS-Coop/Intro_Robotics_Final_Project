@@ -67,6 +67,22 @@ class TestSwarm(unittest.TestCase):
         self.assertEqual(thisSwarmC.current_edge_color, None)
         self.assertEqual(thisSwarmC.current_state, G.LAND)
 
+    def test_determine_line_no_qr_code(self):
+        # Instantiate swarm controller
+        thisSwarmC = sc.SwarmController()
+        # Set curr_state
+        thisSwarmC.qr_data = {"hasQR" : False, "centroid" : (0, 0), "value" : 0}
+        thisSwarmC.edge_data = [{"color" : G.ORANGE, "angle" : 90, "centroid" : (0, 0)}, {"color" : G.BLUE, "angle" : 90, "centroid" : (0, 0)}]
+        thisSwarmC.graph_edges = [{"color": G.ORANGE, "v1": 1, "v2": 2}]
+        thisSwarmC.current_edge_color = None
+        thisSwarmC.current_state = G.DETERMINE_NEXT_LINE
+        # Determine next line
+        thisSwarmC.determine_next_line()
+        # Check resulting state and values
+        self.assertEqual(thisSwarmC.graph_edges, [{"color": G.ORANGE, "v1": 1, "v2": 2}, {"color": G.BLUE, "v1": 2, "v2": None}])
+        self.assertEqual(thisSwarmC.current_edge_color, G.BLUE)
+        self.assertEqual(thisSwarmC.current_state, G.MOVE_ONTO_LINE)
+
     ###
     ### tests for center_qr
     ###
