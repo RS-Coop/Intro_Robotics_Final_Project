@@ -7,8 +7,8 @@ from Intro_Robotics_Final_Project.msg import QR, EdgeList, DroneCommand
 class SwarmController:
     # Region definitions for image
     CENTER = G.BEBOP_CENTER
-    CENTER_X_ERROR = G.QR_ERROR
-    CENTER_Y_ERROR = G.QR_ERROR
+    CENTER_X_ERROR = G.QR_ERROR_X
+    CENTER_Y_ERROR = G.QR_ERROR_Y
 
     #Drones in swarm (NOTE: Right now just 1)
     drones = ['/bebop']
@@ -119,11 +119,11 @@ class SwarmController:
             current_qr_code = self.qr_data["value"]
             centroid = self.qr_data["centroid"]
 
-            x_err = self.CENTER[0]-centroid[0] #pos means forward
-            y_err = self.CENTER[1]-centroid[1]  #pos means left
+            y_err = self.CENTER[0]-centroid[0] #pos means forward
+            x_err = self.CENTER[1]-centroid[1]  #pos means left
 
-            # print("XERR:", x_err, "YERR:", y_err)
-            # print("", abs(x_err), ">", self.CENTER_X_ERROR, "or", abs(y_err), ">", self.CENTER_Y_ERROR)
+            print("XERR:", x_err, "YERR:", y_err)
+            print("", abs(x_err), ">", self.CENTER_X_ERROR, "or", abs(y_err), ">", self.CENTER_Y_ERROR)
 
             if abs(x_err) > self.CENTER_X_ERROR or abs(y_err) > self.CENTER_Y_ERROR:
                 cmd = DroneCommand()
@@ -132,11 +132,11 @@ class SwarmController:
                 #x movement
                 cmd.cmd_type.append(G.X)
                 cmd.intensity.append(0) #Will default to base intensity
-                cmd.direction.append(np.sign(x_err))
+                cmd.direction.append(np.sign(y_err))
                 #y movement
                 cmd.cmd_type.append(G.Y)
                 cmd.intensity.append(0.1) #Will default to base intensity
-                cmd.direction.append(np.sign(y_err))
+                cmd.direction.append(np.sign(x_err))
 
                 #Issue drone commands
                 self.drone_command_pub.publish(cmd)
@@ -182,7 +182,6 @@ class SwarmController:
             elif self.is_line_vertical == False:
                 print("line not vertical")
                 #Rotate to get the line vertical
-
 
                 cmd.cmd_type.append("angular")
                 cmd.intensity.append(0) #Will default to base intensity
@@ -304,22 +303,22 @@ class SwarmController:
             secondPoint = (None, None)
 
             for i in zone_names_outer:
-                # print(currentLine["pos_avgs""][i])
-                # print(currentLine["pos_avgs""][i] != (None, None))
+                # print(currentLine["pos_avgs"][i])
+                # print(currentLine["pos_avgs"][i] != (None, None))
 
-                if((currentLine["pos_avgs""][i] != (None, None)) and (firstPoint == (None,None))):
-                    firstPoint = currentLine["pos_avgs""][i]
+                if((currentLine["pos_avgs"][i] != (None, None)) and (firstPoint == (None,None))):
+                    firstPoint = currentLine["pos_avgs"][i]
                     # print("firstPoint", i)
-                elif((currentLine["pos_avgs""][i] != (None,None)) and (secondPoint == (None,None))):
-                    secondPoint = currentLine["pos_avgs""][i]
+                elif((currentLine["pos_avgs"][i] != (None,None)) and (secondPoint == (None,None))):
+                    secondPoint = currentLine["pos_avgs"][i]
                     # print("secondPoint", i)
                     break
 
             #A second point was not found in the outer ring, checking inner ring
             if(firstPoint != (None,None) and secondPoint == (None,None)):
                 for i in zone_names_inner:
-                    if(currentLine["pos_avgs""][i] != (None,None)):
-                        secondPoint = currentLine["pos_avgs""][i]
+                    if(currentLine["pos_avgs"][i] != (None,None)):
+                        secondPoint = currentLine["pos_avgs"][i]
                         # print("secondPoint", i)
                         break
 
