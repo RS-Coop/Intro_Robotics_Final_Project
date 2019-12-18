@@ -222,9 +222,9 @@ class SwarmController:
             elif self.is_line_vertical(self.current_edge_color) == False:
                 print("line not vertical")
                 #Rotate to get the line vertical
-                if angle > 0 and abs(angle) > self.ANGLE_ERROR:
+                if angle < 0 and abs(angle) > self.ANGLE_ERROR:
                     self.turn_drone_left()
-                elif angle < 0 and abs(angle) > self.ANGLE_ERROR:
+                elif angle > 0 and abs(angle) > self.ANGLE_ERROR:
                     self.turn_drone_right()
 
             #If the line is not centered
@@ -269,6 +269,9 @@ class SwarmController:
             centroid, angle = self.get_line_pose(self.current_edge_color)
             #angle -= 90
 
+            y_err = self.CENTER[0]-centroid[1] #pos means forward
+            x_err = self.CENTER[1]-centroid[0]  #pos means left
+
             # If the line to follow is not detected, kill
             if (centroid == None and angle == None):
                 self.current_state = G.KILL
@@ -297,9 +300,9 @@ class SwarmController:
                 print("line not vertical")
                 #Rotate to get the line vertical
                 # Angle greater than zero, turn left
-                if angle > 0 and abs(angle) > self.ANGLE_ERROR:
+                if angle < 0 and abs(angle) > self.ANGLE_ERROR:
                     self.turn_drone_left()
-                elif angle < 0 and abs(angle) > self.ANGLE_ERROR:
+                elif angle > 0 and abs(angle) > self.ANGLE_ERROR:
                     self.turn_drone_right()
 
             #If the line is vertical and centered
