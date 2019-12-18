@@ -7,6 +7,7 @@ from Intro_Robotics_Final_Project.msg import QR, EdgeList, DroneCommand, DroneMo
 class SwarmController:
     # Region definitions for image
     CENTER = G.BEBOP_CENTER
+    ANGLE_ERROR = G.ANGLE_BOUND
     CENTER_X_ERROR = G.QR_ERROR_X
     CENTER_Y_ERROR = G.QR_ERROR_Y
     callback_count = 0
@@ -179,7 +180,6 @@ class SwarmController:
     def determine_next_line(self):
         # Add the currently visible lines to the graph
         self.add_edges_to_graph(self.edge_data)
-        # print("Graph:", self.graph_edges)
 
         # If there is an unexplored edge out of the current vertex, switch to line following state
         for edge in self.edge_data:
@@ -188,6 +188,8 @@ class SwarmController:
             # If the current edge started at the current QR (has it for v1 instaed of v2) then explore it
             # print(existingEdge)
             if existingEdge != None and existingEdge["v2"] == None:
+                print("Graph:", self.graph_edges)
+                print("Edges:", self.edge_data)
                 self.current_edge_color = existingEdge["color"]
                 print("Current edge color: ", self.current_edge_color)
                 self.current_state = G.MOVE_ONTO_LINE
@@ -209,13 +211,13 @@ class SwarmController:
                 self.current_state = G.KILL
 
             #If the line is not vertical
-            elif self.is_line_vertical == False:
+            elif self.is_line_vertical(self.current_edge_color) == False:
                 print("line not vertical")
                 #Rotate to get the line vertical
                 self.turn_drone_right()
 
             #If the line is not centered
-            elif self.is_line_centered == False:
+            elif self.is_line_centered(self.current_edge_color) == False:
                 print("line not centered")
                 #Shift left or right to center line
                 #We should just care about x error
@@ -252,7 +254,7 @@ class SwarmController:
                 self.current_state = G.KILL
 
             #If the line is not centered
-            elif self.is_line_centered == False:
+            elif self.is_line_centered(self.current_edge_color) == False:
                 print("line not centered")
                 #Shift left or right to center line
                 #We should just care about x error
@@ -266,7 +268,7 @@ class SwarmController:
                     self.move_drone_right()
 
             #If the line is not vertical
-            elif self.is_line_vertical == False:
+            elif self.is_line_vertical(self.current_edge_color) == False:
                 print("line not vertical")
                 #Rotate to get the line vertical
                 # Angle greater than zero, turn left
@@ -346,8 +348,8 @@ class SwarmController:
         print('Failed Safely')
 
     # Return true if the line is veritical in the image with a certain error
-    def is_line_vertical(self):
-        centroid, angle = get_line_pose(line_color)
+    def is_line_vertical(self, line_color):
+        centroid, angle = self.get_line_pose(line_color)
 
         if abs(angle) > self.ANGLE_ERROR:
             return True
@@ -355,8 +357,8 @@ class SwarmController:
         return False
 
     # Return true if the line is centered in the image with a certain error
-    def is_line_centered(self):
-        centroid, angle = get_line_pose(line_color)
+    def is_line_centered(self, line_color):
+        centroid, angle = self.get_line_pose(line_color)
 
         x_err = np.abs(self.CENTER[1]-centroid[1])
 
