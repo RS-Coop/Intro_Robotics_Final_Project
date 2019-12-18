@@ -153,11 +153,11 @@ class DroneController:
             self.rotate_drone_right()
         elif movementCommand == G.TURN_LEFT:
             self.rotate_drone_left()
-        elif movementCommand == G.EMERGENCY:
+        elif movementCommand == G.DO_EMERGENCY:
             self.failsafe()
-        elif movementCommand == G.LAND:
+        elif movementCommand == GD.DO_LAND:
             self.land()
-        elif movementCommand == G.TAKEOFF:
+        elif movementCommand == G.DO_TAKEOFF:
             self.takeoff()
 
     def fly_drone_forward(self):
