@@ -68,3 +68,11 @@ class Globals:
     Y = 'y'
     Z = 'z'
     THETA = 'theta'
+
+    # DRONE MOVEMENTS
+    GO_FORWARD = 1
+    GO_BACKWARD = 2
+    GO_RIGHT = 3
+    GO_LEFT = 4
+    TURN_RIGHT = 5
+    TURN_LEFT = 6
