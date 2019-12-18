@@ -100,8 +100,8 @@ class SwarmController:
     def center_qr(self):
         centroid = self.qr_data["centroid"]
 
-        x_err = self.CENTER[0]-centroid[0]
-        y_err = centroid[1]-self.CENTER[1]
+        y_err = self.CENTER[0]-centroid[0] #pos means forward
+        x_err = self.CENTER[1]-centroid[1]  #pos means left
 
         print("XERR:", x_err, "YERR:", y_err)
         print("", abs(x_err), ">", self.CENTER_X_ERROR, "or", abs(y_err), ">", self.CENTER_Y_ERROR)
@@ -175,33 +175,35 @@ class SwarmController:
         pass
 
     #Follows line untill it reaches vertex, adjusts as neccesary
-    #TODO: Do this
-    #NOTE:
+    #TODO: What data do I have for moving, then fix movement commands
+    #NOTE: Not yet fully implemented
     def follow_line(self):
         if self.qr_data["hasQR"] == False:
 
             cmd = DroneCommand()
-
-            # for edge in self.edge_data:
-            #     if edge["color"] == self.current_edge_color:
-            #         angle = edge["angle"]
-            
-            # if np.abs(angle) > G.ANGLE_BOUND:
-            #     cmd.drone_id = self.drones[0]
-
-            # If the line is not centered
+            #If the line is not centered
             if self.is_line_centered == False:
-                # center the line in the screen
-                pass
-            # If the line is not vertical
+                #Shift left or right to center line
+                centroid, angle = self.get_line_pose(self.current_edge_color)
+                #We should just care about x error
+                x_err = self.CENTER[1]-centroid[1] #pos means left
+
+                cmd.cmd_type.append("y")
+                cmd.intensity.append(0) #Will defualt to base intensity
+                cmd.direction.append(np.sign(x_err))
+
+            #If the line is not vertical
             elif self.is_line_vertical == False:
-                # get the line to be vertical
+                #Rotate to get the line vertical
+                centroid, angle = self.get_line_pose(self.current_edge_color)
+
                 cmd.cmd_type.append("angular")
                 cmd.intensity.append(0) #Will default to base intensity
-                cmd.direction.append(np.sign(angle))
-            # If the line is vertical and centered
+                cmd.direction.append() #Not sure about this agrument
+
+            #If the line is vertical and centered
             else:
-                # Move forward
+                #Move forward
                 cmd.cmd_type.append("x")
                 cmd.intensity.append(0) #Will default to base intensity
                 cmd.direction.append(1)
@@ -238,12 +240,41 @@ class SwarmController:
     # Returns ((centroidx, y), angle)
     def get_line_pose(self, line_color):
         currentLine = get_edge_pose(line_color)
+        zone_names_outer = [ "O_TOP", "O_BOTTOM", "O_LEFT" , "O_RIGHT"]
+        zone_names_inner = ["I_TOP", "I_BOTTOM", "I_LEFT", "I_RIGHT"]
 
         if currentLine == None:
-            return None
-        
-        return (None, None)
+            return None, None
+        else:
+            firstPoint = (None,None)
+            secondPoint = (None,None)
 
+            #Checking outer ring for two points
+            for i in zone_names_outer:
+                if((currentLine["pos_avg"][i] is not (None,None)) and (firstPoint is (None,None))):
+                    firstPoint = currentLine["pos_avg"][i]
+                elif((currentLine["pos_avg"][i] is not (None,None)) and (secondPoint is (None,None))):
+                    secondPoint = currentLine["pos_avg"][i]
+                    break
+
+            #A second point was not found in the outer ring, checking inner ring
+            if(firstPoint is not (None,None) and secondPoint is (None,None)):
+                for i in zone_names_inner:
+                    if(currentLine["pos_avg"][i] is not (None,None)):
+                        secondPoint = currentLine["pos_avg"][i]
+                        break
+            
+            #If either point is not found, not enough data to calculate centroid and angle, return None
+            if(firstPoint is (None,None) or secondPoint is (None,None)):
+                return (None, None)
+            else:
+                centroid = ((firstPoint[0] + secondPoint[0]) / 2 , (firstPoint[1] + secondPoint[1]) / 2)
+                x = np.abs(firstPoint[0] - secondPoint[0])
+                y = np.abs(firstPoint[1] - secondPoint[1])
+                theta = np.arcsin( x / np.sqrt(x**2 + y**2))
+                return (centroid, theta)
+
+        return None, None
 
 
     # TODO
@@ -318,21 +349,38 @@ class SwarmController:
 
     def edge_callback(self, data):
         currentIndex = 0
-        for i in range(0, len(data.colors)):
+        for i in range(0, len(data.colors), 16):
 
             newDict = {
                         "color" : data.colors[i],
-                        "pos_avg" : {}
+                        "pos_avg" : {
+                                    'O_TOP' : (None,None),
+                                    'O_BOTTOM' : (None,None),
+                                    'O_LEFT' : (None,None),
+                                    'O_RIGHT' : (None,None),
+                                    'I_TOP' : (None,None),
+                                    'I_BOTTOM' : (None,None),
+                                    'I_LEFT' : (None,None),
+                                    'I_RIGHT' : (None,None)
+                                    }
                       }
 
-            newDict["pos_avg"]["O_TOP"] = (data.pos_avg[currentIndex], data.pos_avg[currentIndex+1])
-            newDict["pos_avg"]["O_BOTTOM"] = (data.pos_avg[currentIndex+2], data.pos_avg[currentIndex+3])
-            newDict["pos_avg"]["O_LEFT"] = (data.pos_avg[currentIndex+4], data.pos_avg[currentIndex+5])
-            newDict["pos_avg"]["O_RIGHT"] = (data.pos_avg[currentIndex+6], data.pos_avg[currentIndex+7])
-            newDict["pos_avg"]["I_TOP"] = (data.pos_avg[currentIndex+8], data.pos_avg[currentIndex+9])
-            newDict["pos_avg"]["I_BOTTOM"] = (data.pos_avg[currentIndex+10], data.pos_avg[currentIndex+11])
-            newDict["pos_avg"]["I_LEFT"] = (data.pos_avg[currentIndex+12], data.pos_avg[currentIndex+13])
-            newDict["pos_avg"]["I_RIGHT"] = (data.pos_avg[currentIndex+14], data.pos_avg[currentIndex+15])
+            if (data.pos_avg[currentIndex], data.pos_avg[currentIndex+1]) == (0,0):
+                newDict["pos_avg"]["O_TOP"] = (data.pos_avg[currentIndex], data.pos_avg[currentIndex+1])
+            if (data.pos_avg[currentIndex+2], data.pos_avg[currentIndex+3]) == (0,0):
+                newDict["pos_avg"]["O_BOTTOM"] = (data.pos_avg[currentIndex+2], data.pos_avg[currentIndex+3])
+            if (data.pos_avg[currentIndex+4], data.pos_avg[currentIndex+5]) == (0,0):
+                newDict["pos_avg"]["O_LEFT"] = (data.pos_avg[currentIndex+4], data.pos_avg[currentIndex+5])
+            if (data.pos_avg[currentIndex+6], data.pos_avg[currentIndex+7]) == (0,0):
+                newDict["pos_avg"]["O_RIGHT"] = (data.pos_avg[currentIndex+6], data.pos_avg[currentIndex+7])
+            if (data.pos_avg[currentIndex+8], data.pos_avg[currentIndex+9]) == (0,0):
+                newDict["pos_avg"]["I_TOP"] = (data.pos_avg[currentIndex+8], data.pos_avg[currentIndex+9])
+            if (data.pos_avg[currentIndex+10], data.pos_avg[currentIndex+11]) == (0,0):
+                newDict["pos_avg"]["I_BOTTOM"] = (data.pos_avg[currentIndex+10], data.pos_avg[currentIndex+11])
+            if (data.pos_avg[currentIndex+12], data.pos_avg[currentIndex+13]) == (0,0):
+                newDict["pos_avg"]["I_LEFT"] = (data.pos_avg[currentIndex+12], data.pos_avg[currentIndex+13])
+            if (data.pos_avg[currentIndex+14], data.pos_avg[currentIndex+15]) == (0,0):
+                newDict["pos_avg"]["I_RIGHT"] = (data.pos_avg[currentIndex+14], data.pos_avg[currentIndex+15])
 
             self.edge_data.append(newDict)
             currentIndex+=16

@@ -48,9 +48,13 @@ class ImageProcessor:
             if i!=None:
                 edgeMsg.colors.append(i["color"])
                 for value in i["pos_avgs"].values():
-                    edgeMsg.pos_avgs.append(value[0])
-                    edgeMsg.pos_avgs.append(value[1])
-                    
+                    if value == (None,None):
+                        edgeMsg.pos_avgs.append(0)
+                        edgeMsg.pos_avgs.append(0)
+                    else:
+                        edgeMsg.pos_avgs.append(value[0])
+                        edgeMsg.pos_avgs.append(value[1])
+
         # Publish results to topic
         self.qr_pub.publish(qrMsg)
         self.edges_pub.publish(edgeMsg)

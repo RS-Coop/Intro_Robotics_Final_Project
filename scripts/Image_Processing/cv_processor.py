@@ -37,8 +37,10 @@ class CVProcessor:
                                     O_BOTTOM:
                                     O_LEFT :
                                     O_RIGHT:
-                                    ...
-                                    I_RIGHT
+                                    I_TOP :
+                                    I_BOTTOM:
+                                    I_LEFT :
+                                    I_RIGHT :
                                   },
                 },
                 ...
@@ -61,7 +63,7 @@ class CVProcessor:
             output_data["qr"]["value"] = 0
 
         colors, masks = self.color_filter(image)
-        
+
         for i in range(len(masks)):
             band_avgs = self.get_band_averages(masks[i])
 
@@ -119,7 +121,7 @@ class CVProcessor:
                     num_pixels += 1
 
         if num_pixels > G.BAND_THRESHOLD:
-            band_avgs.update({G.O_TOP:(sum_x/num_pixels, sum_y/num_pixels)})
+            band_avgs.update({G.O_TOP:(int(sum_x/num_pixels), int(sum_y/num_pixels))})
         else:
             band_avgs.update({G.O_TOP:(None,None)})
     ###############################################################################
@@ -135,7 +137,7 @@ class CVProcessor:
                     num_pixels += 1
 
         if num_pixels > G.BAND_THRESHOLD:
-            band_avgs.update({G.O_BOTTOM:(sum_x/num_pixels, sum_y/num_pixels)})
+            band_avgs.update({G.O_BOTTOM:(int(sum_x/num_pixels), int(sum_y/num_pixels))})
         else:
             band_avgs.update({G.O_BOTTOM:(None,None)})
     ###############################################################################
@@ -151,7 +153,7 @@ class CVProcessor:
                     num_pixels += 1
 
         if num_pixels > G.BAND_THRESHOLD:
-            band_avgs.update({G.O_LEFT:(sum_x/num_pixels, sum_y/num_pixels)})
+            band_avgs.update({G.O_LEFT:(int(sum_x/num_pixels), int(sum_y/num_pixels))})
         else:
             band_avgs.update({G.O_LEFT:(None,None)})
     ###############################################################################
@@ -167,7 +169,7 @@ class CVProcessor:
                     num_pixels += 1
 
         if num_pixels > G.BAND_THRESHOLD:
-            band_avgs.update({G.O_RIGHT:(sum_x/num_pixels, sum_y/num_pixels)})
+            band_avgs.update({G.O_RIGHT:(int(sum_x/num_pixels), int(sum_y/num_pixels))})
         else:
             band_avgs.update({G.O_RIGHT:(None,None)})
     ###############################################################################
@@ -183,7 +185,7 @@ class CVProcessor:
                     num_pixels += 1
 
         if num_pixels > G.BAND_THRESHOLD:
-            band_avgs.update({G.I_TOP:(sum_x/num_pixels, sum_y/num_pixels)})
+            band_avgs.update({G.I_TOP:(int(sum_x/num_pixels), int(sum_y/num_pixels))})
         else:
             band_avgs.update({G.I_TOP:(None,None)})
     ###############################################################################
@@ -199,7 +201,7 @@ class CVProcessor:
                     num_pixels += 1
 
         if num_pixels > G.BAND_THRESHOLD:
-            band_avgs.update({G.I_BOTTOM:(sum_x/num_pixels, sum_y/num_pixels)})
+            band_avgs.update({G.I_BOTTOM:(int(sum_x/num_pixels), int(sum_y/num_pixels))})
         else:
             band_avgs.update({G.I_BOTTOM:(None,None)})
     ###############################################################################
@@ -215,7 +217,7 @@ class CVProcessor:
                     num_pixels += 1
 
         if num_pixels > G.BAND_THRESHOLD:
-            band_avgs.update({G.I_LEFT:(sum_x/num_pixels, sum_y/num_pixels)})
+            band_avgs.update({G.I_LEFT:(int(sum_x/num_pixels), int(sum_y/num_pixels))})
         else:
             band_avgs.update({G.I_LEFT:(None,None)})
     ###############################################################################
@@ -231,7 +233,7 @@ class CVProcessor:
                     num_pixels += 1
 
         if num_pixels > G.BAND_THRESHOLD:
-            band_avgs.update({G.I_RIGHT:(sum_x/num_pixels, sum_y/num_pixels)})
+            band_avgs.update({G.I_RIGHT:(int(sum_x/num_pixels), int(sum_y/num_pixels))})
         else:
             band_avgs.update({G.I_RIGHT:(None,None)})
     ###############################################################################
