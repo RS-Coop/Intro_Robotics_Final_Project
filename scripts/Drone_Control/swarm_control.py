@@ -267,8 +267,8 @@ class SwarmController:
         if currentLine == None:
             return None, None
         else:
-            firstPoint = None
-            secondPoint = None
+            firstPoint = (None, None)
+            secondPoint = (None, None)
 
             for i in zone_names_outer:
                 # print(currentLine["pos_avgs"][i])
